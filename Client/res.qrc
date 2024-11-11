@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>bin/images/btn_close_h.png</file>
+        <file>bin/images/btn_close_n.png</file>
+        <file>bin/images/btn_min_h.png</file>
+        <file>bin/images/btn_min_n.png</file>
+    </qresource>
+</RCC>
