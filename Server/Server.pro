@@ -29,6 +29,7 @@ SOURCES += \
 
 HEADERS += \
     Database/clientmapper.h \
+    ThreadPool.h \
     allmain.h \
     chatroom.h \
     objects.h \

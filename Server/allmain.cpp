@@ -20,13 +20,8 @@ Allmain::~Allmain()
     delete ui;
 }
 
-void Allmain::setSlots()
-{
 
-}
-
-
-void Allmain::dealMessage(QByteArray message)
+void Allmain::dealMessage(QByteArray &message)
 {
     Client* client;
     QString signal = ObjectToJson::parseSignal(message);
@@ -83,20 +78,21 @@ void Allmain::dealMessage(QByteArray message)
 void Allmain::on_newConnection()
 {
     socket = server->nextPendingConnection();
+    qDebug() << "[server] receive new connection ...";
     connect(socket, &QTcpSocket::connected,[=](){
-        qDebug() << "[scoket] new Connected ...";
+        qDebug() << "[server] new Connected ...";
         qDebug() << "Addr:" << socket->peerAddress();
         qDebug() << "Port:" << socket->peerPort();
     });
     connect(socket, &QTcpSocket::disconnected,[=](){
-        qDebug() << "[scoket] disconnected";
+        qDebug() << "[server] disconnected";
         socket->deleteLater();
     });
     connect(socket, &QTcpSocket::stateChanged, [=](QAbstractSocket::SocketState socketState){
-        qDebug() << "[scoket] state changed: " << socketState;
+        qDebug() << "[server] state changed: " << socketState;
     });
     connect(socket, &QTcpSocket::readyRead,[=](){
-        qDebug() << "[scoket] receive message ...";
+        qDebug() << "[server] receive message ...";
         receiveMessage();
     });
 }
@@ -106,7 +102,7 @@ void Allmain::startToListen()
     QString IP = "127.0.0.1";
     int port = 23333;
     server->listen(QHostAddress(IP), port);
-    qDebug() << "[socket] listening ...";
+    qDebug() << "[server] listening ...";
 }
 
 void Allmain::connectToDB()
@@ -147,6 +143,7 @@ void Allmain::receiveMessage()
 {
     while(socket->bytesAvailable() > 0)
     {
+        qDebug() << "[server] receive message ...";
         QByteArray datagram;
         datagram = socket->readAll();
         dealMessage(datagram);

@@ -11,6 +11,9 @@
 #include <QSqlError>
 #include <QCryptographicHash>
 #include <QRandomGenerator>
+#include <QThread>
+#include <QThreadPool>
+#include "worker.h"
 #include "objects.h"
 #include "objecttojson.h"
 #include "Database/clientmapper.h"
@@ -41,12 +44,17 @@ public:
     ~Allmain();
 
 public slots:
-    void receiveMessage();
-    void dealMessage(QByteArray message);
-    //同Client
+    void on_newConnection(qintptr socketDescriptor);
+    //系统函数的重载，在新连接时自动调用
 
-    void setSlots();
-    //统一初始化信号和槽的链接
+    void receiveMessage();
+    //socket接受信息
+
+    void sendMessage(qintptr socketDescriptor, const QByteArray &array);
+    //socket发送信息
+
+    void dealMessage(QByteArray &message);
+    //服务端处理socket通讯
 
 private slots:
     void on_newConnection();
@@ -56,5 +64,7 @@ private:
     QTcpServer *server;
     QTcpSocket *socket;
     QSqlDatabase db;
+    QHash<qintptr, QTcpSocket*> clients;
+    QThreadPool *threadPool;
 };
 #endif // ALLMAIN_H
