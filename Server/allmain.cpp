@@ -8,9 +8,10 @@ Allmain::Allmain(QWidget *parent)
     ui->setupUi(this);
     connectToDB();
 
+    threadPool = new ThreadPool(1024);
+
     server = new QTcpServer;
     connect(server, SIGNAL(newConnection()), this, SLOT(on_newConnection()));
-    socket = new QTcpSocket(this);
 
     startToListen();
 }
@@ -20,10 +21,25 @@ Allmain::~Allmain()
     delete ui;
 }
 
-
-void Allmain::dealMessage(QByteArray &message)
+void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t threadName)
 {
-    Client* client;
+    qDebug() << QString("[thread_%1]|[server] deal with message ...").arg(threadName);
+
+    QSqlDatabase db;
+    db = QSqlDatabase::addDatabase("QODBC", QString::number(threadName));
+    db.setHostName("localhost");
+    db.setPort(3306);
+    db.setDatabaseName("MySql");
+    db.setUserName("root");
+    db.setPassword("pengcheng_050210");
+
+    if(!db.open()) {
+        qDebug() << QString("[thread_%1]|[database] Failed to connect to db: ").arg(threadName) << db.lastError();
+        return;
+    }
+    qDebug() << QString("[thread_%1]|[database] Connected to MySql").arg(threadName);
+
+    Client* client = new Client;
     QString signal = ObjectToJson::parseSignal(message);
     qDebug() << signal;
     if (signal == QString::number(LOGIN))
@@ -46,7 +62,7 @@ void Allmain::dealMessage(QByteArray &message)
 
         ObjectToJson::integrateClientList(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
-        socket->write(array);
+        emit sendToClient(socket, array);
     }
     else if (signal == QString::number(SIGNIN))
     {
@@ -71,13 +87,18 @@ void Allmain::dealMessage(QByteArray &message)
         }
         ObjectToJson::integrateClientList(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
-        socket->write(array);
+        emit sendToClient(socket, array);
     }
+
+    db.close();
+    QSqlDatabase::removeDatabase(QString::number(threadName));
+    qDebug() << QString("[thread_%1]|[database] disconnect to database").arg(threadName);
 }
 
 void Allmain::on_newConnection()
 {
-    socket = server->nextPendingConnection();
+//    socket = new QTcpSocket(this);
+    QTcpSocket *socket = server->nextPendingConnection();
     qDebug() << "[server] receive new connection ...";
     connect(socket, &QTcpSocket::connected,[=](){
         qDebug() << "[server] new Connected ...";
@@ -86,15 +107,30 @@ void Allmain::on_newConnection()
     });
     connect(socket, &QTcpSocket::disconnected,[=](){
         qDebug() << "[server] disconnected";
+        sockets.removeAll(socket);
         socket->deleteLater();
     });
     connect(socket, &QTcpSocket::stateChanged, [=](QAbstractSocket::SocketState socketState){
         qDebug() << "[server] state changed: " << socketState;
     });
-    connect(socket, &QTcpSocket::readyRead,[=](){
+    connect(socket, &QTcpSocket::readyRead,[this, socket](){
         qDebug() << "[server] receive message ...";
-        receiveMessage();
+        //接受到通讯请求，启动新的线程处理请求
+//        QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+        connect(this, &Allmain::sendToClient, this, &Allmain::sendMessage);
+
+        threadPool->enqueue([this, socket]{
+            qDebug() << "[threadPool] create a new thread";
+            while(socket->bytesAvailable() > 0)
+            {
+                qDebug() << "[server] receive message ...";
+                QByteArray datagram;
+                datagram = socket->readAll();
+                dealMessage(socket, datagram, this->threadPool->getThreadName());
+            }
+        });
     });
+    sockets.append(sockets);
 }
 
 void Allmain::startToListen()
@@ -107,19 +143,19 @@ void Allmain::startToListen()
 
 void Allmain::connectToDB()
 {
-    db = QSqlDatabase::addDatabase("QODBC");
-    db.setHostName("localhost");
-    db.setPort(3306);
-    db.setDatabaseName("MySql");
-    db.setUserName("root");
-    db.setPassword("pengcheng_050210");
+//    db = QSqlDatabase::addDatabase("QODBC");
+//    db.setHostName("localhost");
+//    db.setPort(3306);
+//    db.setDatabaseName("MySql");
+//    db.setUserName("root");
+//    db.setPassword("pengcheng_050210");
 
-    if(!db.open()) {
-        qDebug() << "[database] Failed to connect to db: " << db.lastError();
-        return;
-    }
+//    if(!db.open()) {
+//        qDebug() << "[database] Failed to connect to db: " << db.lastError();
+//        return;
+//    }
 
-    qDebug() << "[database] Connected to MySql";
+//    qDebug() << "[database] Connected to MySql";
 }
 
 QString Allmain::generateRandomSalt(int length)
@@ -141,12 +177,25 @@ QString Allmain::sha256Hash(const QString &data, const QString &salt)
 
 void Allmain::receiveMessage()
 {
-    while(socket->bytesAvailable() > 0)
-    {
-        qDebug() << "[server] receive message ...";
-        QByteArray datagram;
-        datagram = socket->readAll();
-        dealMessage(datagram);
-    }
+//    //接受到通讯请求，启动新的线程处理请求
+//    QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+//    connect(this, &Allmain::sendToClient, this, &Allmain::sendMessage);
+
+//    threadPool->enqueue([=]{
+//        qDebug() << "[threadPool] create a new thread";
+//        while(socket->bytesAvailable() > 0)
+//        {
+//            qDebug() << "[server] receive message ...";
+//            QByteArray datagram;
+//            datagram = socket->readAll();
+//            dealMessage(socket, datagram);
+//        }
+//    });
+}
+
+void Allmain::sendMessage(QTcpSocket *socket, const QByteArray &array)
+{
+    // 子线程外，传输通讯
+    socket->write(array);
 }
 

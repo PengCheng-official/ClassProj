@@ -13,7 +13,7 @@
 #include <QRandomGenerator>
 #include <QThread>
 #include <QThreadPool>
-#include "worker.h"
+#include "ThreadPool.h"
 #include "objects.h"
 #include "objecttojson.h"
 #include "Database/clientmapper.h"
@@ -26,6 +26,18 @@ QT_END_NAMESPACE
 class Allmain : public QWidget
 {
     Q_OBJECT
+public:
+    Allmain(QWidget *parent = nullptr);
+    ~Allmain();
+
+private:
+    Ui::Allmain *ui;
+    QTcpServer *server;
+    QList<QTcpSocket *> sockets;
+//    QSqlDatabase db;
+    QHash<qintptr, QTcpSocket*> clients;
+    ThreadPool *threadPool;
+
 protected:
     void startToListen();
     //开始监听连接
@@ -39,32 +51,23 @@ protected:
     QString sha256Hash(const QString &data, const QString &salt);
     //生成SHA-256哈希加密算法
 
-public:
-    Allmain(QWidget *parent = nullptr);
-    ~Allmain();
 
 public slots:
-    void on_newConnection(qintptr socketDescriptor);
-    //系统函数的重载，在新连接时自动调用
-
     void receiveMessage();
     //socket接受信息
 
-    void sendMessage(qintptr socketDescriptor, const QByteArray &array);
+    void sendMessage(QTcpSocket* socket, const QByteArray &array);
     //socket发送信息
 
-    void dealMessage(QByteArray &message);
+    void dealMessage(QTcpSocket* socket, QByteArray &message, size_t threadName);
     //服务端处理socket通讯
 
 private slots:
     void on_newConnection();
+    //系统函数的重载，在新连接时自动调用
 
-private:
-    Ui::Allmain *ui;
-    QTcpServer *server;
-    QTcpSocket *socket;
-    QSqlDatabase db;
-    QHash<qintptr, QTcpSocket*> clients;
-    QThreadPool *threadPool;
+signals:
+    void sendToClient(QTcpSocket* socket, const QByteArray &array);
+
 };
 #endif // ALLMAIN_H

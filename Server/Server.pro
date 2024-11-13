@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Database/clientmapper.cpp \
+    ThreadPool.cpp \
     chatroom.cpp \
     main.cpp \
     allmain.cpp \
