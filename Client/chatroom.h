@@ -59,9 +59,9 @@ private slots:
     void on_returnBtn_clicked();
 
 signals:
-    void sendToServer(QByteArray array);
-    void sendToClient(QString message, qintptr socketDiscriptor);
-    void returnToLogIn();
+    void sigSendToServer(QByteArray array);
+    void sigSendToClient(QString message, qintptr socketDiscriptor);
+    void sigReturnToLogIn();
 
 };
 

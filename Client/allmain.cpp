@@ -10,12 +10,12 @@ Allmain::Allmain(QWidget *parent)
     logIn = new LogIn();
     signIn = new SignIn();
     chatRoom = new ChatRoom();
-    socket = new TcpSocket();
+    socket = new QTcpSocket();
     connectToServer();
 
     initAllMain();
     logIn->show();
-    connect(logIn, &LogIn::backToMain, [=](Client *cClient){
+    connect(logIn, &LogIn::sigBackToMain, [=](Client *cClient){
         initAllMain(cClient);
         logIn->hide();
         this->show();
@@ -29,21 +29,21 @@ Allmain::~Allmain()
 
 void Allmain::initAllMain()
 {
-    connect(logIn, &LogIn::sendToLogIn, this, &Allmain::sendToServer);
-    connect(logIn, &LogIn::forwardToSignIn, [=](){
+    connect(logIn, &LogIn::sigSendToLogIn, this, &Allmain::onSendToServer);
+    connect(logIn, &LogIn::sigForwardToSignIn, [=](){
         signIn->show();
     });
-    connect(logIn, &LogIn::forwardToChatRoom, [=](){
+    connect(logIn, &LogIn::sigForwardToChatRoom, [=](){
         chatRoom->show();
     });
-    connect(signIn, &SignIn::sendToSignIn, this, &Allmain::sendToServer);
-    connect(signIn, &SignIn::returnToLogIn, [=](){
+    connect(signIn, &SignIn::sigSendToSignIn, this, &Allmain::onSendToServer);
+    connect(signIn, &SignIn::sigReturnToLogIn, [=](){
         logIn->show();
     });
-    connect(signIn, &SignIn::signInSuccessToLogIn, [=](Client *cClient){
+    connect(signIn, &SignIn::sigSignInSuccessToLogIn, [=](Client *cClient){
         logIn->signInSuccess(cClient);
     });
-    connect(chatRoom, &ChatRoom::returnToLogIn, [=](){
+    connect(chatRoom, &ChatRoom::sigReturnToLogIn, [=](){
         logIn->show();
     });
 }
@@ -59,8 +59,8 @@ void Allmain::connectToServer()
     QString server_IP = "127.0.0.1";
     int port = 23333;
     socket->connectToHost(server_IP, port);
-    connect(socket, &QTcpSocket::readyRead, this, &Allmain::on_readyRead);
-    connect(socket, &QTcpSocket::stateChanged, this, &Allmain::on_stateChanged);
+    connect(socket, &QTcpSocket::readyRead, this, &Allmain::onReadyRead);
+    connect(socket, &QTcpSocket::stateChanged, this, &Allmain::onStateChanged);
 
     connect(socket, &QTcpSocket::connected, [=](){
         qDebug() << "[socket] new Connected: ";
@@ -76,13 +76,13 @@ void Allmain::connectToServer()
     });
 }
 
-void Allmain::sendToServer(QByteArray array)
+void Allmain::onSendToServer(QByteArray array)
 {
     qDebug() << "[socket] send to Server ...";
     socket->write(array);
 }
 
-void Allmain::on_stateChanged(QAbstractSocket::SocketState socketState)
+void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
 {
     qDebug() << "[socket] state changed: " << socketState;
     if (socketState == QAbstractSocket::UnconnectedState)
@@ -93,7 +93,7 @@ void Allmain::on_stateChanged(QAbstractSocket::SocketState socketState)
     }
 }
 
-void Allmain::on_readyRead()
+void Allmain::onReadyRead()
 {
     qDebug() << "[socket] receive message ...";
     while(socket->bytesAvailable() > 0)
@@ -106,26 +106,32 @@ void Allmain::on_readyRead()
 
 void Allmain::dealMessage(QByteArray message)
 {
-    QString signal = ObjectToJson::parseSignal(message);
+    int signal = ObjectToJson::parseSignal(message).toInt();
     qDebug() << signal;
-    if (signal == QString::number(LOGIN))   //登录成功
+    switch(signal) {
+    case LOGIN:
     {
         QList<Client*> clientList = ObjectToJson::parseClient(message);
         client = clientList[0];
         logIn->logInSuccess(client);
+        break;
     }
-    else if (signal == QString::number(LOGINF)) //登录失败
+    case LOGINF:
     {
         logIn->logInFail();
+        break;
     }
-    else if (signal == QString::number(SIGNIN)) //注册成功
+    case SIGNIN:
     {
         QList<Client*> clientList = ObjectToJson::parseClient(message);
         client = clientList[0];
         signIn->signInSuccess(client);
+        break;
     }
-    else if (signal == QString::number(SIGNINF))    //注册失败
+    case SIGNINF:
     {
         signIn->signInFail();
+        break;
+    }
     }
 }

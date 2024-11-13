@@ -51,7 +51,7 @@ void LogIn::on_loginbtn_clicked()
     ObjectToJson::integrateClientList(message, clientList);
     ObjectToJson::addSignal(message, QString::number(LOGIN));    //登录请求
     QByteArray array = ObjectToJson::changeJson(message);
-    emit sendToLogIn(array);
+    emit sigSendToLogIn(array);
     qDebug() << "[login] send to login";
 }
 
@@ -61,7 +61,7 @@ void LogIn::logInSuccess(Client* client)
     this->hide();
     ui->lineName->clear();
     ui->linePassWord->clear();
-    emit backToMain(client);
+    emit sigBackToMain(client);
 }
 
 void LogIn::logInFail()
@@ -89,13 +89,13 @@ void LogIn::unconnected()
 void LogIn::on_signBtn_clicked()
 {
     this->hide();
-    emit forwardToSignIn();
+    emit sigForwardToSignIn();
 }
 
 void LogIn::on_chatBtn_clicked()
 {
     this->hide();
-    emit forwardToChatRoom();
+    emit sigForwardToChatRoom();
 }
 
 void LogIn::on_forgetBtn_clicked()

@@ -42,7 +42,7 @@ void ChatRoom::on_returnBtn_clicked()
     this->hide();
     ui->textChat->clear();
     ui->textEdit->clear();
-    emit returnToLogIn();
+    emit sigReturnToLogIn();
 }
 
 bool ChatRoom::eventFilter(QObject *target, QEvent *event)

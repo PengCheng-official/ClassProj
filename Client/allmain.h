@@ -8,7 +8,6 @@
 #include "objects.h"
 #include "objecttojson.h"
 #include "statement.h"
-#include "tcpsocket.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
@@ -24,7 +23,7 @@ class Allmain : public QWidget
 private:
     Ui::Allmain *ui;
     QList<Client*> ClientList;
-    TcpSocket *socket;
+    QTcpSocket *socket;
     LogIn *logIn;
     SignIn *signIn;
     ChatRoom *chatRoom;
@@ -43,10 +42,9 @@ protected:
     void dealMessage(QByteArray message);
 
 private slots:
-    void sendToServer(QByteArray array);
-
-    void on_readyRead();
-    void on_stateChanged(QAbstractSocket::SocketState socketState);
+    void onSendToServer(QByteArray array);
+    void onReadyRead();
+    void onStateChanged(QAbstractSocket::SocketState socketState);
 
 
 };

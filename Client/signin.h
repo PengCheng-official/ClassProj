@@ -9,7 +9,6 @@
 #include "objects.h"
 #include "objecttojson.h"
 #include "statement.h"
-#include "tcpsocket.h"
 
 class TcpSocket;
 
@@ -29,10 +28,6 @@ public:
 
     void signInFail();
 
-private slots:
-    void on_createBtn_clicked();
-    void on_returnLogBtn_clicked();
-
 private:
     Ui::SignIn* ui;
     Client *client;
@@ -45,10 +40,14 @@ protected:
     //鼠标释放
     void mouseReleaseEvent(QMouseEvent* event);
 
+private slots:
+    void on_createBtn_clicked();
+    void on_returnLogBtn_clicked();
+
 signals:
-    void sendToSignIn(QByteArray array);
-    void returnToLogIn();
-    void signInSuccessToLogIn(Client* cClient);
+    void sigSendToSignIn(QByteArray array);
+    void sigSignInSuccessToLogIn(Client* cClient);
+    void sigReturnToLogIn();
 };
 
 #endif // SIGNIN_H

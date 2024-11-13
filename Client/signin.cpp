@@ -61,7 +61,7 @@ void SignIn::on_createBtn_clicked()
     ObjectToJson::integrateClientList(message, clientList);
     ObjectToJson::addSignal(message, QString::number(SIGNIN));
     QByteArray array =ObjectToJson::changeJson(message);
-    emit sendToSignIn(array);
+    emit sigSendToSignIn(array);
     qDebug() << "[signin] send to sign in";
 }
 
@@ -75,7 +75,7 @@ void SignIn::signInSuccess(Client *cClient)
     ui->PhoneNumEdit->clear();
     ui->EmailEdit->clear();
     ui->AddrEdit->clear();
-    emit signInSuccessToLogIn(client);
+    emit sigSignInSuccessToLogIn(client);
 }
 
 void SignIn::signInFail()
@@ -88,7 +88,7 @@ void SignIn::signInFail()
 void SignIn::on_returnLogBtn_clicked()
 {
     this->hide();
-    emit returnToLogIn();
+    emit sigReturnToLogIn();
 }
 
 void SignIn::mousePressEvent(QMouseEvent *event)

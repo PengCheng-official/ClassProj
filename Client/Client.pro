@@ -24,8 +24,7 @@ SOURCES += \
     allmain.cpp \
     objects.cpp \
     objecttojson.cpp \
-    signin.cpp \
-    tcpsocket.cpp
+    signin.cpp
 
 HEADERS += \
     allmain.h \
@@ -34,8 +33,7 @@ HEADERS += \
     objects.h \
     objecttojson.h \
     signin.h \
-    statement.h \
-    tcpsocket.h
+    statement.h
 
 FORMS += \
     allmain.ui \

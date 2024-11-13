@@ -14,7 +14,6 @@
 #include "chatroom.h"
 #include "objecttojson.h"
 #include "statement.h"
-#include "tcpsocket.h"
 
 class TcpSocket;
 class SignIn;
@@ -42,15 +41,6 @@ public:
 
     void unconnected();
 
-private slots:
-    void on_loginbtn_clicked();
-
-    void on_signBtn_clicked();
-
-    void on_forgetBtn_clicked();
-
-    void on_chatBtn_clicked();
-
 private:
     Ui::LogIn* ui;
     QPoint last;
@@ -62,11 +52,20 @@ protected:
     //鼠标释放
     void mouseReleaseEvent(QMouseEvent* event);
 
+private slots:
+    void on_loginbtn_clicked();
+
+    void on_signBtn_clicked();
+
+    void on_forgetBtn_clicked();
+
+    void on_chatBtn_clicked();
+
 signals:
-    void sendToLogIn(QByteArray array);
-    void backToMain(Client* client);
-    void forwardToSignIn();
-    void forwardToChatRoom();
+    void sigSendToLogIn(QByteArray array);
+    void sigBackToMain(Client* client);
+    void sigForwardToSignIn();
+    void sigForwardToChatRoom();
 };
 
 #endif // LOGIN_H

@@ -51,23 +51,20 @@ protected:
     QString sha256Hash(const QString &data, const QString &salt);
     //生成SHA-256哈希加密算法
 
-
-public slots:
-    void receiveMessage();
-    //socket接受信息
-
-    void sendMessage(QTcpSocket* socket, const QByteArray &array);
-    //socket发送信息
-
     void dealMessage(QTcpSocket* socket, QByteArray &message, size_t threadName);
     //服务端处理socket通讯
 
+public slots:
+    void on_sendToClient(QTcpSocket* socket, const QByteArray &array);
+    //socket发送信息
+
+
 private slots:
-    void on_newConnection();
+    void onNewConnection();
     //系统函数的重载，在新连接时自动调用
 
 signals:
-    void sendToClient(QTcpSocket* socket, const QByteArray &array);
+    void sigSendToClient(QTcpSocket* socket, const QByteArray &array);
 
 };
 #endif // ALLMAIN_H
