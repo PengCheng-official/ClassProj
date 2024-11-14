@@ -1,8 +1,8 @@
 ﻿#include "objecttojson.h"
 
 int ObjectToJson::number = 0;
+int ObjectToJson::id = 0;
 QString ObjectToJson::string  = nullptr;
-QString ObjectToJson::id = 0;
 QString ObjectToJson::passage = nullptr;
 ObjectToJson::ObjectToJson()
 {

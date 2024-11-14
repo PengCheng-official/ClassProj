@@ -9,15 +9,17 @@
 #include "objecttojson.h"
 #include "statement.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class Allmain; }
-QT_END_NAMESPACE
+#include "ElaWindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
 QT_END_NAMESPACE
 
-class Allmain : public QWidget
+QT_BEGIN_NAMESPACE
+namespace Ui { class Allmain; }
+QT_END_NAMESPACE
+
+class Allmain : public ElaWindow
 {
     Q_OBJECT
 private:

@@ -33,8 +33,8 @@ public:
     static void parseString(QByteArray object);
     static QByteArray changeJson(QJsonObject& object);
     static int number;
+    static int id;
     static QString string;
-    static QString id;
     static QString passage;
 };
 

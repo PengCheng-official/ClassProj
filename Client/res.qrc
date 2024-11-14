@@ -5,4 +5,8 @@
         <file>bin/images/btn_min_h.png</file>
         <file>bin/images/btn_min_n.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>include/Image/icon.png</file>
+        <file>resource/login_background.jpg</file>
+    </qresource>
 </RCC>

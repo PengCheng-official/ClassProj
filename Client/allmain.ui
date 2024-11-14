@@ -13,16 +13,6 @@
   <property name="windowTitle">
    <string>Allmain</string>
   </property>
-  <widget class="QTextBrowser" name="testHello">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>50</y>
-     <width>256</width>
-     <height>181</height>
-    </rect>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

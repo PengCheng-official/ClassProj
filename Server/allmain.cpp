@@ -2,16 +2,17 @@
 #include "ui_allmain.h"
 
 Allmain::Allmain(QWidget *parent)
-    : QWidget(parent)
+    : ElaWindow(parent)
     , ui(new Ui::Allmain)
 {
     ui->setupUi(this);
+    setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
+    setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
+    setWindowIcon(QIcon(":/include/Image/icon.jpg"));
 
     threadPool = new ThreadPool(1024);
-
     server = new QTcpServer;
     connect(server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
-
     startToListen();
 }
 
@@ -137,10 +138,11 @@ void Allmain::onNewConnection()
 
 void Allmain::startToListen()
 {
+    qDebug() << "[server] start to listening...";
     QString IP = "127.0.0.1";
     int port = 23333;
     server->listen(QHostAddress(IP), port);
-    qDebug() << "[server] listening ...";
+    qDebug() << "[server] listening...";
 }
 
 QString Allmain::generateRandomSalt(int length)

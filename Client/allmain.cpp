@@ -2,11 +2,14 @@
 #include "ui_allmain.h"
 
 Allmain::Allmain(QWidget *parent)
-    : QWidget(parent)
+    : ElaWindow(parent)
     , ui(new Ui::Allmain)
 {
     ui->setupUi(this);
-//    this->setWindowFlag(Qt::FramelessWindowHint);
+    setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
+    setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
+    setWindowIcon(QIcon(":/include/Image/icon.jpg"));
+
     logIn = new LogIn();
     signIn = new SignIn();
     chatRoom = new ChatRoom();
@@ -51,7 +54,6 @@ void Allmain::initAllMain()
 void Allmain::initAllMain(Client *cClient)
 {
     client = cClient;
-    ui->testHello->setText(client->getClientName());
 }
 
 void Allmain::connectToServer()
@@ -71,8 +73,8 @@ void Allmain::connectToServer()
         qDebug() << "[socket] disconnected";
         socket->deleteLater();
     });
-    connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), [=](){
-        qDebug() << "[socket] error:" << socket->errorString();
+    connect(socket, &QTcpSocket::errorOccurred, [=](QAbstractSocket::SocketError socketError) {
+        qDebug() << "[socket] error: " << socketError;
     });
 }
 

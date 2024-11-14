@@ -19,11 +19,13 @@
 #include "Database/clientmapper.h"
 #include "statement.h"
 
+#include "ElaWindow.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
 QT_END_NAMESPACE
 
-class Allmain : public QWidget
+class Allmain : public ElaWindow
 {
     Q_OBJECT
 public:
