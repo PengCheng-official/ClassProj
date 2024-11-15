@@ -8,7 +8,7 @@ Allmain::Allmain(QWidget *parent)
     ui->setupUi(this);
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
-    setWindowIcon(QIcon(":/include/Image/icon.jpg"));
+    setWindowIcon(QIcon(":/Resource/icon.png"));
 
     threadPool = new ThreadPool(1024);
     server = new QTcpServer;
@@ -37,11 +37,11 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
         qDebug() << QString("[thread_%1]|[database] Failed to connect to db: ").arg(threadName) << db.lastError();
         return;
     }
-    qDebug() << QString("[thread_%1]|[database] Connected to MySql").arg(threadName);
+    qDebug() << QString("[thread_%1]|[database] Connected to MySql!").arg(threadName);
 
     Client* client = new Client;
     int signal = ObjectToJson::parseSignal(message).toInt();
-    qDebug() << signal;
+    qDebug() << "signal: " << signal;
     switch(signal) {
     case LOGIN:
     {
@@ -120,13 +120,10 @@ void Allmain::onNewConnection()
         qDebug() << "[server] receive message...";
         //接受到通讯请求，启动新的线程处理请求
         //QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
-        connect(this, &Allmain::sigSendToClient, this, &Allmain::on_sendToClient);
-
         threadPool->enqueue([this, socket]{
             qDebug() << "[threadPool] create a new thread";
             while(socket->bytesAvailable() > 0)
             {
-                qDebug() << "[server] message available...";
                 QByteArray datagram;
                 datagram = socket->readAll();
                 dealMessage(socket, datagram, this->threadPool->getThreadName());
@@ -138,10 +135,10 @@ void Allmain::onNewConnection()
 
 void Allmain::startToListen()
 {
-    qDebug() << "[server] start to listening...";
     QString IP = "127.0.0.1";
     int port = 23333;
     server->listen(QHostAddress(IP), port);
+    connect(this, &Allmain::sigSendToClient, this, &Allmain::on_sendToClient);
     qDebug() << "[server] listening...";
 }
 
@@ -166,5 +163,6 @@ void Allmain::on_sendToClient(QTcpSocket *socket, const QByteArray &array)
 {
     // 子线程外，传输通讯
     socket->write(array);
+    qDebug() << "[server] send to client: " << ObjectToJson::parseSignal(array).toInt();
 }
 

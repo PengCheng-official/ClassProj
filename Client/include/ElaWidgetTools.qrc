@@ -5,6 +5,13 @@
         <file>Image/Moon.jpg</file>
         <file>Image/noise.png</file>
         <file>Image/MicaBase.png</file>
+        <file>Image/icon.png</file>
+    </qresource>
+    <qresource prefix="/">
         <file>Resource/login_background.jpg</file>
+        <file>Resource/allmain_icon.png</file>
+        <file>Resource/chatroom_icon.png</file>
+        <file>Resource/login_icon.png</file>
+        <file>Resource/signin_icon.png</file>
     </qresource>
 </RCC>

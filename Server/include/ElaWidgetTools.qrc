@@ -4,6 +4,10 @@
         <file>Image/Cirno.jpg</file>
         <file>Image/Moon.jpg</file>
         <file>Image/noise.png</file>
-	<file>Image/MicaBase.png</file>
+        <file>Image/MicaBase.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>Resource/icon.jpg</file>
+        <file>Resource/icon.png</file>
     </qresource>
 </RCC>

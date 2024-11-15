@@ -8,7 +8,7 @@ Allmain::Allmain(QWidget *parent)
     ui->setupUi(this);
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
-    setWindowIcon(QIcon(":/include/Image/icon.jpg"));
+    setWindowIcon(QIcon(":/Resource/allmain_icon.png"));
 
     logIn = new LogIn();
     signIn = new SignIn();
@@ -22,6 +22,7 @@ Allmain::Allmain(QWidget *parent)
         initAllMain(cClient);
         logIn->hide();
         this->show();
+        setWindowTitle(QString("%1 的主页").arg(client->getClientName()));
     });
 }
 
@@ -89,9 +90,19 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
     qDebug() << "[socket] state changed: " << socketState;
     if (socketState == QAbstractSocket::UnconnectedState)
     {
-        this->hide();
-        logIn->show();
-        logIn->unconnected();
+        QWidget *currentWidget = qApp->activeWindow();
+        if (currentWidget == logIn)
+        {
+            logIn->unconnected();
+        }
+        else if (currentWidget == signIn)
+        {
+            signIn->unconnected();
+        }
+        else if (currentWidget == this)
+        {
+//            this->unconnected();
+        }
     }
 }
 
@@ -109,7 +120,7 @@ void Allmain::onReadyRead()
 void Allmain::dealMessage(QByteArray message)
 {
     int signal = ObjectToJson::parseSignal(message).toInt();
-    qDebug() << signal;
+    qDebug() << "signal: " << signal;
     switch(signal) {
     case LOGIN:
     {

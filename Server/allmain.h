@@ -44,9 +44,6 @@ protected:
     void startToListen();
     //开始监听连接
 
-    void connectToDB();
-    //连接数据库
-
     QString generateRandomSalt(int length);
     //生成指定长度的随机盐值
 

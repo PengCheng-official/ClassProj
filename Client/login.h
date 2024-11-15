@@ -2,6 +2,7 @@
 #define LOGIN_H
 
 // 登录界面
+#include <iostream>
 #include <QObject>
 #include <QTcpSocket>
 #include <QHostAddress>
@@ -12,15 +13,20 @@
 #include "statement.h"
 
 #include <QWidget>
+#include "ElaWidget.h"
+#include "Def.h"
+#include "stdafx.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <ElaScrollPage.h>
 #include <QPixmap>
-#include "ElaWidget.h"
+#include <QGraphicsOpacityEffect>
 #include "ElaLineEdit.h"
 #include "ElaText.h"
 #include "ElaPushButton.h"
 #include "ElaImageCard.h"
+#include "ElaTheme.h"
+#include "ElaProgressBar.h"
 
 class SignIn;
 class ChatRoom;
@@ -47,7 +53,6 @@ public:
 
 private:
     Ui::LogIn* ui;
-    QPoint last;
     QLabel *upScreen;
     ElaLineEdit *lineName;
     ElaLineEdit *linePassWord;
@@ -56,6 +61,7 @@ private:
     ElaPushButton *signBtn;
     ElaPushButton *chatBtn;
     QFrame *line;
+    QVBoxLayout *mainLayout;
 
 private slots:
     void onLoginBtnClicked();

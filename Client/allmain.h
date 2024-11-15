@@ -1,6 +1,7 @@
 #ifndef ALLMAIN_H
 #define ALLMAIN_H
 
+#include <iostream>
 #include <QWidget>
 #include "login.h"
 #include "signin.h"
@@ -10,6 +11,7 @@
 #include "statement.h"
 
 #include "ElaWindow.h"
+#include "ElaContentDialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
@@ -30,6 +32,7 @@ private:
     SignIn *signIn;
     ChatRoom *chatRoom;
     Client* client;
+    ElaContentDialog *unconnectDialog;
 
 public:
     Allmain(QWidget *parent = nullptr);

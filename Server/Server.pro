@@ -48,7 +48,6 @@ FORMS += \
     chatroom.ui
 
 RESOURCES += \
-    res.qrc \
     include/ElaWidgetTools.qrc
 
 # Default rules for deployment.

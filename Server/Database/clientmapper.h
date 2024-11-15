@@ -13,7 +13,7 @@ public:
     ClientMapper(QSqlDatabase &database);
 
 public:
-    Client* getClient(QSqlQuery query);
+    Client* getClient(QSqlQuery &query);
 
     QList<Client *> select(QString name);
     //通过用户名查找

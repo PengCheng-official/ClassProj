@@ -5,7 +5,7 @@ ClientMapper::ClientMapper(QSqlDatabase &database)
 {
 }
 
-Client* ClientMapper::getClient(QSqlQuery query)
+Client* ClientMapper::getClient(QSqlQuery &query)
 {
     Client* client = new Client();
     client->setClientId(query.value(0).toInt());
@@ -22,7 +22,7 @@ Client* ClientMapper::getClient(QSqlQuery query)
 
 QList<Client *> ClientMapper::select(QString name)
 {
-    qDebug() << "[database] start to db select ...";
+    qDebug() << "[database] start select...";
     QSqlQuery query(db);
     query.prepare("SELECT * FROM client WHERE client_name = :name");
     query.bindValue(":name", name);
@@ -32,12 +32,13 @@ QList<Client *> ClientMapper::select(QString name)
     while(query.next()) {
         ret.push_back(getClient(query));
     }
+    query.finish();
     return ret;
 }
 
 QList<Client *> ClientMapper::select(int id)
 {
-    qDebug() << "[database] start to db select ...";
+    qDebug() << "[database] start select...";
     QSqlQuery query(db);
     query.prepare("SELECT * FROM client WHERE client_id = :id");
     query.bindValue(":id", id);
@@ -47,6 +48,7 @@ QList<Client *> ClientMapper::select(int id)
     while(query.next()) {
         ret.push_back(getClient(query));
     }
+    query.finish();
     return ret;
 }
 
@@ -63,5 +65,6 @@ void ClientMapper::insert(Client *client)
     query.bindValue(":phone", client->getClientPhone());
     query.bindValue(":email", client->getClientEmail());
     query.exec();
+    query.finish();
 }
 

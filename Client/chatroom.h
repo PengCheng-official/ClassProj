@@ -2,6 +2,7 @@
 #define CHATROOM_H
 
 // 联系客服界面
+#include <iostream>
 #include <QWidget>
 #include <QObject>
 #include <QMouseEvent>
