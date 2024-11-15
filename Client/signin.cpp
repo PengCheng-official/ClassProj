@@ -29,8 +29,7 @@ SignIn::SignIn(QWidget *parent) :
     NameEdit->setPlaceholderText("请输入账号，必填");
 
     NameError = new ElaText(this);
-    NameError->setFixedHeight(20);
-    NameError->setFixedWidth(270);
+    NameError->setFixedSize(270, 20);
     NameError->setAlignment(Qt::AlignHCenter);
 
     ElaToolButton *passwordIcon = new ElaToolButton(this);
@@ -39,16 +38,14 @@ SignIn::SignIn(QWidget *parent) :
     passwordIcon->setFixedSize(25, 45);
 
     PasswordEdit = new ElaLineEdit(this);
-    PasswordEdit->setFixedHeight(45);
-    PasswordEdit->setFixedWidth(270);
+    PasswordEdit->setFixedSize(270, 45);
     PasswordEdit->setAlignment(Qt::AlignHCenter);
     PasswordEdit->setEchoMode(QLineEdit::Password);
     PasswordEdit->setStyleSheet("font-size: 15px;");
     PasswordEdit->setPlaceholderText("请输入密码，必填");
 
     PasswordError = new ElaText(this);
-    PasswordError->setFixedHeight(20);
-    PasswordError->setFixedWidth(270);
+    PasswordError->setFixedSize(270, 20);
     PasswordError->setAlignment(Qt::AlignHCenter);
 
     ElaToolButton *phoneIcon = new ElaToolButton(this);
@@ -57,8 +54,7 @@ SignIn::SignIn(QWidget *parent) :
     phoneIcon->setFixedSize(25, 45);
 
     PhoneNumEdit = new ElaLineEdit(this);
-    PhoneNumEdit->setFixedHeight(45);
-    PhoneNumEdit->setFixedWidth(270);
+    PhoneNumEdit->setFixedSize(270, 45);
     PhoneNumEdit->setAlignment(Qt::AlignHCenter);
     PhoneNumEdit->setStyleSheet("font-size: 15px;");
     PhoneNumEdit->setPlaceholderText("请输入手机号");
@@ -69,8 +65,7 @@ SignIn::SignIn(QWidget *parent) :
     emailIcon->setFixedSize(25, 45);
 
     EmailEdit = new ElaLineEdit(this);
-    EmailEdit->setFixedHeight(45);
-    EmailEdit->setFixedWidth(270);
+    EmailEdit->setFixedSize(270, 45);
     EmailEdit->setAlignment(Qt::AlignHCenter);
     EmailEdit->setStyleSheet("font-size: 15px;");
     EmailEdit->setPlaceholderText("请输入邮箱");
@@ -81,31 +76,27 @@ SignIn::SignIn(QWidget *parent) :
     addrIcon->setFixedSize(25, 45);
 
     AddrEdit = new ElaLineEdit(this);
-    AddrEdit->setFixedHeight(45);
-    AddrEdit->setFixedWidth(270);
+    AddrEdit->setFixedSize(270, 45);
     AddrEdit->setAlignment(Qt::AlignHCenter);
     AddrEdit->setStyleSheet("font-size: 15px;");
     AddrEdit->setPlaceholderText("请输入地址");
 
     AllError = new ElaText(this);
-    AllError->setFixedHeight(20);
-    AllError->setFixedWidth(270);
+    AllError->setFixedSize(270, 20);
     AllError->setAlignment(Qt::AlignHCenter);
 
     //注册按钮设计
     createBtn = new ElaPushButton("注册账号", this);
-    createBtn->setFixedHeight(45);
+    createBtn->setFixedSize(150, 45);
     createBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
     createBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
     createBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
     createBtn->setLightTextColor(Qt::white);
-    createBtn->setFixedWidth(150);
     connect(createBtn, &QPushButton::clicked, this, &SignIn::onCreateBtnClicked);
 
     //返回登录按钮设计
     returnLogBtn = new ElaPushButton("返回登录", this);
-    returnLogBtn->setFixedHeight(45);
-    returnLogBtn->setFixedWidth(150);
+    returnLogBtn->setFixedSize(150, 45);
     connect(returnLogBtn, &QPushButton::clicked, this, &SignIn::onReturnLogBtnClicked);
 
     NameError->setStyleSheet("background-color: transparent; color: red; font-size: 14px;");

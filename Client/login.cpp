@@ -21,23 +21,20 @@ LogIn::LogIn(QWidget *parent) :
     upScreen->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     lineName = new ElaLineEdit(this);
-    lineName->setFixedHeight(45);
-    lineName->setFixedWidth(270);
+    lineName->setFixedSize(270, 45);
     lineName->setAlignment(Qt::AlignHCenter);
     lineName->setStyleSheet("font-size: 15px;");
     lineName->setPlaceholderText("请输入账号");
 
     linePassWord = new ElaLineEdit(this);
-    linePassWord->setFixedHeight(45);
-    linePassWord->setFixedWidth(270);
+    linePassWord->setFixedSize(270, 45);
     linePassWord->setAlignment(Qt::AlignHCenter);
     linePassWord->setEchoMode(QLineEdit::Password);
     linePassWord->setStyleSheet("font-size: 15px;");
     linePassWord->setPlaceholderText("请输入密码");
 
     wrongEdit2 = new ElaText(this);
-    wrongEdit2->setFixedHeight(20);
-    wrongEdit2->setFixedWidth(270);
+    wrongEdit2->setFixedSize(270, 20);
     wrongEdit2->setAlignment(Qt::AlignHCenter);
     connect(lineName,&QLineEdit::textChanged,[=](){
        wrongEdit2->setText("");
@@ -46,8 +43,7 @@ LogIn::LogIn(QWidget *parent) :
 
     //登录按钮设计
     loginBtn = new ElaPushButton("登录", this);
-    loginBtn->setFixedHeight(50);
-    loginBtn->setFixedWidth(270);
+    loginBtn->setFixedSize(270, 50);
     loginBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
     loginBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
     loginBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
@@ -57,14 +53,12 @@ LogIn::LogIn(QWidget *parent) :
 
     //注册按钮设计
     signBtn = new ElaPushButton("注册账号", this);
-    signBtn->setFixedHeight(35);
-    signBtn->setFixedWidth(100);
+    signBtn->setFixedSize(100, 35);
     connect(signBtn, &QPushButton::clicked, this, &LogIn::onSignBtnClicked);
 
     //联系客服按钮设计
     chatBtn = new ElaPushButton("联系客服", this);
-    chatBtn->setFixedHeight(35);
-    chatBtn->setFixedWidth(100);
+    chatBtn->setFixedSize(100, 35);
     connect(chatBtn, &QPushButton::clicked, this, &LogIn::onChatBtnClicked);
 
     line = new QFrame(this);
@@ -92,9 +86,9 @@ LogIn::LogIn(QWidget *parent) :
 
     QHBoxLayout *signAndchat = new QHBoxLayout();
     signAndchat->addStretch();
-    signAndchat->addWidget(signBtn);
-    signAndchat->addWidget(line);
     signAndchat->addWidget(chatBtn);
+    signAndchat->addWidget(line);
+    signAndchat->addWidget(signBtn);
     signAndchat->addStretch();
 
     mainLayout->addStretch();

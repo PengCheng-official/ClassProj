@@ -25,6 +25,7 @@ LIBS += -L$$PWD/lib
 LIBS += -lelawidgettools
 
 SOURCES += \
+    chatmessage/qnchatmessage.cpp \
     chatroom.cpp \
     login.cpp \
     main.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
 
 HEADERS += \
     allmain.h \
+    chatmessage/qnchatmessage.h \
     chatroom.h \
     login.h \
     objects.h \

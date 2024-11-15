@@ -12,13 +12,23 @@
 #include "objecttojson.h"
 #include "statement.h"
 
+#include "ElaWidget.h"
+#include "Def.h"
+#include "stdafx.h"
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include "ElaPushButton.h"
+#include "ElaPlainTextEdit.h"
+#include "ElaListView.h"
+
 class TcpSocket;
 
 namespace Ui {
 class ChatRoom;
 }
 
-class ChatRoom : public QWidget
+class ChatRoom : public ElaWidget
 {
     Q_OBJECT
 
@@ -26,11 +36,16 @@ public:
     explicit ChatRoom(QWidget *parent = nullptr);
     ~ChatRoom();
 
-    Client *getClient() const;
-    void setClient(Client *value);
+private:
+    Ui::ChatRoom *ui;
+//    ElaListView *listView;
+//    ElaWidget *editContainer;
+//    ElaPlainTextEdit *textEdit;
+//    ElaPushButton *sendBtn;
+//    ElaPushButton *returnBtn;
+//    QGridLayout *mainLayout;
+//    QGridLayout *editLayout;
 
-    qintptr getSockeDiscriptor() const;
-    void setSockeDiscriptor(const qintptr &value);
 
 private:
     void receiveMessage();
@@ -41,22 +56,8 @@ private:
 
     void ChatMessageSend();
 
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
-
-
-private:
-    Ui::ChatRoom *ui;
-    QTcpSocket *socket;
-    Client *client;
-    QPoint diff_pos;
-    QPoint window_pos;
-    QPoint mouse_pos;
-    qintptr sockeDiscriptor;
 
 private slots:
-    bool eventFilter(QObject *target, QEvent *event) override;
-
     void on_returnBtn_clicked();
 
 signals:
