@@ -68,6 +68,7 @@ LogIn::LogIn(QWidget *parent) :
     line->setStyleSheet("background-color: black;");
 
     mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(upScreen);
     mainLayout->addSpacing(20);
 
@@ -93,7 +94,7 @@ LogIn::LogIn(QWidget *parent) :
 
     mainLayout->addStretch();
     mainLayout->addLayout(signAndchat);
-    mainLayout->addSpacing(5);
+    mainLayout->addSpacing(10);
 }
 
 LogIn::~LogIn()
@@ -169,6 +170,5 @@ void LogIn::onSignBtnClicked()
 
 void LogIn::onChatBtnClicked()
 {
-    this->hide();
     emit sigForwardToChatRoom();
 }

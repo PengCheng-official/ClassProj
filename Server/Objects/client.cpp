@@ -1,17 +1,19 @@
 #include "objects.h"
 
+
 Client::Client():clientId(0),clientBought(0)
 {
 
 }
 
-Client::Client(QString clientName, int clientId, QString clientPhone, QString clientEmail, QString clientPwd, int clientBought, QString clientAddr, QString clientGender)
+Client::Client(QString clientName, int clientId, QString clientPhone, QString clientEmail, QString clientPwd, QString clientSalt, int clientBought, QString clientAddr, QString clientGender)
 {
     this->clientName = clientName;
     this->clientId = clientId;
     this->clientPhone = clientPhone;
     this->clientEmail = clientEmail;
     this->clientPwd = clientPwd;
+    this->clientSalt = clientSalt;
     this->clientBought = clientBought;
     this->clientGender = clientGender;
     this->clientAddr = clientAddr;
@@ -52,6 +54,11 @@ QString Client::getClientPwd() const
     return clientPwd;
 }
 
+QString Client::getClientSalt() const
+{
+    return clientSalt;
+}
+
 int Client::getClientBought() const
 {
     return clientBought;
@@ -82,6 +89,11 @@ void Client::setClientPwd(QString clientPwd)
     this->clientPwd = clientPwd;
 }
 
+void Client::setClientSalt(QString clientSalt)
+{
+    this->clientSalt = clientSalt;
+}
+
 void Client::setClientAddr(QString clientAddr)
 {
     this->clientAddr = clientAddr;
@@ -96,4 +108,3 @@ void Client::setClientGender(QString clientGender)
 {
     this->clientGender = clientGender;
 }
-

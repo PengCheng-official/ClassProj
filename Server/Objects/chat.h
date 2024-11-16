@@ -1,0 +1,32 @@
+#ifndef CHAT_H
+#define CHAT_H
+
+
+#include <QString>
+#include <QTime>
+#include <QDateTime>
+
+class Chat
+{
+private:
+    int clientId;
+    QString chatText;
+    int chatIsserver;
+    QString chatTime;
+
+public:
+    Chat();
+    Chat(int cClientId, QString cChatText, int cChatIsserver, QString cChatTime);
+
+    void setClientId(int id);
+    void setChatText(QString text);
+    void setChatIsserver(int isserver);
+    void setChatTime(QString time);
+
+    int getClientId() const;
+    QString getChatText() const;
+    int getChatIsserver() const;
+    QString getChatTime() const;
+};
+
+#endif // CHAT_H

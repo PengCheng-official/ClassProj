@@ -1,5 +1,6 @@
 #include "objects.h"
 
+
 Client::Client():clientId(0),clientBought(0)
 {
 
@@ -107,4 +108,3 @@ void Client::setClientGender(QString clientGender)
 {
     this->clientGender = clientGender;
 }
-

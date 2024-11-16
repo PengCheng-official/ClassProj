@@ -14,10 +14,12 @@
 #include <QThread>
 #include <QThreadPool>
 #include "ThreadPool.h"
-#include "objects.h"
+#include "Objects/objects.h"
 #include "objecttojson.h"
-#include "Database/clientmapper.h"
+#include "Dao/clientmapper.h"
+#include "Dao/chatmapper.h"
 #include "statement.h"
+#include <QTime>
 
 #include "ElaWindow.h"
 
@@ -36,13 +38,16 @@ private:
     Ui::Allmain *ui;
     QTcpServer *server;
     QList<QTcpSocket *> sockets;
-//    QSqlDatabase db;
+    QSqlDatabase mdb;
     QHash<qintptr, QTcpSocket*> clients;
     ThreadPool *threadPool;
 
 protected:
     void startToListen();
     //开始监听连接
+
+    void connectToDB();
+    //连接数据库
 
     QString generateRandomSalt(int length);
     //生成指定长度的随机盐值
@@ -56,7 +61,6 @@ protected:
 public slots:
     void on_sendToClient(QTcpSocket* socket, const QByteArray &array);
     //socket发送信息
-
 
 private slots:
     void onNewConnection();

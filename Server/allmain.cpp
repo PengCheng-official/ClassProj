@@ -130,7 +130,20 @@ void Allmain::onNewConnection()
             }
         });
     });
-    sockets.append(sockets);
+    sockets.append(socket);
+
+    QList<Chat *> chatList;
+    Chat* chat = new Chat(1, "欢迎来到恶魔果实商店~", 1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    chatList.append(chat);
+
+    QJsonObject message;
+    ObjectToJson::integrateChatList(message, chatList);
+    ObjectToJson::addSignal(message, QString::number(SENDMSG));    //向 Client 发送信息
+    QByteArray array = ObjectToJson::changeJson(message);
+
+    ChatMapper *chatMapper = new ChatMapper(mdb);
+    chatMapper->insert(chat);
+    qDebug() << "[server] send to client: " << "欢迎来到恶魔果实商店~";
 }
 
 void Allmain::startToListen()
@@ -140,6 +153,21 @@ void Allmain::startToListen()
     server->listen(QHostAddress(IP), port);
     connect(this, &Allmain::sigSendToClient, this, &Allmain::on_sendToClient);
     qDebug() << "[server] listening...";
+}
+
+void Allmain::connectToDB()
+{
+    mdb = QSqlDatabase::addDatabase("QODBC", "main");
+    mdb.setHostName("localhost");
+    mdb.setPort(3306);
+    mdb.setDatabaseName("MySql");
+    mdb.setUserName("root");
+    mdb.setPassword("pengcheng_050210");
+    if(!mdb.open()) {
+        qDebug() << "[database] Failed to connect to db: " << mdb.lastError();
+        return;
+    }
+    qDebug() << "[database] Connected to MySql";
 }
 
 QString Allmain::generateRandomSalt(int length)

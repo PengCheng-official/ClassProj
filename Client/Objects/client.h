@@ -1,7 +1,6 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
-// 数据类
 
 #include <QString>
 #include <QDateTime>
@@ -17,6 +16,7 @@ private:
     int clientBought;
     QString clientAddr;
     QString clientGender;
+    QString clientSalt;
 
 public:
     Client();
@@ -26,6 +26,7 @@ public:
             QString clientPhone,
             QString clientEmail,
             QString clientPwd,
+            QString clientSalt,
             int clientBought,
             QString clientAddr,
             QString clientGender
@@ -33,6 +34,7 @@ public:
     void setClientId(int clientId);
     void setClientName(QString clientName);
     void setClientPwd(QString clientPwd);
+    void setClientSalt(QString clientSalt);
     void setClientAddr(QString clientAddr);
     void setClientPhone(QString clientPhone);
     void setClientEmail(QString clientEmail);
@@ -41,6 +43,7 @@ public:
 
     int getClientBought() const;
     QString getClientPwd() const;
+    QString getClientSalt() const;
     QString getClientEmail() const;
     QString getClientPhone() const;
     int getClientId() const;
@@ -49,4 +52,4 @@ public:
     QString getClientAddr() const;
 };
 
-#endif // OBJECT_H
+#endif // CLIENT_H

@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QHostAddress>
-#include "objects.h"
+#include "Objects/objects.h"
 #include "objecttojson.h"
 #include "signin.h"
 #include "chatroom.h"

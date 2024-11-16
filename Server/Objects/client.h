@@ -1,7 +1,6 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
-// 数据类
 
 #include <QString>
 #include <QDateTime>
@@ -53,4 +52,4 @@ public:
     QString getClientAddr() const;
 };
 
-#endif // OBJECT_H
+#endif // CLIENT_H

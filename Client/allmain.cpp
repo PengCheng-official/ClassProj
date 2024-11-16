@@ -34,13 +34,16 @@ Allmain::~Allmain()
 void Allmain::initAllMain()
 {
     connect(logIn, &LogIn::sigSendToLogIn, this, &Allmain::onSendToServer);
+    connect(signIn, &SignIn::sigSendToSignIn, this, &Allmain::onSendToServer);
+    connect(chatRoom, &ChatRoom::sigSendToServer, this, &Allmain::onSendToServer);
     connect(logIn, &LogIn::sigForwardToSignIn, [=](){
         signIn->show();
     });
     connect(logIn, &LogIn::sigForwardToChatRoom, [=](){
+        //! 发送请求，得到 admin 的 history。
+        //! initHistory()
         chatRoom->show();
     });
-    connect(signIn, &SignIn::sigSendToSignIn, this, &Allmain::onSendToServer);
     connect(signIn, &SignIn::sigReturnToLogIn, [=](){
         logIn->show();
     });
@@ -103,6 +106,11 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
         {
 //            this->unconnected();
         }
+        else
+        {
+            currentWidget->hide();
+            logIn->unconnected();
+        }
     }
 }
 
@@ -144,6 +152,12 @@ void Allmain::dealMessage(QByteArray message)
     case SIGNINF:
     {
         signIn->signInFail();
+        break;
+    }
+    case SENDMSG:
+    {
+        QString msg = ObjectToJson::parseString(message);
+        chatRoom->receiveMessage(msg);
         break;
     }
     }

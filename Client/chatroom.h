@@ -8,9 +8,11 @@
 #include <QMouseEvent>
 #include <QTcpSocket>
 #include <QHostAddress>
-#include "objects.h"
+#include "Objects/objects.h"
 #include "objecttojson.h"
 #include "statement.h"
+#include <QListWidgetItem>
+#include "chatmessage/qnchatmessage.h"
 
 #include "ElaWidget.h"
 #include "Def.h"
@@ -34,31 +36,28 @@ class ChatRoom : public ElaWidget
 
 public:
     explicit ChatRoom(QWidget *parent = nullptr);
+    explicit ChatRoom(QList<Chat *> &chatList, QWidget *parent = nullptr);
     ~ChatRoom();
+
+    void initHistory(QList<Chat *> &chatList);
+    void dealMessage(QNChatMessage *messageW, QListWidgetItem *item, QString text, QString time, QNChatMessage::User_Type type);
+    void dealMessageTime(QString curMsgTime);
+    void receiveMessage(QString msg);
 
 private:
     Ui::ChatRoom *ui;
-//    ElaListView *listView;
+    ElaListView *listView;
 //    ElaWidget *editContainer;
 //    ElaPlainTextEdit *textEdit;
 //    ElaPushButton *sendBtn;
 //    ElaPushButton *returnBtn;
-//    QGridLayout *mainLayout;
+    QGridLayout *mainLayout;
 //    QGridLayout *editLayout;
-
-
-private:
-    void receiveMessage();
-
-    void dealMessage(QByteArray message);
-
-    void dealMessageTime(QString curMsgTime);
-
-    void ChatMessageSend();
-
 
 private slots:
     void on_returnBtn_clicked();
+
+    void on_sendBtn_clicked();
 
 signals:
     void sigSendToServer(QByteArray array);

@@ -1,13 +1,9 @@
 #ifndef CLIENTMAPPER_H
 #define CLIENTMAPPER_H
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
-#include "objects.h"
+#include "mapper.h"
 
-class ClientMapper
+class ClientMapper : public Mapper
 {
 public:
     ClientMapper(QSqlDatabase &database);
@@ -22,9 +18,6 @@ public:
     //通过id查找
 
     void insert(Client* client);
-
-private:
-    QSqlDatabase &db;
 };
 
 #endif // CLIENTMAPPER_H

@@ -25,21 +25,25 @@ LIBS += -L$$PWD/lib
 LIBS += -lelawidgettools
 
 SOURCES += \
+    Objects/chat.cpp \
+    Objects/client.cpp \
     chatmessage/qnchatmessage.cpp \
     chatroom.cpp \
     login.cpp \
     main.cpp \
     allmain.cpp \
-    objects.cpp \
     objecttojson.cpp \
     signin.cpp
 
 HEADERS += \
+    Objects/chat.h \
+    Objects/client.h \
+    Objects/objects.h \
     allmain.h \
     chatmessage/qnchatmessage.h \
     chatroom.h \
+    client.h \
     login.h \
-    objects.h \
     objecttojson.h \
     signin.h \
     statement.h
