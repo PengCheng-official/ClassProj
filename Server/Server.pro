@@ -26,29 +26,37 @@ LIBS += -L$$PWD/lib
 LIBS += -lelawidgettools
 
 SOURCES += \
-    Dao/chatmapper.cpp \
-    Dao/clientmapper.cpp \
-    Dao/mapper.cpp \
-    Objects/chat.cpp \
-    Objects/client.cpp \
     ThreadPool.cpp \
+    chatmessage/qnchatmessage.cpp \
     chatroom.cpp \
+    dao/chatmapper.cpp \
+    dao/clientmapper.cpp \
+    dao/mapper.cpp \
     main.cpp \
     allmain.cpp \
-    objecttojson.cpp
+    objects/chat.cpp \
+    objects/client.cpp \
+    objecttojson.cpp \
+    ui/basepage.cpp \
+    ui/chatpage.cpp \
+    ui/homepage.cpp
 
 HEADERS += \
-    Dao/clientmapper.h \
-    Dao/chatmapper.h \
-    Dao/mapper.h \
-    Objects/chat.h \
-    Objects/client.h \
-    Objects/objects.h \
     ThreadPool.h \
     allmain.h \
+    chatmessage/qnchatmessage.h \
     chatroom.h \
+    dao/chatmapper.h \
+    dao/clientmapper.h \
+    dao/mapper.h \
+    objects/chat.h \
+    objects/client.h \
+    objects/objects.h \
     objecttojson.h \
-    statement.h
+    statement.h \
+    ui/basepage.h \
+    ui/chatpage.h \
+    ui/homepage.h
 
 FORMS += \
     allmain.ui \

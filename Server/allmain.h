@@ -14,14 +14,16 @@
 #include <QThread>
 #include <QThreadPool>
 #include "ThreadPool.h"
-#include "Objects/objects.h"
+#include "objects/objects.h"
 #include "objecttojson.h"
-#include "Dao/clientmapper.h"
-#include "Dao/chatmapper.h"
+#include "dao/clientmapper.h"
+#include "dao/chatmapper.h"
 #include "statement.h"
 #include <QTime>
 
 #include "ElaWindow.h"
+#include "ui/chatpage.h"
+#include "ui/homepage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
@@ -37,10 +39,17 @@ public:
 private:
     Ui::Allmain *ui;
     QTcpServer *server;
-    QList<QTcpSocket *> sockets;
     QSqlDatabase mdb;
-    QHash<qintptr, QTcpSocket*> clients;
     ThreadPool *threadPool;
+
+    QList<QTcpSocket *> sockets;
+    QList<Client *> clients;
+    QHash<QTcpSocket *, Client *> clientHash;
+    QHash<Client *, QTcpSocket *> socketHash;
+
+    HomePage *_homePage{nullptr};
+    ChatPage *_chatPage{nullptr};
+    QString _chatKey{""};
 
 protected:
     void startToListen();

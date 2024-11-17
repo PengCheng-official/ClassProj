@@ -8,7 +8,7 @@
 #include <QMouseEvent>
 #include <QTcpSocket>
 #include <QHostAddress>
-#include "Objects/objects.h"
+#include "objects/objects.h"
 #include "objecttojson.h"
 #include "statement.h"
 #include <QListWidgetItem>
@@ -23,6 +23,7 @@
 #include "ElaPushButton.h"
 #include "ElaPlainTextEdit.h"
 #include "ElaListView.h"
+#include "ElaTheme.h"
 
 class TcpSocket;
 
@@ -35,10 +36,11 @@ class ChatRoom : public ElaWidget
     Q_OBJECT
 
 public:
-    explicit ChatRoom(Client* cClient = nullptr, QWidget *parent = nullptr);
+    explicit ChatRoom(QWidget *parent = nullptr);
     ~ChatRoom();
 
     void initHistory(QList<Chat *> &chatList);
+    void initClient(Client* cClient);
     void receiveMessage(Chat* chatMsg);
 
 

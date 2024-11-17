@@ -6,7 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
-#include "../Objects/objects.h"
+#include "../objects/objects.h"
 
 class Mapper
 {

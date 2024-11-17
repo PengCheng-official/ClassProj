@@ -6,6 +6,7 @@ Allmain::Allmain(QWidget *parent)
     , ui(new Ui::Allmain)
 {
     ui->setupUi(this);
+    resize(1100, 660);
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
     setWindowIcon(QIcon(":/Resource/icon.png"));
@@ -15,6 +16,32 @@ Allmain::Allmain(QWidget *parent)
     connect(server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
     startToListen();
     connectToDB();
+
+    // 图形界面的初始化
+    _homePage = new HomePage(this);
+    _chatPage = new ChatPage(this);
+    connect(_chatPage, &ChatPage::sigSendToClient, [=](Client* client, QByteArray array){
+        QTcpSocket *socket = socketHash.value(client, nullptr);
+        if (socket != nullptr)
+        {
+            qDebug() << "[server] send to client: signal-" << ObjectToJson::parseSignal(array).toInt();
+            socket->write(array);
+        }
+    });
+
+    addPageNode("首页", _homePage, ElaIconType::House);
+    addFooterNode("联系卖家", _chatPage, _chatKey, 0, ElaIconType::Comments);
+
+    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
+        if (nodeKey == _chatKey)
+        {
+            qDebug() << "[allmain] enter chat online: " << clients.size();
+            _chatPage->setClientList(clients);
+            ChatPage::restMsg = 0;
+        }
+    });
+
+    moveToCenter();
 }
 
 Allmain::~Allmain()
@@ -55,6 +82,10 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
         if (!db_client.empty() && db_client[0]->getClientPwd() == sha256Hash(client->getClientPwd(), db_client[0]->getClientSalt()))
         {
             ObjectToJson::addSignal(message, QString::number(LOGIN));    //登录成功
+            clientList[0] = db_client[0];
+            clients.append(clientList[0]);
+            clientHash.insert(socket, clientList[0]);
+            socketHash.insert(clientList[0], socket);
         }
         else
         {
@@ -87,6 +118,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
             client->setClientPwd(sha256Hash(rawPasswd, salt));
             clientMapper->insert(client);
             ObjectToJson::addSignal(message, QString::number(SIGNIN));    //注册成功
+            clientList[0] = db_client[0];
         }
         ObjectToJson::addClientList(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
@@ -111,11 +143,14 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
     }
     case CHATMSG:
     {
-        // 处理 Client 发来的信息
+        // 处理 Client 发来的信息，就一条
         QList<Chat *> chatList = ObjectToJson::parseChat(message);
         ChatMapper *chatMapper = new ChatMapper(db);
         chatMapper->insert(chatList);
         //TODO 发送失败
+
+        _chatPage->sigReceiveMessage(chatList[0]);
+        setNodeKeyPoints(_chatKey, ++ChatPage::restMsg);
         break;
     }
     }
@@ -135,9 +170,15 @@ void Allmain::onNewConnection()
         qDebug() << "Port:" << socket->peerPort();
     });
     connect(socket, &QTcpSocket::disconnected,[=](){
-        qDebug() << "[server] disconnected";
+        qDebug() << "[server] disconnected...";
+        Client* disClient = clientHash.value(socket, nullptr);
+        if (disClient == nullptr) return;
+
+        qDebug() << disClient->getClientName();
+        clients.removeAll(disClient);
         sockets.removeAll(socket);
         socket->deleteLater();
+        _chatPage->setClientList(clients);
     });
     connect(socket, &QTcpSocket::stateChanged, [=](QAbstractSocket::SocketState socketState){
         qDebug() << "[server] state changed: " << socketState;
@@ -157,21 +198,6 @@ void Allmain::onNewConnection()
         });
     });
     sockets.append(socket);
-
-//    // 发送欢迎信息
-//    QList<Chat *> chatList;
-//    Chat* chat = new Chat(1, "欢迎来到恶魔果实商店~", 1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
-//    chatList.append(chat);
-
-//    QJsonObject message;
-//    ObjectToJson::addChatList(message, chatList);
-//    ObjectToJson::addSignal(message, QString::number(CHATMSG));    //向 Client 发送信息
-//    QByteArray array = ObjectToJson::changeJson(message);
-
-//    // 存入数据库
-//    ChatMapper *chatMapper = new ChatMapper(mdb);
-//    chatMapper->insert(chat);
-//    qDebug() << "[server] send to client: " << "欢迎来到恶魔果实商店~";
 }
 
 void Allmain::startToListen()

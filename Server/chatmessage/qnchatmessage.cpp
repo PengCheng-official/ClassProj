@@ -11,8 +11,8 @@ QNChatMessage::QNChatMessage(QWidget *parent, QString clientImage, QString serve
 //    te_font.setLetterSpacing(QFont::PercentageSpacing, 100);          //300%,100为默认  //设置字间距%
 //    te_font.setLetterSpacing(QFont::AbsoluteSpacing, 0);             //设置字间距为3像素 //设置字间距像素值
     this->setFont(te_font);
-    m_leftPixmap = QPixmap(serverImage);
-    m_rightPixmap = QPixmap(clientImage);
+    m_leftPixmap = QPixmap(clientImage);
+    m_rightPixmap = QPixmap(serverImage);
 
     m_loadingMovie = new QMovie(this);
     m_loadingMovie->setFileName(":/img/loading4.gif");

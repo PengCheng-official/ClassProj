@@ -6,6 +6,7 @@ Allmain::Allmain(QWidget *parent)
     , ui(new Ui::Allmain)
 {
     ui->setupUi(this);
+    resize(1100, 660);
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
     setWindowIcon(QIcon(":/Resource/allmain_icon.png"));
@@ -45,12 +46,6 @@ void Allmain::initAllMain()
     connect(logIn, &LogIn::sigForwardToChatRoom, [=](){
         //发此处为匿名聊天，不会得到 history。
         chatRoom->show();
-
-//        QJsonObject message;
-//        ObjectToJson::addNum(message, 1);
-//        ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
-//        QByteArray array = ObjectToJson::changeJson(message);
-//        onSendToServer(array);
     });
 
     // SignIn 的信号处理
@@ -71,6 +66,19 @@ void Allmain::initAllMain(Client *cClient)
 {
     // 数据的初始化
     client = cClient;
+
+    // 图形界面的初始化
+    addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
+    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
+        if (nodeKey == _chatKey)
+        {
+            QJsonObject message;
+            ObjectToJson::addNum(message, client->getClientId());
+            ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
+            QByteArray array = ObjectToJson::changeJson(message);
+            onSendToServer(array);
+        }
+    });
 }
 
 void Allmain::connectToServer()
@@ -191,6 +199,7 @@ void Allmain::dealMessage(QByteArray message)
         // 接收到消息历史
         QList<Chat *> chatList = ObjectToJson::parseChat(message);
         chatRoom->initHistory(chatList);
+        chatRoom->initClient(client);
         chatRoom->show();
         break;
     }

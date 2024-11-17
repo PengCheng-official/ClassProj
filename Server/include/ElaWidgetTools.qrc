@@ -9,5 +9,8 @@
     <qresource prefix="/">
         <file>Resource/icon.jpg</file>
         <file>Resource/icon.png</file>
+        <file>Resource/chatroom_icon.png</file>
+        <file>Resource/client_image.png</file>
+        <file>Resource/server_image.png</file>
     </qresource>
 </RCC>

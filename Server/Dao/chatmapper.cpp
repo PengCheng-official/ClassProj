@@ -34,7 +34,7 @@ QList<Chat *> ChatMapper::select(int id)
 
 void ChatMapper::insert(Chat *chat)
 {
-    qDebug() << "[database] chat insert chat ...";
+    qDebug() << "[database] chat insert chat ... " << chat->getClientId();
     QSqlQuery query(db);
     query.prepare("INSERT chat ( `client_id`, `chat_text`, `chat_isserver`, `chat_time` ) \
                   VALUES ( :id, :text, :isserver, :time)");

@@ -6,7 +6,7 @@
 #include "login.h"
 #include "signin.h"
 #include "chatroom.h"
-#include "Objects/objects.h"
+#include "objects/objects.h"
 #include "objecttojson.h"
 #include "statement.h"
 
@@ -33,6 +33,8 @@ private:
     ChatRoom *chatRoom;
     Client* client;
     ElaContentDialog *unconnectDialog;
+
+    QString _chatKey{""};
 
 public:
     Allmain(QWidget *parent = nullptr);
