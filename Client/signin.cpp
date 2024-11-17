@@ -9,7 +9,7 @@ SignIn::SignIn(QWidget *parent) :
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
     setWindowTitle("系统账号注册");
     setWindowIcon(QIcon(":/Resource/signin_icon.png"));
-    setFixedSize(450, 500);
+    setFixedSize(420, 500);
     this->setIsFixedSize(true);
 
     upScreen = new QLabel(this);
@@ -189,7 +189,7 @@ void SignIn::onCreateBtnClicked()
     QList<Client*> clientList;
     clientList.append(client);
     QJsonObject message;
-    ObjectToJson::integrateClientList(message, clientList);
+    ObjectToJson::addClientList(message, clientList);
     ObjectToJson::addSignal(message, QString::number(SIGNIN));
     QByteArray array =ObjectToJson::changeJson(message);
     emit sigSendToSignIn(array);

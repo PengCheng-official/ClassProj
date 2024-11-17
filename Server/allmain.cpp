@@ -14,6 +14,7 @@ Allmain::Allmain(QWidget *parent)
     server = new QTcpServer;
     connect(server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
     startToListen();
+    connectToDB();
 }
 
 Allmain::~Allmain()
@@ -49,19 +50,19 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
         client = new Client(*clientList[0]);
         QJsonObject message;
 
-        ClientMapper *mapper = new ClientMapper(db);
-        QList<Client*> db_client = mapper->select(client->getClientName());
+        ClientMapper *clientMapper = new ClientMapper(db);
+        QList<Client*> db_client = clientMapper->select(client->getClientName());
         if (!db_client.empty() && db_client[0]->getClientPwd() == sha256Hash(client->getClientPwd(), db_client[0]->getClientSalt()))
         {
             ObjectToJson::addSignal(message, QString::number(LOGIN));    //登录成功
         }
         else
         {
-            ObjectToJson::addSignal(message, QString::number(LOGINF));    //登录失败
+            ObjectToJson::addSignal(message, QString::number(LOGINFAIL));    //登录失败
             clientList.pop_front();
         }
 
-        ObjectToJson::integrateClientList(message, clientList);
+        ObjectToJson::addClientList(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
         break;
@@ -70,12 +71,12 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
     {
         QList<Client*> clientList = ObjectToJson::parseClient(message);
         client = new Client(*clientList[0]);
-        QJsonObject message;
+        ClientMapper *clientMapper = new ClientMapper(db);
+        QList<Client*> db_client = clientMapper->select(client->getClientName());
 
-        ClientMapper *mapper = new ClientMapper(db);
-        QList<Client*> db_client = mapper->select(client->getClientName());
+        QJsonObject message;
         if (db_client.size() > 0) {
-            ObjectToJson::addSignal(message, QString::number(SIGNINF));  //注册失败
+            ObjectToJson::addSignal(message, QString::number(SIGNINFAIL));  //注册失败
             clientList.pop_front();
         }
         else
@@ -84,12 +85,37 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
             QString salt = generateRandomSalt(16);
             client->setClientSalt(salt);
             client->setClientPwd(sha256Hash(rawPasswd, salt));
-            mapper->insert(client);
+            clientMapper->insert(client);
             ObjectToJson::addSignal(message, QString::number(SIGNIN));    //注册成功
         }
-        ObjectToJson::integrateClientList(message, clientList);
+        ObjectToJson::addClientList(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
+        break;
+    }
+    case CHATHISTORY:
+    {
+        // 处理 Client 对聊天记录的请求
+        int id = ObjectToJson::parseNum(message);
+        ChatMapper *chatMapper = new ChatMapper(db);
+        QList<Chat *> chatList = chatMapper->select(id);
+        qDebug() << QString("[thread_%1]|[server] request chat history for Client%2").arg(threadName).arg(id);
+        qDebug() << chatList.size();
+
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
+        ObjectToJson::addChatList(message, chatList);
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
+    case CHATMSG:
+    {
+        // 处理 Client 发来的信息
+        QList<Chat *> chatList = ObjectToJson::parseChat(message);
+        ChatMapper *chatMapper = new ChatMapper(db);
+        chatMapper->insert(chatList);
+        //TODO 发送失败
         break;
     }
     }
@@ -132,18 +158,20 @@ void Allmain::onNewConnection()
     });
     sockets.append(socket);
 
-    QList<Chat *> chatList;
-    Chat* chat = new Chat(1, "欢迎来到恶魔果实商店~", 1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
-    chatList.append(chat);
+//    // 发送欢迎信息
+//    QList<Chat *> chatList;
+//    Chat* chat = new Chat(1, "欢迎来到恶魔果实商店~", 1, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+//    chatList.append(chat);
 
-    QJsonObject message;
-    ObjectToJson::integrateChatList(message, chatList);
-    ObjectToJson::addSignal(message, QString::number(SENDMSG));    //向 Client 发送信息
-    QByteArray array = ObjectToJson::changeJson(message);
+//    QJsonObject message;
+//    ObjectToJson::addChatList(message, chatList);
+//    ObjectToJson::addSignal(message, QString::number(CHATMSG));    //向 Client 发送信息
+//    QByteArray array = ObjectToJson::changeJson(message);
 
-    ChatMapper *chatMapper = new ChatMapper(mdb);
-    chatMapper->insert(chat);
-    qDebug() << "[server] send to client: " << "欢迎来到恶魔果实商店~";
+//    // 存入数据库
+//    ChatMapper *chatMapper = new ChatMapper(mdb);
+//    chatMapper->insert(chat);
+//    qDebug() << "[server] send to client: " << "欢迎来到恶魔果实商店~";
 }
 
 void Allmain::startToListen()
@@ -191,6 +219,6 @@ void Allmain::on_sendToClient(QTcpSocket *socket, const QByteArray &array)
 {
     // 子线程外，传输通讯
     socket->write(array);
-    qDebug() << "[server] send to client: " << ObjectToJson::parseSignal(array).toInt();
+    qDebug() << "[server] send to client: signal-" << ObjectToJson::parseSignal(array).toInt();
 }
 

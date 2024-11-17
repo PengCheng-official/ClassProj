@@ -13,6 +13,9 @@ class Mapper
 public:
     Mapper(QSqlDatabase &database);
 
+    void truncate(QString tableName);
+    void Delete(QString tableName);
+
 protected:
     QSqlDatabase db;
 };

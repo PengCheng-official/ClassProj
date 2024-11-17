@@ -12,7 +12,7 @@ private:
     int clientId;
     QString chatText;
     int chatIsserver;
-    QString chatTime;
+    QString chatTime;   //toString("yyyy-MM-dd hh:mm:ss")
 
 public:
     Chat();

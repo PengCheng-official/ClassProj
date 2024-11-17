@@ -35,14 +35,18 @@ class ChatRoom : public ElaWidget
     Q_OBJECT
 
 public:
-    explicit ChatRoom(QWidget *parent = nullptr);
-    explicit ChatRoom(QList<Chat *> &chatList, QWidget *parent = nullptr);
+    explicit ChatRoom(Client* cClient = nullptr, QWidget *parent = nullptr);
     ~ChatRoom();
 
     void initHistory(QList<Chat *> &chatList);
+    void receiveMessage(Chat* chatMsg);
+
+
+private:
     void dealMessage(QNChatMessage *messageW, QListWidgetItem *item, QString text, QString time, QNChatMessage::User_Type type);
     void dealMessageTime(QString curMsgTime);
-    void receiveMessage(QString msg);
+    void resizeEvent(QResizeEvent *event);
+
 
 private:
     Ui::ChatRoom *ui;
@@ -53,6 +57,8 @@ private:
 //    ElaPushButton *returnBtn;
     QGridLayout *mainLayout;
 //    QGridLayout *editLayout;
+    Client* client;
+    bool unKnown;
 
 private slots:
     void on_returnBtn_clicked();
@@ -61,7 +67,6 @@ private slots:
 
 signals:
     void sigSendToServer(QByteArray array);
-    void sigSendToClient(QString message, qintptr socketDiscriptor);
     void sigReturnToLogIn();
 
 };

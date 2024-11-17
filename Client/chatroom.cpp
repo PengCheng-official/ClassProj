@@ -1,30 +1,23 @@
 #include "chatroom.h"
 #include "ui_chatroom.h"
 
-ChatRoom::ChatRoom(QWidget *parent) :
+ChatRoom::ChatRoom(Client *cClient, QWidget *parent) :
     ElaWidget(parent),
-    ui(new Ui::ChatRoom)
+    ui(new Ui::ChatRoom),
+    client(cClient)
 {
     ui->setupUi(this);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
-    setWindowTitle("官方客服");
-    setWindowIcon(QIcon(":/Resource/chatroom_icon.png"));
-    setFixedSize(450, 500);
-    setMinimumSize(320, 380);
-}
 
-ChatRoom::ChatRoom(QList<Chat *> &chatList, QWidget *parent) :
-    ElaWidget(parent),
-    ui(new Ui::ChatRoom)
-{
-    ui->setupUi(this);
-    setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
-    setWindowTitle("官方客服");
-    setWindowIcon(QIcon(":/Resource/chatroom_icon.png"));
-    setFixedSize(450, 500);
-    setMinimumSize(320, 380);
+    client = cClient;
+    if (cClient == nullptr) setWindowTitle(QString("官方客服：匿名者不会留下聊天记录"));
+    else setWindowTitle(QString("官方客服：欢迎你！%1").arg(client->getClientName()));
 
-    initHistory(chatList);
+    setWindowIcon(QIcon(":/Resource/chatroom_icon.png"));
+    setMinimumSize(500, 400);
+    resize(550, 600);
+
+    ui->listWidget->clear();
 }
 
 ChatRoom::~ChatRoom()
@@ -34,25 +27,26 @@ ChatRoom::~ChatRoom()
 
 void ChatRoom::initHistory(QList<Chat *> &chatList)
 {
-    for (auto chat : chatList)
+    qDebug() << "[chatroom] history size: " << chatList.size();
+    for (auto chatMsg : chatList)
     {
-        if (chat->getChatIsserver())
+        QString time = QString::number(QDateTime::fromString(chatMsg->getChatTime(), "yyyy-MM-dd hh:mm:ss").toSecsSinceEpoch());
+        qDebug() << chatMsg->getChatText() << " " << time;
+        if (chatMsg->getChatIsserver())
         {
-            QString time = QString::number(QDateTime::fromString(chat->getChatTime()).toSecsSinceEpoch());
             dealMessageTime(time);
 
             QNChatMessage* messageW = new QNChatMessage(ui->listWidget->parentWidget());
             QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-            dealMessage(messageW, item, chat->getChatText(), time, QNChatMessage::User_She);
+            dealMessage(messageW, item, chatMsg->getChatText(), time, QNChatMessage::User_She);
         }
         else
         {
-            QString time = QString::number(QDateTime::fromString(chat->getChatTime()).toSecsSinceEpoch());
             dealMessageTime(time);
 
             QNChatMessage* messageW = new QNChatMessage(ui->listWidget->parentWidget());
             QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-            dealMessage(messageW, item, chat->getChatText(), time, QNChatMessage::User_Me);
+            dealMessage(messageW, item, chatMsg->getChatText(), time, QNChatMessage::User_Me);
         }
     }
 }
@@ -95,6 +89,7 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
 
 void ChatRoom::on_sendBtn_clicked()
 {
+    // 处理信息并展示
     QString msg = ui->textEdit->toPlainText();
     ui->textEdit->setPlainText("");
     QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()); //时间戳
@@ -108,16 +103,24 @@ void ChatRoom::on_sendBtn_clicked()
     dealMessage(messageW, item, msg, time, QNChatMessage::User_Me);
     messageW->setTextSuccess();
 
+    // 将消息发送到 Server
+    QList<Chat *> chatList;
+    Chat* chat;
+    if (client == nullptr) chat = new Chat(1, msg, 0, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    else chat = new Chat(client->getClientId(), msg, 0, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    chatList.append(chat);
+
     QJsonObject message;
-    ObjectToJson::integrateString(message, msg);
-    ObjectToJson::addSignal(message, QString::number(SENDMSG));    //Client发送信息
+    ObjectToJson::addChatList(message, chatList);
+    ObjectToJson::addSignal(message, QString::number(CHATMSG));    //向 Server 发送信息
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToServer(array);
 }
 
-void ChatRoom::receiveMessage(QString msg)
+void ChatRoom::receiveMessage(Chat* chatMsg)
 {
-    QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()); //时间戳
+    QString msg = chatMsg->getChatText();
+    QString time = QString::number(QDateTime::fromString(chatMsg->getChatTime()).toSecsSinceEpoch());
     if(msg != "") {
         dealMessageTime(time);
 
@@ -127,9 +130,22 @@ void ChatRoom::receiveMessage(QString msg)
     }
 }
 
+void ChatRoom::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+
+    for(int i = 0; i < ui->listWidget->count(); i++) {
+        QNChatMessage* messageW = (QNChatMessage*)ui->listWidget->itemWidget(ui->listWidget->item(i));
+        QListWidgetItem* item = ui->listWidget->item(i);
+
+        dealMessage(messageW, item, messageW->text(), messageW->time(), messageW->userType());
+    }
+}
+
 void ChatRoom::on_returnBtn_clicked()
 {
     this->hide();
     ui->textEdit->clear();
+    ui->listWidget->clear();
 }
 

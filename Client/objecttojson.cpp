@@ -1,15 +1,11 @@
 ﻿#include "objecttojson.h"
 
-int ObjectToJson::number = 0;
-int ObjectToJson::id = 0;
-QString ObjectToJson::string  = nullptr;
-QString ObjectToJson::passage = nullptr;
 ObjectToJson::ObjectToJson()
 {
 
 }
 
-QJsonObject ObjectToJson::integrateClientList(QJsonObject &object, QList<Client *> clientList)
+QJsonObject ObjectToJson::addClientList(QJsonObject &object, QList<Client *> clientList)
 {
     QJsonObject* objectList;
     QJsonArray array;
@@ -30,7 +26,7 @@ QJsonObject ObjectToJson::integrateClientList(QJsonObject &object, QList<Client 
     return object;
 }
 
-QJsonObject ObjectToJson::integrateChatList(QJsonObject &object, QList<Chat *> chatList)
+QJsonObject ObjectToJson::addChatList(QJsonObject &object, QList<Chat *> chatList)
 {
     QJsonObject* objectList;
     QJsonArray array;
@@ -123,16 +119,14 @@ QJsonObject ObjectToJson::integrateChatList(QJsonObject &object, QList<Chat *> c
 //    return object;
 //}
 
-QJsonObject ObjectToJson::integrateString(QJsonObject &object, QString string)
+QJsonObject ObjectToJson::addString(QJsonObject &object, QString string)
 {
     object.insert("string", string);
     return object;
 }
 
-QJsonObject ObjectToJson::integrateNum(QJsonObject &object, int number)
+QJsonObject ObjectToJson::addNum(QJsonObject &object, int number)
 {
-    /*QJsonObject object*/
-    //    object.insert("signal",signal);
     object.insert("number",number);
     return object;
 }
@@ -441,7 +435,7 @@ QList<Chat *> ObjectToJson::parseChat(QByteArray byteArray)
 
 
 
-void ObjectToJson::parseNum(QByteArray byteArray)
+int ObjectToJson::parseNum(QByteArray byteArray)
 {
     QJsonParseError jsonError;
     QJsonDocument doucment = QJsonDocument::fromJson(byteArray, &jsonError);
@@ -450,30 +444,31 @@ void ObjectToJson::parseNum(QByteArray byteArray)
             QJsonObject object = doucment.object();
             if(object.contains("number")){
                 QJsonValue value = object.value("number");
-                number = value.toVariant().toInt();
+                return value.toVariant().toInt();
             }
         }
     }
+    return -1;
 }
 
-void ObjectToJson::parseObjects(QByteArray byteArray)
-{
-    QJsonParseError jsonError;
-    QJsonDocument doucment = QJsonDocument::fromJson(byteArray, &jsonError);
-    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)){
-        if (doucment.isObject()){
-            QJsonObject object = doucment.object();
-            if(object.contains("number")){
-                QJsonValue value = object.value("number");
-                number = value.toVariant().toInt();
-            }
-            if(object.contains("string")){
-                QJsonValue value = object.value("string");
-                string = value.toString();
-            }
-        }
-    }
-}
+//void ObjectToJson::parseObjects(QByteArray byteArray)
+//{
+//    QJsonParseError jsonError;
+//    QJsonDocument doucment = QJsonDocument::fromJson(byteArray, &jsonError);
+//    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)){
+//        if (doucment.isObject()){
+//            QJsonObject object = doucment.object();
+//            if(object.contains("number")){
+//                QJsonValue value = object.value("number");
+//                number = value.toVariant().toInt();
+//            }
+//            if(object.contains("string")){
+//                QJsonValue value = object.value("string");
+//                string = value.toString();
+//            }
+//        }
+//    }
+//}
 
 QString ObjectToJson::parseString(QByteArray byteArray)
 {
@@ -488,6 +483,7 @@ QString ObjectToJson::parseString(QByteArray byteArray)
             }
         }
     }
+    return "";
 }
 
 QByteArray ObjectToJson::changeJson(QJsonObject &object)

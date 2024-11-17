@@ -15,6 +15,8 @@ public:
 
     void insert(Chat* chat);
 
+    void insert(QList<Chat *> chatList);
+
 };
 
 #endif // CHATMAPPER_H

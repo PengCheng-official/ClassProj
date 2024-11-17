@@ -1,18 +1,13 @@
-/*-------------------------------------------------
-#
-# Project created by QtCreator
-# Author: 沙振宇
-# CreateTime: 2018-07-23
-# UpdateTime: 2019-12-27
-# Info: Qt5气泡式聊天框——QListWidget+QPainter实现
-# Url:https://shazhenyu.blog.csdn.net/article/details/81505832
-# Github:https://github.com/ShaShiDiZhuanLan/Demo_MessageChat_Qt
-#
-#-------------------------------------------------*/
 #ifndef QNCHATMESSAGE_H
 #define QNCHATMESSAGE_H
 
 #include <QWidget>
+#include <QFontMetrics>
+#include <QPaintEvent>
+#include <QDateTime>
+#include <QPainter>
+#include <QMovie>
+#include <QLabel>
 
 class QPaintEvent;
 class QPainter;
@@ -23,7 +18,7 @@ class QNChatMessage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QNChatMessage(QWidget *parent = nullptr);
+    explicit QNChatMessage(QWidget *parent = nullptr, QString clientImage = ":/Resource/client_image.png", QString serverImage = ":/Resource/server_image.png");
 
     enum User_Type{
         User_System,//系统

@@ -33,23 +33,35 @@ Allmain::~Allmain()
 
 void Allmain::initAllMain()
 {
+    // 发送 socket 请求的信号
     connect(logIn, &LogIn::sigSendToLogIn, this, &Allmain::onSendToServer);
     connect(signIn, &SignIn::sigSendToSignIn, this, &Allmain::onSendToServer);
     connect(chatRoom, &ChatRoom::sigSendToServer, this, &Allmain::onSendToServer);
+
+    // LogIn 的信号处理
     connect(logIn, &LogIn::sigForwardToSignIn, [=](){
         signIn->show();
     });
     connect(logIn, &LogIn::sigForwardToChatRoom, [=](){
-        //! 发送请求，得到 admin 的 history。
-        //! initHistory()
+        //发此处为匿名聊天，不会得到 history。
         chatRoom->show();
+
+//        QJsonObject message;
+//        ObjectToJson::addNum(message, 1);
+//        ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
+//        QByteArray array = ObjectToJson::changeJson(message);
+//        onSendToServer(array);
     });
+
+    // SignIn 的信号处理
     connect(signIn, &SignIn::sigReturnToLogIn, [=](){
         logIn->show();
     });
     connect(signIn, &SignIn::sigSignInSuccessToLogIn, [=](Client *cClient){
         logIn->signInSuccess(cClient);
     });
+
+    // ChatRoom 的信号处理
     connect(chatRoom, &ChatRoom::sigReturnToLogIn, [=](){
         logIn->show();
     });
@@ -57,14 +69,17 @@ void Allmain::initAllMain()
 
 void Allmain::initAllMain(Client *cClient)
 {
+    // 数据的初始化
     client = cClient;
 }
 
 void Allmain::connectToServer()
 {
+    // 连接 Server 端
     QString server_IP = "127.0.0.1";
     int port = 23333;
     socket->connectToHost(server_IP, port);
+    // connect来自 socket 的信号
     connect(socket, &QTcpSocket::readyRead, this, &Allmain::onReadyRead);
     connect(socket, &QTcpSocket::stateChanged, this, &Allmain::onStateChanged);
 
@@ -93,7 +108,9 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
     qDebug() << "[socket] state changed: " << socketState;
     if (socketState == QAbstractSocket::UnconnectedState)
     {
-        QWidget *currentWidget = qApp->activeWindow();
+        // 断开连接了
+        QWidget *currentWidget = qApp->activeWindow();  // 获取当前窗口
+        // 各窗口处理办法
         if (currentWidget == logIn)
         {
             logIn->unconnected();
@@ -108,6 +125,7 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
         }
         else
         {
+            // 异常则跳转登录界面
             currentWidget->hide();
             logIn->unconnected();
         }
@@ -116,9 +134,11 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
 
 void Allmain::onReadyRead()
 {
+    // 接收到讯息，准备处理
     qDebug() << "[socket] receive message ...";
     while(socket->bytesAvailable() > 0)
     {
+        // 有可用信息，开始处理
         QByteArray datagram;
         datagram = socket->readAll();
         dealMessage(datagram);
@@ -127,37 +147,51 @@ void Allmain::onReadyRead()
 
 void Allmain::dealMessage(QByteArray message)
 {
+    // 处理接收到的讯息
     int signal = ObjectToJson::parseSignal(message).toInt();
     qDebug() << "signal: " << signal;
     switch(signal) {
     case LOGIN:
     {
+        // 登录成功
         QList<Client*> clientList = ObjectToJson::parseClient(message);
         client = clientList[0];
         logIn->logInSuccess(client);
         break;
     }
-    case LOGINF:
+    case LOGINFAIL:
     {
+        // 登录失败
         logIn->logInFail();
         break;
     }
     case SIGNIN:
     {
+        // 注册成功
         QList<Client*> clientList = ObjectToJson::parseClient(message);
         client = clientList[0];
         signIn->signInSuccess(client);
         break;
     }
-    case SIGNINF:
+    case SIGNINFAIL:
     {
+        // 注册失败
         signIn->signInFail();
         break;
     }
-    case SENDMSG:
+    case CHATMSG:
     {
-        QString msg = ObjectToJson::parseString(message);
-        chatRoom->receiveMessage(msg);
+        // 接收到一条信息
+        QList<Chat *> chatList = ObjectToJson::parseChat(message);
+        chatRoom->receiveMessage(chatList[0]);
+        break;
+    }
+    case CHATHISTORY:
+    {
+        // 接收到消息历史
+        QList<Chat *> chatList = ObjectToJson::parseChat(message);
+        chatRoom->initHistory(chatList);
+        chatRoom->show();
         break;
     }
     }

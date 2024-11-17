@@ -8,18 +8,19 @@ ChatMapper::ChatMapper(QSqlDatabase &database)
 Chat *ChatMapper::getChat(QSqlQuery &query)
 {
     Chat* chat = new Chat();
-    chat->setClientId(query.value(0).toInt());
-    chat->setChatText(query.value(1).toString());
-    chat->setChatIsserver(query.value(2).toInt());
-    chat->setChatTime(query.value(3).toString());
+    // 放弃了value(0)（chat_id）
+    chat->setClientId(query.value(1).toInt());
+    chat->setChatText(query.value(2).toString());
+    chat->setChatIsserver(query.value(3).toInt());
+    chat->setChatTime(query.value(4).toDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     return chat;
 }
 
 QList<Chat *> ChatMapper::select(int id)
 {
-    qDebug() << "[database] chat select...";
+    qDebug() << "[database] chat select... " << id;
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM chat WHERE chat_id = :id");
+    query.prepare("SELECT * FROM chat WHERE client_id = :id");
     query.bindValue(":id", id);
     query.exec();
 
@@ -33,7 +34,7 @@ QList<Chat *> ChatMapper::select(int id)
 
 void ChatMapper::insert(Chat *chat)
 {
-    qDebug() << "[database] chat insert ...";
+    qDebug() << "[database] chat insert chat ...";
     QSqlQuery query(db);
     query.prepare("INSERT chat ( `client_id`, `chat_text`, `chat_isserver`, `chat_time` ) \
                   VALUES ( :id, :text, :isserver, :time)");
@@ -43,4 +44,13 @@ void ChatMapper::insert(Chat *chat)
     query.bindValue(":time", chat->getChatTime());
     query.exec();
     query.finish();
+}
+
+void ChatMapper::insert(QList<Chat *> chatList)
+{
+    qDebug() << "[database] chat insert chatList ...";
+    for (auto chat : chatList)
+    {
+        insert(chat);
+    }
 }

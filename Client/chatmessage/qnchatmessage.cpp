@@ -1,24 +1,7 @@
-/*-------------------------------------------------
-#
-# Project created by QtCreator
-# Author: 沙振宇
-# CreateTime: 2018-07-23
-# UpdateTime: 2019-12-27
-# Info: Qt5气泡式聊天框——QListWidget+QPainter实现
-# Url:https://shazhenyu.blog.csdn.net/article/details/81505832
-# Github:https://github.com/ShaShiDiZhuanLan/Demo_MessageChat_Qt
-#
-#-------------------------------------------------*/
 #include "qnchatmessage.h"
-#include <QFontMetrics>
-#include <QPaintEvent>
-#include <QDateTime>
-#include <QPainter>
-#include <QMovie>
-#include <QLabel>
-#include <QDebug>
 
-QNChatMessage::QNChatMessage(QWidget *parent) : QWidget(parent)
+QNChatMessage::QNChatMessage(QWidget *parent, QString clientImage, QString serverImage)
+    : QWidget(parent)
 {
     QFont te_font = this->font();
     te_font.setFamily("MicrosoftYaHei");
@@ -28,8 +11,8 @@ QNChatMessage::QNChatMessage(QWidget *parent) : QWidget(parent)
 //    te_font.setLetterSpacing(QFont::PercentageSpacing, 100);          //300%,100为默认  //设置字间距%
 //    te_font.setLetterSpacing(QFont::AbsoluteSpacing, 0);             //设置字间距为3像素 //设置字间距像素值
     this->setFont(te_font);
-    m_leftPixmap = QPixmap(":/img/Customer Copy.png");
-    m_rightPixmap = QPixmap(":/img/CustomerService.png");
+    m_leftPixmap = QPixmap(serverImage);
+    m_rightPixmap = QPixmap(clientImage);
 
     m_loadingMovie = new QMovie(this);
     m_loadingMovie->setFileName(":/img/loading4.gif");
@@ -52,7 +35,7 @@ void QNChatMessage::setText(QString text, QString time, QSize allSize, QNChatMes
     m_msg = text;
     m_userType = userType;
     m_time = time;
-    m_curTime = QDateTime::fromSecsSinceEpoch(time.toInt()).toString("hh:mm");
+    m_curTime = QDateTime::fromSecsSinceEpoch(time.toInt()).toString("MM/dd hh:mm:ss");
     m_allSize = allSize;
     if(userType == User_Me) {
         if(!m_isSending) {
@@ -86,7 +69,6 @@ QSize QNChatMessage::fontRect(QString str)
 
     QSize size = getRealString(m_msg); // 整个的size
 
-    qDebug() << "fontRect Size:" << size;
     int hei = size.height() < minHei ? minHei : size.height();
 
     m_sanjiaoLeftRect = QRect(iconWH+iconSpaceW+iconRectW, m_lineHeight/2, sanJiaoW, hei - m_lineHeight);

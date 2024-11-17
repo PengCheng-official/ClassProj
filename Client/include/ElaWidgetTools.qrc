@@ -13,5 +13,8 @@
         <file>Resource/chatroom_icon.png</file>
         <file>Resource/login_icon.png</file>
         <file>Resource/signin_icon.png</file>
+        <file>Resource/client_image.png</file>
+        <file>Resource/loading.gif</file>
+        <file>Resource/server_image.png</file>
     </qresource>
 </RCC>
