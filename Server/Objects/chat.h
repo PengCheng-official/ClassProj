@@ -19,9 +19,9 @@ public:
     Chat(int cClientId, QString cChatText, int cChatIsserver, QString cChatTime);
 
     void setClientId(int id);
-    void setChatText(QString text);
+    void setChatText(const QString& text);
     void setChatIsserver(int isserver);
-    void setChatTime(QString time);
+    void setChatTime(const QString& time);
 
     int getClientId() const;
     QString getChatText() const;

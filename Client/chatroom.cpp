@@ -69,7 +69,6 @@ void ChatRoom::dealMessage(QNChatMessage *messageW, QListWidgetItem *item, QStri
     item->setSizeHint(size);
     messageW->setText(text, time, size, type);
     ui->listWidget->setItemWidget(item, messageW);
-
 }
 
 void ChatRoom::dealMessageTime(QString curMsgTime)
@@ -80,7 +79,7 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
         QNChatMessage* messageW = (QNChatMessage*)ui->listWidget->itemWidget(lastItem);
         int lastTime = messageW->time().toInt();
         int curTime = curMsgTime.toInt();
-        qDebug() << "curTime lastTime:" << curTime - lastTime;
+        qDebug() << "differTime:" << curTime - lastTime;
         isShowTime = ((curTime - lastTime) > 60); // 两个消息相差超过一分钟
     } else {
         isShowTime = true;
@@ -106,8 +105,7 @@ void ChatRoom::on_sendBtn_clicked()
     QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()); //时间戳
 
 //    SetConsoleOutputCP(CP_UTF8);
-    qDebug() << "[chatroom] send message: " << msg;
-    qDebug() << "[chatroom] send time: " << QDateTime::fromSecsSinceEpoch(time.toLongLong());
+    qDebug() << "[chatroom] send message: " << msg << QDateTime::fromSecsSinceEpoch(time.toLongLong());
     dealMessageTime(time);
 
     QNChatMessage* messageW = new QNChatMessage(ui->listWidget->parentWidget());
@@ -133,6 +131,7 @@ void ChatRoom::receiveMessage(Chat* chatMsg)
 {
     QString msg = chatMsg->getChatText();
     QString time = QString::number(QDateTime::fromString(chatMsg->getChatTime()).toSecsSinceEpoch());
+    qDebug() << "[chatroom] receive message: " << msg << QDateTime::fromSecsSinceEpoch(time.toLongLong());
     if(msg != "") {
         dealMessageTime(time);
 

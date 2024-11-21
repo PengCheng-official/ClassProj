@@ -10,6 +10,9 @@ Allmain::Allmain(QWidget *parent)
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
     setWindowIcon(QIcon(":/Resource/icon.png"));
+    setUserInfoCardPixmap(QPixmap(":/Resource/icon.jpg"));
+    setUserInfoCardTitle("WORLD GOVT");
+    setUserInfoCardSubTitle("pengcheng050210@foxmail.com");
 
     threadPool = new ThreadPool(1024);
     server = new QTcpServer;
@@ -30,14 +33,24 @@ Allmain::Allmain(QWidget *parent)
     });
 
     addPageNode("首页", _homePage, ElaIconType::House);
-    addFooterNode("联系卖家", _chatPage, _chatKey, 0, ElaIconType::Comments);
-
+    addPageNode("联系卖家", _chatPage, ElaIconType::Comments);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
-        if (nodeKey == _chatKey)
+        switch(nodeType) {
+        case ElaNavigationType::PageNode:
         {
-            qDebug() << "[allmain] enter chat online: " << clients.size();
-            _chatPage->setClientList(clients);
-            ChatPage::restMsg = 0;
+            if (nodeKey == _chatPage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[allmain] enter chat online: " << clients.size();
+                _chatPage->setClientList(clients);
+                ChatPage::restMsg = 0;
+                setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), 0);
+            }
+            break;
+        }
+        case ElaNavigationType::FooterNode:
+        {
+            break;
+        }
         }
     });
 
@@ -150,7 +163,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
         //TODO 发送失败
 
         _chatPage->sigReceiveMessage(chatList[0]);
-        setNodeKeyPoints(_chatKey, ++ChatPage::restMsg);
+        setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), ++ChatPage::restMsg);
         break;
     }
     }

@@ -2,7 +2,7 @@
 
 int ChatPage::restMsg = 0;
 ChatPage::ChatPage(QWidget *parent)
-    : BasePage(parent)
+    : ElaScrollPage(parent)
 {
     setWindowTitle("联系卖家");
 

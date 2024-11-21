@@ -18,7 +18,7 @@ void Chat::setClientId(int id)
     clientId = id;
 }
 
-void Chat::setChatText(QString text)
+void Chat::setChatText(const QString& text)
 {
     chatText = text;
 }
@@ -28,7 +28,7 @@ void Chat::setChatIsserver(int isserver)
     chatIsserver = isserver;
 }
 
-void Chat::setChatTime(QString time)
+void Chat::setChatTime(const QString& time)
 {
     chatTime = time;
 }

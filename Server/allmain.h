@@ -49,7 +49,6 @@ private:
 
     HomePage *_homePage{nullptr};
     ChatPage *_chatPage{nullptr};
-    QString _chatKey{""};
 
 protected:
     void startToListen();

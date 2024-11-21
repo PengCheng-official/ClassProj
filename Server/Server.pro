@@ -36,6 +36,8 @@ SOURCES += \
     allmain.cpp \
     objects/chat.cpp \
     objects/client.cpp \
+    objects/product.cpp \
+    objects/strategy.cpp \
     objecttojson.cpp \
     ui/basepage.cpp \
     ui/chatpage.cpp \
@@ -52,6 +54,8 @@ HEADERS += \
     objects/chat.h \
     objects/client.h \
     objects/objects.h \
+    objects/product.h \
+    objects/strategy.h \
     objecttojson.h \
     statement.h \
     ui/basepage.h \

@@ -16,5 +16,6 @@
         <file>Resource/client_image.png</file>
         <file>Resource/loading.gif</file>
         <file>Resource/server_image.png</file>
+        <file>Resource/T.jpg</file>
     </qresource>
 </RCC>

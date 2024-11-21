@@ -78,7 +78,6 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
         QNChatMessage* messageW = (QNChatMessage*)ui->listWidget->itemWidget(lastItem);
         int lastTime = messageW->time().toInt();
         int curTime = curMsgTime.toInt();
-        qDebug() << "curTime lastTime:" << curTime - lastTime;
         isShowTime = ((curTime - lastTime) > 60); // 两个消息相差超过一分钟
     } else {
         isShowTime = true;

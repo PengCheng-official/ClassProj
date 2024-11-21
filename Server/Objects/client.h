@@ -32,14 +32,14 @@ public:
             QString clientGender
             );
     void setClientId(int clientId);
-    void setClientName(QString clientName);
-    void setClientPwd(QString clientPwd);
-    void setClientSalt(QString clientSalt);
-    void setClientAddr(QString clientAddr);
-    void setClientPhone(QString clientPhone);
-    void setClientEmail(QString clientEmail);
+    void setClientName(const QString &clientName);
+    void setClientPwd(const QString &clientPwd);
+    void setClientSalt(const QString &clientSalt);
+    void setClientAddr(const QString &clientAddr);
+    void setClientPhone(const QString &clientPhone);
+    void setClientEmail(const QString &clientEmail);
     void setClientBought(int clientBought);
-    void setClientGender(QString clientGender);
+    void setClientGender(const QString &clientGender);
 
     int getClientBought() const;
     QString getClientPwd() const;

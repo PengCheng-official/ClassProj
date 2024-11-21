@@ -67,17 +67,39 @@ void Allmain::initAllMain(Client *cClient)
     // 数据的初始化
     client = cClient;
 
+    setUserInfoCardPixmap(QPixmap(":/Resource/T.jpg"));
+    setUserInfoCardTitle(client->getClientName());
+    setUserInfoCardSubTitle("欢迎您( つ•̀ω•́)つ");
+
     // 图形界面的初始化
+    _personPage = new PersonPage(client, this);
+
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
+    addFooterNode("个人信息", _personPage, _personKey, 0, ElaIconType::User);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
-        if (nodeKey == _chatKey)
+        switch(nodeType) {
+        case ElaNavigationType::PageNode:
         {
-            QJsonObject message;
-            ObjectToJson::addNum(message, client->getClientId());
-            ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
-            QByteArray array = ObjectToJson::changeJson(message);
-            onSendToServer(array);
+            break;
         }
+        case ElaNavigationType::FooterNode:
+        {
+            if (nodeKey == _chatKey)
+            {
+                QJsonObject message;
+                ObjectToJson::addNum(message, client->getClientId());
+                ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
+                QByteArray array = ObjectToJson::changeJson(message);
+                onSendToServer(array);
+            }
+            else if (nodeKey == _personKey)
+            {
+
+            }
+            break;
+        }
+        }
+
     });
 }
 

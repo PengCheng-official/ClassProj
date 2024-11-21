@@ -10,6 +10,7 @@ public:
 
 public:
     Client* getClient(QSqlQuery &query);
+    //DAO层，数据转对象
 
     QList<Client *> select(QString name);
     //通过用户名查找
@@ -18,6 +19,7 @@ public:
     //通过id查找
 
     void insert(Client* client);
+    //插入用户
 };
 
 #endif // CLIENTMAPPER_H

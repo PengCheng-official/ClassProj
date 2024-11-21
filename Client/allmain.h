@@ -10,8 +10,10 @@
 #include "objecttojson.h"
 #include "statement.h"
 
+#include "ui/personpage.h"
 #include "ElaWindow.h"
 #include "ElaContentDialog.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
@@ -34,7 +36,9 @@ private:
     Client* client;
     ElaContentDialog *unconnectDialog;
 
+    PersonPage *_personPage;
     QString _chatKey{""};
+    QString _personKey{""};
 
 public:
     Allmain(QWidget *parent = nullptr);

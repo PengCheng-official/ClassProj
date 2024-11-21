@@ -33,7 +33,8 @@ SOURCES += \
     objects/chat.cpp \
     objects/client.cpp \
     objecttojson.cpp \
-    signin.cpp
+    signin.cpp \
+    ui/personpage.cpp
 
 HEADERS += \
     allmain.h \
@@ -45,7 +46,8 @@ HEADERS += \
     objects/objects.h \
     objecttojson.h \
     signin.h \
-    statement.h
+    statement.h \
+    ui/personpage.h
 
 FORMS += \
     allmain.ui \

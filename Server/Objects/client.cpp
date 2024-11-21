@@ -64,7 +64,7 @@ int Client::getClientBought() const
     return clientBought;
 }
 
-void Client::setClientName(QString clientName)
+void Client::setClientName(const QString& clientName)
 {
     this->clientName = clientName;
 }
@@ -74,27 +74,27 @@ void Client::setClientId(int clientId)
     this->clientId = clientId;
 }
 
-void Client::setClientPhone(QString clientPhone)
+void Client::setClientPhone(const QString& clientPhone)
 {
     this->clientPhone = clientPhone;
 }
 
-void Client::setClientEmail(QString clientEmail)
+void Client::setClientEmail(const QString& clientEmail)
 {
     this->clientEmail = clientEmail;
 }
 
-void Client::setClientPwd(QString clientPwd)
+void Client::setClientPwd(const QString& clientPwd)
 {
     this->clientPwd = clientPwd;
 }
 
-void Client::setClientSalt(QString clientSalt)
+void Client::setClientSalt(const QString& clientSalt)
 {
     this->clientSalt = clientSalt;
 }
 
-void Client::setClientAddr(QString clientAddr)
+void Client::setClientAddr(const QString& clientAddr)
 {
     this->clientAddr = clientAddr;
 }
@@ -104,7 +104,7 @@ void Client::setClientBought(int clientBought)
     this->clientBought = clientBought;
 }
 
-void Client::setClientGender(QString clientGender)
+void Client::setClientGender(const QString& clientGender)
 {
     this->clientGender = clientGender;
 }
