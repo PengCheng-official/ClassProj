@@ -30,6 +30,27 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     nameEdit->setStyleSheet("font-weight: bold; font-size: 16px; color: black;}");
     nameEdit->setPlaceholderText("    " + client->getClientName());
 
+    //头像 初始化
+    ElaText *imageText = new ElaText("头像:", 18, this);
+    imageBtn = new ElaPushButton("选择图片", this);
+    imageBtn->setFixedSize(100, 40);
+    QHBoxLayout *imageLayout = new QHBoxLayout();
+    imageLayout->addStretch();
+    imageLayout->addWidget(imageText);
+    imageLayout->addSpacing(11);
+    imageLayout->addWidget(imageBtn);
+    imageLayout->addSpacing(175);
+    imageLayout->addStretch();
+    connect(imageBtn, &ElaPushButton::clicked, [=](){
+        imagePath = QFileDialog::getOpenFileName(
+                    this,
+                    tr("Select Image"),
+                    "C:\\Users\\PC\\Desktop\\ClassPro\\MyPro\\Client\\include\\Resource",
+                    tr("Image Files (*.png *.jpg *.bmp)"
+                       ));
+        qDebug() << "[personPage] select image: " << imagePath;
+    });
+
     //性别按钮 初始化
     ElaText *genderText = new ElaText("性别:", 18, this);
     maleBtn = new ElaToggleButton("男", this);
@@ -38,10 +59,11 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     QHBoxLayout *genderLayout = new QHBoxLayout();
     genderLayout->addStretch();
     genderLayout->addWidget(genderText);
-    genderLayout->addSpacing(25);
+    genderLayout->addSpacing(22);
     genderLayout->addWidget(maleBtn);
     genderLayout->addWidget(femaleBtn);
     genderLayout->addWidget(unknownBtn);
+    genderLayout->addSpacing(5);
     genderLayout->addStretch();
     if (client->getClientGender() == "男")
         maleBtn->setIsToggled(true);
@@ -52,22 +74,22 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
 
     //只有一个按钮可以被选中
     connect(maleBtn, &ElaToggleButton::toggled, [=](bool check){
-       if (check) {
-           femaleBtn->setIsToggled(false);
-           unknownBtn->setIsToggled(false);
-       }
+        if (check) {
+            femaleBtn->setIsToggled(false);
+            unknownBtn->setIsToggled(false);
+        }
     });
     connect(femaleBtn, &ElaToggleButton::toggled, [=](bool check){
-       if (check) {
-           maleBtn->setIsToggled(false);
-           unknownBtn->setIsToggled(false);
-       }
+        if (check) {
+            maleBtn->setIsToggled(false);
+            unknownBtn->setIsToggled(false);
+        }
     });
     connect(unknownBtn, &ElaToggleButton::toggled, [=](bool check){
-       if (check) {
-           femaleBtn->setIsToggled(false);
-           maleBtn->setIsToggled(false);
-       }
+        if (check) {
+            femaleBtn->setIsToggled(false);
+            maleBtn->setIsToggled(false);
+        }
     });
 
     //地址 初始化
@@ -93,10 +115,8 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
 
     //确定按钮 初始化
     confirmBtn = new ElaMessageButton("确定修改", this);
-//    confirmBtn->setBarTitle("修改失败");
-//    confirmBtn->setBarText("已存在相同账号");
-//    confirmBtn->setMessageMode(ElaMessageBarType::Error);
-//    confirmBtn->setPositionPolicy(ElaMessageBarType::BottomRight);
+        confirmBtn->setMessageMode(ElaMessageBarType::Error);
+        confirmBtn->setPositionPolicy(ElaMessageBarType::BottomRight);
     confirmBtn->setFixedSize(100, 40);
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addStretch();
@@ -110,6 +130,8 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     //主Layout添加
     centerLayout->addSpacing(25);
     centerLayout->addLayout(midHLayout2(nameText, nameEdit));
+    centerLayout->addSpacing(25);
+    centerLayout->addLayout(imageLayout);
     centerLayout->addSpacing(25);
     centerLayout->addLayout(genderLayout);
     centerLayout->addSpacing(25);
@@ -131,10 +153,45 @@ PersonPage::~PersonPage()
 
 void PersonPage::onConFirmBtnClicked()
 {
-    Client *cClient = new Client;
+    Client *nClient = new Client;
+    if (imagePath != "") {
+        nClient->setClientImage(imagePath);
+    }
+    if (maleBtn->getIsToggled()) {
+        nClient->setClientGender("男");
+    }
+    else if (femaleBtn->getIsToggled()) {
+        nClient->setClientGender("女");
+    }
+    else {
+        nClient->setClientGender("未知");
+    }
+    if (addrEdit->text() != "") {
+        nClient->setClientAddr(addrEdit->text());
+    }
+    if (phoneEdit->text() != "") {
+        nClient->setClientPhone(phoneEdit->text());
+    }
+    if (emailEdit->text() != "") {
+        nClient->setClientEmail(emailEdit->text());
+    }
+
     if (nameEdit->text() == "")
     {
-        //没有修改用户名
+        //没有修改用户名，不需要返回
+        //发送请求，不需要回复
+        QList<Client*> clientList;
+        clientList.append(nClient);
+        QJsonObject message;
+        ObjectToJson::addClientList(message, clientList);
+        ObjectToJson::addSignal(message, QString::number(PERSONMODIFY));    //个人信息修改请求
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToServer(array);
+
+        confirmBtn->setBarTitle("修改成功");
+        confirmBtn->setMessageMode(ElaMessageBarType::Success);
+        confirmBtn->setPositionPolicy(ElaMessageBarType::BottomRight);
+//        confirmBtn->getMessageTargetWidget()->show();
     }
     else
     {

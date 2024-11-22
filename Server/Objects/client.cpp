@@ -1,6 +1,5 @@
 #include "objects.h"
 
-
 Client::Client():clientId(0),clientBought(0)
 {
 
@@ -107,4 +106,14 @@ void Client::setClientBought(int clientBought)
 void Client::setClientGender(const QString& clientGender)
 {
     this->clientGender = clientGender;
+}
+
+QString Client::getClientImage() const
+{
+    return clientImage;
+}
+
+void Client::setClientImage(const QString &value)
+{
+    clientImage = value;
 }

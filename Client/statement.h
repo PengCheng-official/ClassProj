@@ -9,8 +9,9 @@
 #define SIGNINERROR 304102  //NULL
 #define CHATMSG 200103  //发送聊天信息
 #define CHATHISTORY 200104  //请求聊天历史
-#define CHATMSGUN 200203    //发送聊天信息，匿名模式
-#define CHATHISTORYUN 200204    //请求聊天历史，匿名模式
+#define PERSONMODIFY 200105 //修改个人信息
+#define PERSONCHANGE 200205 //修改个人账号，修改成功
+#define PERSONFAIL 404205  //修改个人账号失败
 //#define RESETPWD 20010103
 //#define RESETPWDF 40410103
 //#define RESETPWDE 30410103

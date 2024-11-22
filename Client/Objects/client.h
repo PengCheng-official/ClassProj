@@ -17,6 +17,7 @@ private:
     QString clientAddr;
     QString clientGender;
     QString clientSalt;
+    QString clientImage;
 
 public:
     Client();
@@ -32,14 +33,15 @@ public:
             QString clientGender
             );
     void setClientId(int clientId);
-    void setClientName(QString clientName);
-    void setClientPwd(QString clientPwd);
-    void setClientSalt(QString clientSalt);
-    void setClientAddr(QString clientAddr);
-    void setClientPhone(QString clientPhone);
-    void setClientEmail(QString clientEmail);
+    void setClientName(const QString &clientName);
+    void setClientPwd(const QString &clientPwd);
+    void setClientSalt(const QString &clientSalt);
+    void setClientAddr(const QString &clientAddr);
+    void setClientPhone(const QString &clientPhone);
+    void setClientEmail(const QString &clientEmail);
     void setClientBought(int clientBought);
-    void setClientGender(QString clientGender);
+    void setClientGender(const QString &clientGender);
+    void setClientImage(const QString &value);
 
     int getClientBought() const;
     QString getClientPwd() const;
@@ -50,6 +52,7 @@ public:
     QString getClientName() const;
     QString getClientGender() const;
     QString getClientAddr() const;
+    QString getClientImage() const;
 };
 
 #endif // CLIENT_H

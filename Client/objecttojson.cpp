@@ -11,7 +11,7 @@ QJsonObject ObjectToJson::addClientList(QJsonObject &object, QList<Client *> cli
     QJsonArray array;
     int size = clientList.size();
     objectList = new QJsonObject[size];
-    for (int i=0;i<size;i++) {
+    for (int i = 0; i < size; i++) {
         objectList[i].insert("clientName", clientList[i]->getClientName());
         objectList[i].insert("clientId", clientList[i]->getClientId());
         objectList[i].insert("clientPhone", clientList[i]->getClientPhone());
@@ -20,6 +20,8 @@ QJsonObject ObjectToJson::addClientList(QJsonObject &object, QList<Client *> cli
         objectList[i].insert("clientPwd", clientList[i]->getClientPwd());
         objectList[i].insert("clientBought", clientList[i]->getClientBought());
         objectList[i].insert("clientGender", clientList[i]->getClientGender());
+        objectList[i].insert("clientImage", clientList[i]->getClientImage());
+
         array.append(objectList[i]);
     }
     object.insert("ClientList", QJsonValue(array));
@@ -206,6 +208,10 @@ QList<Client *> ObjectToJson::parseClient(QByteArray byteArray)
                             if(clientObject.contains("clientGender")){
                                 QJsonValue object = clientObject.value("clientGender");
                                 client->setClientGender(object.toString());
+                            }
+                            if(clientObject.contains("clientImage")){
+                                QJsonValue object = clientObject.value("clientImage");
+                                client->setClientImage(object.toString());
                             }
                             clientList.append(client);
                         }

@@ -17,6 +17,7 @@ private:
     QString clientAddr;
     QString clientGender;
     QString clientSalt;
+    QString clientImage;
 
 public:
     Client();
@@ -40,6 +41,7 @@ public:
     void setClientEmail(const QString &clientEmail);
     void setClientBought(int clientBought);
     void setClientGender(const QString &clientGender);
+    void setClientImage(const QString &value);
 
     int getClientBought() const;
     QString getClientPwd() const;
@@ -50,6 +52,7 @@ public:
     QString getClientName() const;
     QString getClientGender() const;
     QString getClientAddr() const;
+    QString getClientImage() const;
 };
 
 #endif // CLIENT_H

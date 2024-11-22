@@ -32,6 +32,12 @@ SOURCES += \
     allmain.cpp \
     objects/chat.cpp \
     objects/client.cpp \
+    objects/order.cpp \
+    objects/orderlist.cpp \
+    objects/product.cpp \
+    objects/search.cpp \
+    objects/shopping.cpp \
+    objects/strategy.cpp \
     objecttojson.cpp \
     signin.cpp \
     ui/personpage.cpp
@@ -44,6 +50,12 @@ HEADERS += \
     objects/chat.h \
     objects/client.h \
     objects/objects.h \
+    objects/order.h \
+    objects/orderlist.h \
+    objects/product.h \
+    objects/search.h \
+    objects/shopping.h \
+    objects/strategy.h \
     objecttojson.h \
     signin.h \
     statement.h \

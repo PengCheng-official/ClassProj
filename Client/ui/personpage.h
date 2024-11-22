@@ -15,6 +15,10 @@
 #include "ElaLineEdit.h"
 #include "ElaToggleButton.h"
 #include "ElaMessageButton.h"
+#include "ElaPushButton.h"
+#include <QFileDialog>
+#include "objecttojson.h"
+#include "statement.h"
 
 class PersonPage : public ElaScrollPage
 {
@@ -34,10 +38,14 @@ private:
     ElaToggleButton *femaleBtn;
     ElaToggleButton *unknownBtn;
     ElaMessageButton *confirmBtn;
+    ElaPushButton *imageBtn;
+    QString imagePath{""};
 
 private slots:
     void onConFirmBtnClicked();
 
+signals:
+    void sigSendToServer(QByteArray array);
 };
 
 #endif // PERSONPAGE_H
