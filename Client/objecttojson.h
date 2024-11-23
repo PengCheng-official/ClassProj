@@ -1,6 +1,11 @@
 ﻿#ifndef OBJECTTOJSON_H
 #define OBJECTTOJSON_H
-#include "objects/objects.h"
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objects/order.h"
+#include "objects/orderlist.h"
+#include "objects/product.h"
+#include "objects/search.h"
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>

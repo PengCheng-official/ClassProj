@@ -14,7 +14,12 @@
 #include <QThread>
 #include <QThreadPool>
 #include "ThreadPool.h"
-#include "objects/objects.h"
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objects/order.h"
+#include "objects/orderlist.h"
+#include "objects/product.h"
+#include "objects/search.h"
 #include "objecttojson.h"
 #include "dao/clientmapper.h"
 #include "dao/chatmapper.h"

@@ -20,7 +20,7 @@ Client* ClientMapper::getClient(QSqlQuery &query)
     return client;
 }
 
-QList<Client *> ClientMapper::select(QString name)
+QList<Client *> ClientMapper::select(const QString &name)
 {
     qDebug() << "[database] client select...";
     QSqlQuery query(db);
@@ -64,6 +64,35 @@ void ClientMapper::insert(Client *client)
     query.bindValue(":addr", client->getClientAddr());
     query.bindValue(":phone", client->getClientPhone());
     query.bindValue(":email", client->getClientEmail());
+    query.exec();
+    query.finish();
+}
+
+void ClientMapper::update(const QString &name, Client *client)
+{
+    qDebug() << "[database] client's content update ...";
+    QSqlQuery query(db);
+    query.prepare("UPDATE client SET \
+                  client_address=:Addr, client_gender=:Gender, client_phone=:Phone, \
+                  client_email=:Email, client_image=:Image  \
+            WHERE client_name=:name;");
+    query.bindValue(":name", name);
+    query.bindValue(":Addr", client->getClientAddr());
+    query.bindValue(":Gender", client->getClientGender());
+    query.bindValue(":Phone", client->getClientPhone());
+    query.bindValue(":Email", client->getClientEmail());
+    query.bindValue(":Image", client->getClientImage());
+    query.exec();
+    query.finish();
+}
+
+void ClientMapper::update(const QString &preName, const QString &nowName)
+{
+    qDebug() << "[database] client's name update ...";
+    QSqlQuery query(db);
+    query.prepare("UPDATE client SET client_name=:now WHERE client_name=:pre;");
+    query.bindValue(":now", nowName);
+    query.bindValue(":pre", preName);
     query.exec();
     query.finish();
 }

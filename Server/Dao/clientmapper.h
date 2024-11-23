@@ -12,14 +12,20 @@ public:
     Client* getClient(QSqlQuery &query);
     //DAO层，数据转对象
 
-    QList<Client *> select(QString name);
+    QList<Client *> select(const QString &name);
     //通过用户名查找
 
     QList<Client *> select(int id);
     //通过id查找
 
-    void insert(Client* client);
+    void insert(Client *client);
     //插入用户
+
+    void update(const QString &name, Client *client);
+    //根据用户名，修改用户信息
+
+    void update(const QString &preName, const QString &nowName);
+    //修改用户名
 };
 
 #endif // CLIENTMAPPER_H

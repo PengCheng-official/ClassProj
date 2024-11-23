@@ -62,7 +62,7 @@ Allmain::~Allmain()
     delete ui;
 }
 
-void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t threadName)
+void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t threadName)
 {
     qDebug() << QString("[thread_%1]|[server] deal with message ...").arg(threadName);
 
@@ -81,12 +81,12 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
     qDebug() << QString("[thread_%1]|[database] Connected to MySql!").arg(threadName);
 
     Client* client = new Client;
-    int signal = ObjectToJson::parseSignal(message).toInt();
+    int signal = ObjectToJson::parseSignal(socketData).toInt();
     qDebug() << "signal: " << signal;
     switch(signal) {
     case LOGIN:
     {
-        QList<Client*> clientList = ObjectToJson::parseClient(message);
+        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
         client = new Client(*clientList[0]);
         QJsonObject message;
 
@@ -113,7 +113,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
     }
     case SIGNIN:
     {
-        QList<Client*> clientList = ObjectToJson::parseClient(message);
+        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
         client = new Client(*clientList[0]);
         ClientMapper *clientMapper = new ClientMapper(db);
         QList<Client*> db_client = clientMapper->select(client->getClientName());
@@ -141,7 +141,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
     case CHATHISTORY:
     {
         // 处理 Client 对聊天记录的请求
-        int id = ObjectToJson::parseNum(message);
+        int id = ObjectToJson::parseNum(socketData);
         ChatMapper *chatMapper = new ChatMapper(db);
         QList<Chat *> chatList = chatMapper->select(id);
         qDebug() << QString("[thread_%1]|[server] request chat history for Client%2").arg(threadName).arg(id);
@@ -157,13 +157,50 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &message, size_t thread
     case CHATMSG:
     {
         // 处理 Client 发来的信息，就一条
-        QList<Chat *> chatList = ObjectToJson::parseChat(message);
+        QList<Chat *> chatList = ObjectToJson::parseChat(socketData);
         ChatMapper *chatMapper = new ChatMapper(db);
         chatMapper->insert(chatList);
         //TODO 发送失败
 
         _chatPage->sigReceiveMessage(chatList[0]);
         setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), ++ChatPage::restMsg);
+        break;
+    }
+    case PERSONMODIFY:
+    {
+        // 只是修改信息，无需返回
+        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
+        ClientMapper *clientMapper = new ClientMapper(db);
+        clientMapper->update(clientList[0]->getClientName(), clientList[0]);
+        break;
+    }
+    case PERSONCHANGE:
+    {
+        // 查询用户名是否合法，修改并返回
+        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
+        QString rawName = ObjectToJson::parseString(socketData);   //原名
+        ClientMapper *clientMapper = new ClientMapper(db);
+        QList<Client*> dbClient = clientMapper->select(clientList[0]->getClientName());
+        if (dbClient.size() == 0)
+        {
+            // 合法，无人重名
+            qDebug() << "legal:" << dbClient.size() << clientList[0]->getClientName();
+            clientMapper->update(rawName, clientList[0]);
+            clientMapper->update(rawName, clientList[0]->getClientName());
+
+            QJsonObject message;
+            ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));
+            QByteArray array = ObjectToJson::changeJson(message);
+            emit sigSendToClient(socket, array);
+        }
+        else {
+            // 非法
+            qDebug() << "illegal:" << dbClient.size() << dbClient[0]->getClientId();
+            QJsonObject message;
+            ObjectToJson::addSignal(message, QString::number(PERSONCHANGEFAIL));
+            QByteArray array = ObjectToJson::changeJson(message);
+            emit sigSendToClient(socket, array);
+        }
         break;
     }
     }

@@ -8,7 +8,12 @@
 #include <QMouseEvent>
 #include <QTcpSocket>
 #include <QHostAddress>
-#include "objects/objects.h"
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objects/order.h"
+#include "objects/orderlist.h"
+#include "objects/product.h"
+#include "objects/search.h"
 #include "objecttojson.h"
 #include "statement.h"
 

@@ -73,6 +73,11 @@ void Allmain::initAllMain(Client *cClient)
 
     // 图形界面的初始化
     _personPage = new PersonPage(client, this);
+    connect(_personPage, &PersonPage::sigSendToServer, this, &Allmain::onSendToServer);
+    connect(_personPage, &PersonPage::sigClientChanged, [=](Client *nClient){
+        client = nClient;
+        qDebug() << "[personPage] client changed";
+    });
 
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
     addFooterNode("个人信息", _personPage, _personKey, 0, ElaIconType::User);
@@ -223,6 +228,18 @@ void Allmain::dealMessage(QByteArray message)
         chatRoom->initHistory(chatList);
         chatRoom->initClient(client);
         chatRoom->show();
+        break;
+    }
+    case PERSONCHANGE:
+    {
+        // 修改个人信息成功
+        _personPage->setMessageWindow(true);
+        break;
+    }
+    case PERSONCHANGEFAIL:
+    {
+        // 修改个人信息失败
+        _personPage->setMessageWindow(false);
         break;
     }
     }

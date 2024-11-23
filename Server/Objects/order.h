@@ -3,30 +3,20 @@
 
 
 #include <QString>
+#include "objects.h"
 
 class Order
 {
-private:
-    int clientId;
-    double totalPrice;
-    QString orderStatus;
-    // ENUM{'未支付', '已支付', '已完成', '已取消', '已退款'}
-    QString createTime;
-    QString finishTime;
+PROPERTY_CREATE_H(int, ClientId);
+PROPERTY_CREATE_H(double, TotalPrice);
+PROPERTY_CREATE_H(QString, OrderStatus);
+// ENUM{'未支付', '已支付', '已完成', '已取消', '已退款'}
+PROPERTY_CREATE_H(QString, CreateTime);
+PROPERTY_CREATE_H(QString, FinishTime);
 
 public:
     Order();
     Order(int cId, double totPrice, QString oStatus, QString cTime, QString fTime);
-
-    int getClientId() const;
-    double getTotalPrice() const;
-    QString getCreateTime() const;
-    QString getFinishTime() const;
-
-    void setClientId(int value);
-    void setTotalPrice(double value);
-    void setCreateTime(const QString &value);
-    void setFinishTime(const QString &value);
 };
 
 #endif // ORDER_H

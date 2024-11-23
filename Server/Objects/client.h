@@ -4,20 +4,20 @@
 
 #include <QString>
 #include <QDateTime>
+#include "objects.h"
 
 class Client
 {
-private:
-    QString clientName;
-    int clientId;
-    QString clientPhone;
-    QString clientEmail;
-    QString clientPwd;
-    int clientBought;
-    QString clientAddr;
-    QString clientGender;
-    QString clientSalt;
-    QString clientImage;
+PROPERTY_CREATE_H(QString, ClientName);
+PROPERTY_CREATE_H(int, ClientId);
+PROPERTY_CREATE_H(QString, ClientPhone);
+PROPERTY_CREATE_H(QString, ClientEmail);
+PROPERTY_CREATE_H(QString, ClientPwd);
+PROPERTY_CREATE_H(int, ClientBought);
+PROPERTY_CREATE_H(QString, ClientAddr);
+PROPERTY_CREATE_H(QString, ClientGender);
+PROPERTY_CREATE_H(QString, ClientSalt);
+PROPERTY_CREATE_H(QString, ClientImage);
 
 public:
     Client();
@@ -27,32 +27,12 @@ public:
             QString clientPhone,
             QString clientEmail,
             QString clientPwd,
-            QString clientSalt,
             int clientBought,
             QString clientAddr,
-            QString clientGender
+            QString clientGender,
+            QString clientSalt,
+            QString clientImage
             );
-    void setClientId(int clientId);
-    void setClientName(const QString &clientName);
-    void setClientPwd(const QString &clientPwd);
-    void setClientSalt(const QString &clientSalt);
-    void setClientAddr(const QString &clientAddr);
-    void setClientPhone(const QString &clientPhone);
-    void setClientEmail(const QString &clientEmail);
-    void setClientBought(int clientBought);
-    void setClientGender(const QString &clientGender);
-    void setClientImage(const QString &value);
-
-    int getClientBought() const;
-    QString getClientPwd() const;
-    QString getClientSalt() const;
-    QString getClientEmail() const;
-    QString getClientPhone() const;
-    int getClientId() const;
-    QString getClientName() const;
-    QString getClientGender() const;
-    QString getClientAddr() const;
-    QString getClientImage() const;
 };
 
 #endif // CLIENT_H
