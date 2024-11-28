@@ -76,7 +76,10 @@ void Allmain::initAllMain(Client *cClient)
     connect(_personPage, &PersonPage::sigSendToServer, this, &Allmain::onSendToServer);
     connect(_personPage, &PersonPage::sigClientChanged, [=](Client *nClient){
         client = nClient;
-        qDebug() << "[personPage] client changed";
+        setUserInfoCardPixmap(QPixmap(client->getClientImage()));
+        setUserInfoCardTitle(client->getClientName());
+        setWindowTitle(QString("%1 的主页").arg(client->getClientName()));
+        qDebug() << "[Allmain] client changed";
     });
 
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
@@ -92,7 +95,8 @@ void Allmain::initAllMain(Client *cClient)
             if (nodeKey == _chatKey)
             {
                 QJsonObject message;
-                ObjectToJson::addNum(message, client->getClientId());
+                QList<int> numList = {client->getClientId()};
+                ObjectToJson::addNums(message, numList);
                 ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
                 QByteArray array = ObjectToJson::changeJson(message);
                 onSendToServer(array);
@@ -233,13 +237,19 @@ void Allmain::dealMessage(QByteArray message)
     case PERSONCHANGE:
     {
         // 修改个人信息成功
-        _personPage->setMessageWindow(true);
+        _personPage->showMessageWindow(true);
         break;
     }
     case PERSONCHANGEFAIL:
     {
         // 修改个人信息失败
-        _personPage->setMessageWindow(false);
+        _personPage->showMessageWindow(false, "用户名已存在");
+        break;
+    }
+    case PERSONCHANGEERROR:
+    {
+        // 修改个人密码错误
+        _personPage->showMessageWindow(false, "原密码输入错误");
         break;
     }
     }

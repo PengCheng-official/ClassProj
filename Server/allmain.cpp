@@ -91,11 +91,11 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         QJsonObject message;
 
         ClientMapper *clientMapper = new ClientMapper(db);
-        QList<Client*> db_client = clientMapper->select(client->getClientName());
-        if (!db_client.empty() && db_client[0]->getClientPwd() == sha256Hash(client->getClientPwd(), db_client[0]->getClientSalt()))
+        QList<Client*> dbClient = clientMapper->select(client->getClientName());
+        if (!dbClient.empty() && dbClient[0]->getClientPwd() == sha256Hash(client->getClientPwd(), dbClient[0]->getClientSalt()))
         {
             ObjectToJson::addSignal(message, QString::number(LOGIN));    //登录成功
-            clientList[0] = db_client[0];
+            clientList[0] = dbClient[0];
             clients.append(clientList[0]);
             clientHash.insert(socket, clientList[0]);
             socketHash.insert(clientList[0], socket);
@@ -116,10 +116,10 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         QList<Client*> clientList = ObjectToJson::parseClient(socketData);
         client = new Client(*clientList[0]);
         ClientMapper *clientMapper = new ClientMapper(db);
-        QList<Client*> db_client = clientMapper->select(client->getClientName());
+        QList<Client*> dbClient = clientMapper->select(client->getClientName());
 
         QJsonObject message;
-        if (db_client.size() > 0) {
+        if (dbClient.size() > 0) {
             ObjectToJson::addSignal(message, QString::number(SIGNINFAIL));  //注册失败
             clientList.pop_front();
         }
@@ -131,7 +131,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
             client->setClientPwd(sha256Hash(rawPasswd, salt));
             clientMapper->insert(client);
             ObjectToJson::addSignal(message, QString::number(SIGNIN));    //注册成功
-            clientList[0] = db_client[0];
+            clientList[0] = dbClient[0];
         }
         ObjectToJson::addClientList(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
@@ -141,7 +141,8 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     case CHATHISTORY:
     {
         // 处理 Client 对聊天记录的请求
-        int id = ObjectToJson::parseNum(socketData);
+        QList<int> idList = ObjectToJson::parseNums(socketData);
+        int id = idList[0];
         ChatMapper *chatMapper = new ChatMapper(db);
         QList<Chat *> chatList = chatMapper->select(id);
         qDebug() << QString("[thread_%1]|[server] request chat history for Client%2").arg(threadName).arg(id);
@@ -166,41 +167,68 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), ++ChatPage::restMsg);
         break;
     }
-    case PERSONMODIFY:
-    {
-        // 只是修改信息，无需返回
-        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
-        ClientMapper *clientMapper = new ClientMapper(db);
-        clientMapper->update(clientList[0]->getClientName(), clientList[0]);
-        break;
-    }
     case PERSONCHANGE:
     {
         // 查询用户名是否合法，修改并返回
         QList<Client*> clientList = ObjectToJson::parseClient(socketData);
-        QString rawName = ObjectToJson::parseString(socketData);   //原名
+        QList<QString> stringList = ObjectToJson::parseStrings(socketData);   //原密码
+        bool pwd = stringList.size() == 0 ? false : true;
+        QString rawPassword;
+        if (pwd) rawPassword = stringList[0];
         ClientMapper *clientMapper = new ClientMapper(db);
-        QList<Client*> dbClient = clientMapper->select(clientList[0]->getClientName());
-        if (dbClient.size() == 0)
+        QList<Client *> dbClient = clientMapper->select(clientList[0]->getClientId());
+        if (clientList[0]->getClientName() != dbClient[0]->getClientName())
         {
-            // 合法，无人重名
-            qDebug() << "legal:" << dbClient.size() << clientList[0]->getClientName();
-            clientMapper->update(rawName, clientList[0]);
-            clientMapper->update(rawName, clientList[0]->getClientName());
+            QList<Client *> nameCheck = clientMapper->select(clientList[0]->getClientName());
+            if (nameCheck.size() != 0)
+            {
+                // 有重名，返回失败
+                qDebug() << "[socket] rename";
+                QJsonObject message;
+                ObjectToJson::addSignal(message, QString::number(PERSONCHANGEFAIL));
+                QByteArray array = ObjectToJson::changeJson(message);
+                emit sigSendToClient(socket, array);
+                break;
+            }
+        }
+        if (pwd)
+        {
+            if (dbClient[0]->getClientPwd() != sha256Hash(rawPassword, dbClient[0]->getClientSalt()))
+            {
+                // 输入的密码不正确，返回错误
+                qDebug() << "[socket] wrong pwd";
+                QJsonObject message;
+                ObjectToJson::addSignal(message, QString::number(PERSONCHANGEERROR));
+                QByteArray array = ObjectToJson::changeJson(message);
+                emit sigSendToClient(socket, array);
+                break;
+            }
+        }
 
-            QJsonObject message;
-            ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));
-            QByteArray array = ObjectToJson::changeJson(message);
-            emit sigSendToClient(socket, array);
+        if (clientList[0]->getClientName() != dbClient[0]->getClientName())
+        {
+            // 修改名字
+            qDebug() << "[socket] change name";
+            clientMapper->update(clientList[0]->getClientId(), clientList[0]);
         }
-        else {
-            // 非法
-            qDebug() << "illegal:" << dbClient.size() << dbClient[0]->getClientId();
-            QJsonObject message;
-            ObjectToJson::addSignal(message, QString::number(PERSONCHANGEFAIL));
-            QByteArray array = ObjectToJson::changeJson(message);
-            emit sigSendToClient(socket, array);
+        if (pwd)
+        {
+            // 修改密码
+            QString newPasswd = clientList[0]->getClientPwd();
+            QString salt = generateRandomSalt(16);
+            qDebug() << "[socket] change pwd: " << clientList[0]->getClientId() << newPasswd;
+
+            clientList[0]->setClientSalt(salt);
+            clientList[0]->setClientPwd(sha256Hash(newPasswd, salt));
+            clientMapper->update(clientList[0]->getClientId(), clientList[0]);
         }
+        // 其他信息修改
+        clientMapper->update(clientList[0]->getClientId(), clientList[0]);
+
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
         break;
     }
     }

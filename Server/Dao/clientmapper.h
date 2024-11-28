@@ -24,8 +24,8 @@ public:
     void update(const QString &name, Client *client);
     //根据用户名，修改用户信息
 
-    void update(const QString &preName, const QString &nowName);
-    //修改用户名
+    void update(const int id, Client *client);
+    //根据id，修改用户信息
 };
 
 #endif // CLIENTMAPPER_H

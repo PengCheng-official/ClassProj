@@ -28,7 +28,7 @@ public:
     explicit PersonPage(Client* cClient, QWidget* parent = nullptr);
     ~PersonPage();
 
-    void setMessageWindow(bool success);
+    void showMessageWindow(bool success,  QString text = "用户名已存在");
     // 提示成功（失败）弹窗
 
     void initPage(Client* cClient);
@@ -48,6 +48,8 @@ private:
     ElaMessageButton *confirmBtn;
     ElaPushButton *imageBtn;
     QString imagePath{""};
+    ElaLineEdit *prePasswordEdit;
+    ElaLineEdit *newPasswordEdit;
 
 private slots:
     void onConFirmBtnClicked();

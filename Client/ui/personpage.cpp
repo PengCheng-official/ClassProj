@@ -26,7 +26,7 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     //用户名 初始化
     ElaText *nameText = new ElaText("姓名:", 18, this);
     nameEdit = new ElaLineEdit(this);
-    nameEdit->setFixedSize(270, 36);
+    nameEdit->setFixedSize(270, 40);
     nameEdit->setStyleSheet("font-weight: bold; font-size: 16px; color: black; ");
 
     //头像 初始化
@@ -85,6 +85,19 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
         }
     });
 
+    //密码初始化
+    ElaText *prePasswordText = new ElaText("原密码:", 18, this);
+    prePasswordEdit = new ElaLineEdit(this);
+    prePasswordEdit->setFixedSize(270, 40);
+    prePasswordEdit->setStyleSheet("font-size: 16px; color: black; ");
+    prePasswordEdit->setEchoMode(QLineEdit::Password);
+    ElaText *newPasswordText = new ElaText("新密码:", 18, this);
+    newPasswordEdit = new ElaLineEdit(this);
+    newPasswordEdit->setFixedSize(270, 40);
+    newPasswordEdit->setStyleSheet("font-size: 16px; color: black; ");
+    newPasswordEdit->setEchoMode(QLineEdit::Password);
+
+
     //地址 初始化
     ElaText *addrText = new ElaText("地址:", 18, this);
     addrEdit = new ElaLineEdit(this);
@@ -94,7 +107,7 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     //手机号 初始化
     ElaText *phoneText = new ElaText("手机:", 18, this);
     phoneEdit = new ElaLineEdit(this);
-    phoneEdit->setFixedSize(270, 36);//font-weight: bold;
+    phoneEdit->setFixedSize(270, 36);
     phoneEdit->setStyleSheet("font-size: 16px; color: black; ");
 
     //邮箱 初始化
@@ -107,11 +120,9 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     confirmBtn = new ElaMessageButton("确定修改", this);
     confirmBtn->setFixedSize(120, 50);
     confirmBtn->setPositionPolicy(ElaMessageBarType::BottomRight);
-    setMessageWindow(false);
 
     //连接确定的点击槽函数
     connect(confirmBtn, &QPushButton::clicked, this, &PersonPage::onConFirmBtnClicked);
-    confirmBtn->connectShow();
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addStretch();
@@ -127,6 +138,10 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     centerLayout->addLayout(imageLayout);
     centerLayout->addSpacing(25);
     centerLayout->addLayout(genderLayout);
+    centerLayout->addSpacing(25);
+    centerLayout->addLayout(midHLayout2(prePasswordText, prePasswordEdit));
+    centerLayout->addSpacing(25);
+    centerLayout->addLayout(midHLayout2(newPasswordText, newPasswordEdit));
     centerLayout->addSpacing(25);
     centerLayout->addLayout(midHLayout2(addrText, addrEdit));
     centerLayout->addSpacing(25);
@@ -160,13 +175,33 @@ void PersonPage::initPage(Client *cClient)
         femaleBtn->setIsToggled(true);
     else
         unknownBtn->setIsToggled(true);
-    addrEdit->setPlaceholderText("    " + client->getClientAddr());
-    phoneEdit->setPlaceholderText("    " + client->getClientPhone());
-    emailEdit->setPlaceholderText("    " + client->getClientEmail());
+
+    prePasswordEdit->setPlaceholderText("    请输入你的原密码");
+    newPasswordEdit->setPlaceholderText("    请输入你的新密码");
+
+    if (client->getClientAddr() == "") {
+        addrEdit->setPlaceholderText("    请输入你的地址");
+    } else {
+        addrEdit->setPlaceholderText("    " + client->getClientAddr());
+    }
+
+    if (client->getClientPhone() == "") {
+        phoneEdit->setPlaceholderText("    请输入你的手机号");
+    } else {
+        phoneEdit->setPlaceholderText("    " + client->getClientPhone());
+    }
+
+    if (client->getClientEmail() == "") {
+        phoneEdit->setPlaceholderText("    请输入你的邮箱");
+    } else {
+        emailEdit->setPlaceholderText("    " + client->getClientEmail());
+    }
 }
 
-void PersonPage::setMessageWindow(bool success)
+void PersonPage::showMessageWindow(bool success, QString text)
 {
+    prePasswordEdit->setText("");
+    newPasswordEdit->setText("");
     if (success)
     {
         confirmBtn->setBarTitle("修改成功");
@@ -179,18 +214,23 @@ void PersonPage::setMessageWindow(bool success)
     else
     {
         confirmBtn->setBarTitle("修改失败");
-        confirmBtn->setBarText("用户名已存在");
+        confirmBtn->setBarText(text);
         confirmBtn->setMessageMode(ElaMessageBarType::Error);
     }
+    confirmBtn->connectShow();
 }
 
 void PersonPage::onConFirmBtnClicked()
 {
+    QList<QString> stringList;
     if (nClient != nullptr) {
         nClient = client;
     }
     else nClient = new Client(*client);
-
+    if (nameEdit->text() != "")
+    {
+        nClient->setClientName(nameEdit->text());
+    }
     if (imagePath != "") {
         nClient->setClientImage(imagePath);
     }
@@ -203,6 +243,16 @@ void PersonPage::onConFirmBtnClicked()
     else {
         nClient->setClientGender("未知");
     }
+    if (prePasswordEdit->text() != "")
+    {
+        if (newPasswordEdit->text() == "")
+        {
+            showMessageWindow(false, "请输入新密码");
+            return;
+        }
+        nClient->setClientPwd(newPasswordEdit->text());
+        stringList.append(prePasswordEdit->text());
+    }
     if (addrEdit->text() != "") {
         nClient->setClientAddr(addrEdit->text());
     }
@@ -213,41 +263,14 @@ void PersonPage::onConFirmBtnClicked()
         nClient->setClientEmail(emailEdit->text());
     }
 
-    if (nameEdit->text() == "")
-    {
-        //没有修改用户名，不需要返回
-        nClient->setClientName(client->getClientName());
+    QList<Client*> clientList;
+    clientList.append(nClient);
+    QJsonObject message;
+    ObjectToJson::addClientList(message, clientList);
+    ObjectToJson::addStrings(message, stringList);  //输入的原密码
+    ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));    //个人信息修改请求
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
 
-        //发送请求，不需要回复
-        QList<Client*> clientList;
-        clientList.append(nClient);
-        QJsonObject message;
-        ObjectToJson::addClientList(message, clientList);
-        ObjectToJson::addSignal(message, QString::number(PERSONMODIFY));    //个人信息修改请求
-        QByteArray array = ObjectToJson::changeJson(message);
-        emit sigSendToServer(array);
-
-        setMessageWindow(true);
-        client = nClient;
-        emit sigClientChanged(nClient);
-        initPage(client);
-    }
-    else
-    {
-        //修改了用户名
-        nClient->setClientName(nameEdit->text());
-        qDebug() << "name:" << nClient->getClientName();
-
-        //发送请求，并等待回复
-        QList<Client*> clientList;
-        clientList.append(nClient);
-        QJsonObject message;
-        ObjectToJson::addClientList(message, clientList);
-        ObjectToJson::addString(message, client->getClientName());  //原名
-        ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));    //个人信息修改请求
-        QByteArray array = ObjectToJson::changeJson(message);
-        emit sigSendToServer(array);
-
-        QThread::msleep(50);
-    }
+    QThread::msleep(100);
 }

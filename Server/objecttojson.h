@@ -23,8 +23,8 @@ class ObjectToJson
 public:
     ObjectToJson();
     static QJsonObject addSignal(QJsonObject &object,QString signal);
-    static QJsonObject addString(QJsonObject &object, QString string);
-    static QJsonObject addNum(QJsonObject &object, int number);
+    static QJsonObject addStrings(QJsonObject &object, QList<QString> strings);
+    static QJsonObject addNums(QJsonObject &object, QList<int> numbers);
     static QJsonObject addClientList(QJsonObject &object, QList<Client *> clientList);
     static QJsonObject addChatList(QJsonObject &object, QList<Chat *> chatList);
 //    static QJsonObject integrateProductList(QJsonObject &object,QList<Product*>ProductList);
@@ -33,8 +33,8 @@ public:
 //    static QJsonObject integrateObjects(QJsonObject &object,int number,QString string);
 
     static QString parseSignal(QByteArray object);
-    static QString parseString(QByteArray object);
-    static int parseNum(QByteArray object);
+    static QList<QString> parseStrings(QByteArray object);
+    static QList<int> parseNums(QByteArray object);
     static QList<Client *> parseClient(QByteArray object);
     static QList<Chat *> parseChat(QByteArray object);
 //    static QList<Product*> parseProduct(QByteArray object);
