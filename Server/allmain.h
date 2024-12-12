@@ -23,12 +23,15 @@
 #include "objecttojson.h"
 #include "dao/clientmapper.h"
 #include "dao/chatmapper.h"
+#include "dao/productmapper.h"
 #include "statement.h"
 #include <QTime>
 
 #include "ElaWindow.h"
 #include "ui/chatpage.h"
 #include "ui/homepage.h"
+#include "ui/searchpage.h"
+#include "ui/productpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
@@ -54,6 +57,8 @@ private:
 
     HomePage *_homePage{nullptr};
     ChatPage *_chatPage{nullptr};
+    SearchPage *_searchPage{nullptr};
+    ProductPage *_productPage{nullptr};
 
 protected:
     void startToListen();

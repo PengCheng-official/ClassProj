@@ -33,14 +33,13 @@ private:
     ChatRoom *chatRoom;
 
 protected:
-    virtual void mouseReleaseEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
 signals:
-    void lockBtn();
-    void unlockBtn();
+    void sigLockBtn();
+    void sigUnlockBtn();
     void sigReceiveMessage(Chat* chatMsg);
     void sigSendToClient(Client* client, QByteArray array);
-
 };
 
 #endif // CHATPAGE_H

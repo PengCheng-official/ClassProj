@@ -24,6 +24,12 @@ ChatRoom::ChatRoom(Client *cClient, QWidget *parent) :
 
     connectToDB();
     initHistory();
+    this->setIsDefaultClosed(false);
+    connect(this, &ChatRoom::closeButtonClicked, [=](){
+        qDebug() << "[chatroom] close";
+        emit sigUnlocked();
+        window()->close();
+    });
 }
 
 ChatRoom::~ChatRoom()
@@ -173,5 +179,12 @@ void ChatRoom::on_returnBtn_clicked()
     this->hide();
     ui->textEdit->clear();
     ui->listWidget->clear();
+}
+
+void ChatRoom::closeEvent(QCloseEvent *event)
+{
+    qDebug() << "[chatroom] close";
+    emit sigUnlocked();
+    event->accept();
 }
 

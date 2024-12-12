@@ -45,46 +45,28 @@ QJsonObject ObjectToJson::addChatList(QJsonObject &object, QList<Chat *> chatLis
     return object;
 }
 
-//QJsonObject ObjectToJson::integrateProductList(QJsonObject &object, QList<Product *> ProductList)
-//{
-////    QJsonObject object;
-//    QJsonObject* objectList;
-//    QJsonArray array;
-//    int size = ProductList.size();
-//    objectList = new QJsonObject[size];
-//    for (int i=0;i<size;i++) {
-//          objectList[i].insert("productId",ProductList[i]->getProductId());
-//          objectList[i].insert("productName",ProductList[i]->getProductName());
-//          objectList[i].insert("productPrice",ProductList[i]->getProductPrice());
-//          objectList[i].insert("productNum",ProductList[i]->getProductNum());
-//          objectList[i].insert("productBuyNum",ProductList[i]->getProductBuyNum());
-//          objectList[i].insert("productImage",ProductList[i]->getProductImage());
-//          objectList[i].insert("productDiscount",ProductList[i]->getProductDiscount());
-//          array.append(objectList[i]);
-//    }
-////    object.insert("signal",signal);
-//    object.insert("ProductList",QJsonValue(array));
-//    return object;
-//}
-
-//QJsonObject ObjectToJson::integrateProductTypeList(QJsonObject &object, QList<ProductType *> ProductTypeList)
-//{
-////    QJsonObject object;
-//    QJsonObject* objectList;
-//    QJsonArray array;
-//    int size = ProductTypeList.size();
-//    objectList = new QJsonObject[size];
-//        for (int i=0;i<size;i++) {
-//            objectList[i].insert("typeName",ProductTypeList[i]->getTypeName());
-//            objectList[i].insert("typeId",ProductTypeList[i]->getTypeId());
-//            objectList[i].insert("typeProduct",ProductTypeList[i]->getTypeProduct());
-//            objectList[i].insert("typeProductId",ProductTypeList[i]->getTypeProductId());
-//            array.append(objectList[i]);
-//        }
-////    object.insert("signal",signal);
-//    object.insert("ProductTypeList",QJsonValue(array));
-//    return object;
-//}
+QJsonObject ObjectToJson::addProductList(QJsonObject &object, QList<Product *> productList)
+{
+    QJsonObject* objectList;
+    QJsonArray array;
+    int size = productList.size();
+    objectList = new QJsonObject[size];
+    for (int i=0;i<size;i++) {
+        objectList[i].insert("productId", productList[i]->getProductId());
+        objectList[i].insert("productName", productList[i]->getProductName());
+        objectList[i].insert("productPrice", productList[i]->getProductPrice());
+        objectList[i].insert("productNum", productList[i]->getProductNum());
+        objectList[i].insert("productSales", productList[i]->getProductSales());
+        objectList[i].insert("productAbout", productList[i]->getProductAbout());
+        objectList[i].insert("productStrategy", productList[i]->getStrategy());
+        objectList[i].insert("productNum1", productList[i]->getStrategy1());
+        objectList[i].insert("productNum2", productList[i]->getStrategy2());
+        objectList[i].insert("productImage", productList[i]->getProductImage());
+        array.append(objectList[i]);
+    }
+    object.insert("ProductList", QJsonValue(array));
+    return object;
+}
 
 //QJsonObject ObjectToJson::integrateOrderList(QJsonObject &object, QList<Order *> OrderList)
 //{
@@ -272,6 +254,71 @@ QList<Chat *> ObjectToJson::parseChat(QByteArray byteArray)
         }
     }
     return chatList;
+}
+
+QList<Product *> ObjectToJson::parseProduct(QByteArray byteArray)
+{
+    QJsonParseError jsonError;
+    QList<Product *> productList;
+    QJsonDocument doucment = QJsonDocument::fromJson(byteArray, &jsonError);
+    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError))
+    {
+        if (doucment.isObject())
+        {
+            QJsonObject object = doucment.object();
+            if (object.contains("ProductList")){
+                QJsonValue value = object.value("ProductList");
+                if (value.isArray())
+                {
+                    QJsonArray array = value.toArray();
+                    int size = array.size();
+                    for (int i = 0; i < size; i++)
+                    {
+                        if(array[i].isObject()){
+                            QJsonObject clientObject = array[i].toObject();
+                            Product * product = new Product;
+                            if(clientObject.contains("productId")){
+                                QJsonValue object = clientObject.value("productId");
+                                product->setProductId(object.toVariant().toInt());
+                            }
+                            if(clientObject.contains("productName")){
+                                QJsonValue object = clientObject.value("productName");
+                                product->setProductName(object.toString());
+                            }
+                            if(clientObject.contains("productPrice")){
+                                QJsonValue object = clientObject.value("productPrice");
+                                product->setProductPrice(object.toVariant().toDouble());
+                            }
+                            if(clientObject.contains("productNum")){
+                                QJsonValue object = clientObject.value("productNum");
+                                product->setProductNum(object.toVariant().toInt());
+                            }
+                            if(clientObject.contains("productSales")){
+                                QJsonValue object = clientObject.value("productSales");
+                                product->setProductSales(object.toVariant().toInt());
+                            }
+                            if(clientObject.contains("productAbout")){
+                                QJsonValue object = clientObject.value("productAbout");
+                                product->setProductAbout(object.toString());
+                            }
+                            if(clientObject.contains("productStrategy")){
+                                QJsonValue object = clientObject.value("productStrategy");
+                                QJsonValue object1 = clientObject.value("productStrategy1");
+                                QJsonValue object2 = clientObject.value("productStrategy2");
+                                product->setStrategy(object.toVariant().toInt(), object1.toVariant().toDouble(), object2.toVariant().toDouble());
+                            }
+                            if(clientObject.contains("productImage")){
+                                QJsonValue object = clientObject.value("productImage");
+                                product->setProductImage(object.toString());
+                            }
+                            productList.append(product);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return productList;
 }
 
 //QList<Product *> ObjectToJson::parseProduct(QByteArray byteArray)

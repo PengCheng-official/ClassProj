@@ -198,26 +198,17 @@ void PersonPage::initPage(Client *cClient)
     }
 }
 
-void PersonPage::showMessageWindow(bool success, QString text)
+void PersonPage::showMessageWindow(bool success)
 {
     prePasswordEdit->setText("");
     newPasswordEdit->setText("");
     if (success)
     {
-        confirmBtn->setBarTitle("修改成功");
-        confirmBtn->setBarText("");
-        confirmBtn->setMessageMode(ElaMessageBarType::Success);
         client = nClient;
         emit sigClientChanged(nClient);
         initPage(client);
     }
-    else
-    {
-        confirmBtn->setBarTitle("修改失败");
-        confirmBtn->setBarText(text);
-        confirmBtn->setMessageMode(ElaMessageBarType::Error);
-    }
-    confirmBtn->connectShow();
+//    confirmBtn->connectShow();
 }
 
 void PersonPage::onConFirmBtnClicked()
@@ -247,7 +238,11 @@ void PersonPage::onConFirmBtnClicked()
     {
         if (newPasswordEdit->text() == "")
         {
-            showMessageWindow(false, "请输入新密码");
+            confirmBtn->setBarTitle("修改失败");
+            confirmBtn->setBarText("请输入新密码");
+            confirmBtn->setMessageMode(ElaMessageBarType::Error);
+            showMessageWindow(false);
+            confirmBtn->connectShow();
             return;
         }
         nClient->setClientPwd(newPasswordEdit->text());

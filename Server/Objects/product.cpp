@@ -25,6 +25,21 @@ void Product::setStrategy(int pStrategy, double num1, double num2)
     _num2 = num2;
 }
 
+int Product::getStrategy() const
+{
+    return _ProductStrategy;
+}
+
+double Product::getStrategy1() const
+{
+    return _num1;
+}
+
+double Product::getStrategy2() const
+{
+    return _num2;
+}
+
 void Product::applyStrategy(double &price, int &num)
 {
     switch(_ProductStrategy)

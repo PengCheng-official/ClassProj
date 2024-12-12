@@ -34,6 +34,9 @@ public:
 
     //促销策略
     void setStrategy(int pStrategy, double num1, double num2);
+    int getStrategy() const;
+    double getStrategy1() const;
+    double getStrategy2() const;
     void applyStrategy(double &price, int &num);
 };
 

@@ -32,6 +32,7 @@ SOURCES += \
     dao/chatmapper.cpp \
     dao/clientmapper.cpp \
     dao/mapper.cpp \
+    dao/productmapper.cpp \
     main.cpp \
     allmain.cpp \
     objects/chat.cpp \
@@ -44,7 +45,9 @@ SOURCES += \
     objecttojson.cpp \
     ui/basepage.cpp \
     ui/chatpage.cpp \
-    ui/homepage.cpp
+    ui/homepage.cpp \
+    ui/productpage.cpp \
+    ui/searchpage.cpp
 
 HEADERS += \
     ThreadPool.h \
@@ -54,6 +57,7 @@ HEADERS += \
     dao/chatmapper.h \
     dao/clientmapper.h \
     dao/mapper.h \
+    dao/productmapper.h \
     objects/chat.h \
     objects/client.h \
     objects/objects.h \
@@ -66,7 +70,9 @@ HEADERS += \
     statement.h \
     ui/basepage.h \
     ui/chatpage.h \
-    ui/homepage.h
+    ui/homepage.h \
+    ui/productpage.h \
+    ui/searchpage.h
 
 FORMS += \
     allmain.ui \

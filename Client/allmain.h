@@ -16,8 +16,11 @@
 #include "statement.h"
 
 #include "ui/personpage.h"
+#include "ui/searchpage.h"
+#include "ui/homepage.h"
 #include "ElaWindow.h"
 #include "ElaContentDialog.h"
+#include "ElaMessageBar.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -41,9 +44,11 @@ private:
     Client* client;
     ElaContentDialog *unconnectDialog;
 
+    HomePage *_homePage;
     PersonPage *_personPage;
     QString _chatKey{""};
     QString _personKey{""};
+    SearchPage *_searchPage;
 
 public:
     Allmain(QWidget *parent = nullptr);

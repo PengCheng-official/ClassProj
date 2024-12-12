@@ -21,7 +21,10 @@ Allmain::Allmain(QWidget *parent)
     connectToDB();
 
     // 图形界面的初始化
+    // 主页
     _homePage = new HomePage(this);
+
+    // 聊天界面
     _chatPage = new ChatPage(this);
     connect(_chatPage, &ChatPage::sigSendToClient, [=](Client* client, QByteArray array){
         QTcpSocket *socket = socketHash.value(client, nullptr);
@@ -32,7 +35,21 @@ Allmain::Allmain(QWidget *parent)
         }
     });
 
+    // 搜索界面
+    _searchPage = new SearchPage(this);
+    connect(_searchPage, &SearchPage::sigTurnToProduct, [=](Product *product){
+//        emit navigationNodeClicked(ElaNavigationType::PageNode, _productPage->property("ElaPageKey").toString());
+        _searchPage->hide();
+        _productPage->show();
+        _productPage->initPage(product);
+    });
+
+    // 商品界面
+    _productPage = new ProductPage(this);
+
     addPageNode("首页", _homePage, ElaIconType::House);
+    addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
+    addPageNode("商品详情操作", _productPage, ElaIconType::Comments);
     addPageNode("联系卖家", _chatPage, ElaIconType::Comments);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
         switch(nodeType) {
@@ -40,10 +57,21 @@ Allmain::Allmain(QWidget *parent)
         {
             if (nodeKey == _chatPage->property("ElaPageKey").toString())
             {
-                qDebug() << "[allmain] enter chat online: " << clients.size();
+                qDebug() << "[Allmain] enter chat online: " << clients.size();
                 _chatPage->setClientList(clients);
                 ChatPage::restMsg = 0;
                 setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), 0);
+            }
+            else if (nodeKey == _searchPage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter search Page";
+                ProductMapper *productMapper = new ProductMapper(mdb);
+                _searchPage->updatePage(productMapper->select(""));
+            }
+            else if (nodeKey == _productPage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter product Page << empty";
+                _productPage->initPage();
             }
             break;
         }
@@ -229,6 +257,24 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
+        break;
+    }
+    case SEARCHPRODUCT:
+    {
+        // 处理商品搜索
+        QList<QString> strList = ObjectToJson::parseStrings(socketData);
+        QList<Client *> clientList = ObjectToJson::parseClient(socketData);
+
+        ProductMapper *productMapper = new ProductMapper(db);
+        QList<Product *> productList = productMapper->select(strList[0]);
+
+        QJsonObject message;
+        ObjectToJson::addProductList(message, productList);
+        ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+
+        // 处理搜索记录
         break;
     }
     }

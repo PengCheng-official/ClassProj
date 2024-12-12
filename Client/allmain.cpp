@@ -72,6 +72,10 @@ void Allmain::initAllMain(Client *cClient)
     setUserInfoCardSubTitle("欢迎您( つ•̀ω•́)つ");
 
     // 图形界面的初始化
+    // 首页
+    _homePage = new HomePage(client, this);
+
+    // 个人信息
     _personPage = new PersonPage(client, this);
     connect(_personPage, &PersonPage::sigSendToServer, this, &Allmain::onSendToServer);
     connect(_personPage, &PersonPage::sigClientChanged, [=](Client *nClient){
@@ -82,18 +86,37 @@ void Allmain::initAllMain(Client *cClient)
         qDebug() << "[Allmain] client changed";
     });
 
+    // 搜索商品
+    _searchPage = new SearchPage(client, this);
+    connect(_searchPage, &SearchPage::sigSendToServer, this, &Allmain::onSendToServer);
+
+    addPageNode("首页", _homePage, ElaIconType::House);
+    addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
     addFooterNode("个人信息", _personPage, _personKey, 0, ElaIconType::User);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
         switch(nodeType) {
         case ElaNavigationType::PageNode:
         {
+            if (nodeKey == _searchPage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter search Page...";
+                QJsonObject message;
+                QList<QString> strList = {""};
+                QList<Client *> clientList = {client};
+                ObjectToJson::addStrings(message, strList);
+                ObjectToJson::addClientList(message, clientList);
+                ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
+                QByteArray array = ObjectToJson::changeJson(message);
+                onSendToServer(array);
+            }
             break;
         }
         case ElaNavigationType::FooterNode:
         {
             if (nodeKey == _chatKey)
             {
+                qDebug() << "[Allmain] enter chat Page...";
                 QJsonObject message;
                 QList<int> numList = {client->getClientId()};
                 ObjectToJson::addNums(message, numList);
@@ -103,7 +126,7 @@ void Allmain::initAllMain(Client *cClient)
             }
             else if (nodeKey == _personKey)
             {
-
+                qDebug() << "[Allmain] enter person Page...";
             }
             break;
         }
@@ -237,19 +260,29 @@ void Allmain::dealMessage(QByteArray message)
     case PERSONCHANGE:
     {
         // 修改个人信息成功
+        ElaMessageBar::success(ElaMessageBarType::BottomRight, "修改成功", "", 2000, this);
         _personPage->showMessageWindow(true);
         break;
     }
     case PERSONCHANGEFAIL:
     {
         // 修改个人信息失败
-        _personPage->showMessageWindow(false, "用户名已存在");
+        ElaMessageBar::error(ElaMessageBarType::BottomRight, "修改失败", "用户名已存在", 2000, this);
+        _personPage->showMessageWindow(false);
         break;
     }
     case PERSONCHANGEERROR:
     {
         // 修改个人密码错误
-        _personPage->showMessageWindow(false, "原密码输入错误");
+        ElaMessageBar::error(ElaMessageBarType::BottomRight, "修改失败", "原密码输入错误", 2000, this);
+        _personPage->showMessageWindow(false);
+        break;
+    }
+    case SEARCHPRODUCT:
+    {
+        // 收到搜索结果
+        QList<Product *> productList = ObjectToJson::parseProduct(message);
+        _searchPage->updatePage(productList);
         break;
     }
     }

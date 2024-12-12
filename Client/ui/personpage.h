@@ -5,7 +5,6 @@
 #include <QWidget>
 #include <ElaScrollPage.h>
 #include <ElaScrollPageArea.h>
-#include "objects/objects.h"
 #include "ElaMenu.h"
 #include "ElaText.h"
 #include "ElaWindow.h"
@@ -28,7 +27,7 @@ public:
     explicit PersonPage(Client* cClient, QWidget* parent = nullptr);
     ~PersonPage();
 
-    void showMessageWindow(bool success,  QString text = "用户名已存在");
+    void showMessageWindow(bool success);
     // 提示成功（失败）弹窗
 
     void initPage(Client* cClient);

@@ -12,6 +12,7 @@
 #define PERSONCHANGE 200105 //修改个人账号，修改成功
 #define PERSONCHANGEFAIL 404105  //修改个人账号失败
 #define PERSONCHANGEERROR 403105 //修改个人密码错误
+#define SEARCHPRODUCT 200106 //搜索商品
 //#define RESETPWD 20010103
 //#define RESETPWDF 40410103
 //#define RESETPWDE 30410103

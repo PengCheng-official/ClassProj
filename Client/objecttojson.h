@@ -27,6 +27,7 @@ public:
     static QJsonObject addNums(QJsonObject &object, QList<int> numbers);
     static QJsonObject addClientList(QJsonObject &object, QList<Client *> clientList);
     static QJsonObject addChatList(QJsonObject &object, QList<Chat *> chatList);
+    static QJsonObject addProductList(QJsonObject &object, QList<Product *> productList);
 //    static QJsonObject integrateProductList(QJsonObject &object,QList<Product*>ProductList);
 //    static QJsonObject integrateProductTypeList(QJsonObject &object,QList<ProductType*>ProductTypeList);
 //    static QJsonObject integrateOrderList(QJsonObject &object,QList<Order*>OrderList);
@@ -37,6 +38,7 @@ public:
     static QList<int> parseNums(QByteArray object);
     static QList<Client *> parseClient(QByteArray object);
     static QList<Chat *> parseChat(QByteArray object);
+    static QList<Product *> parseProduct(QByteArray object);
 //    static QList<Product*> parseProduct(QByteArray object);
 //    static QList<ProductType*> parseProductType(QByteArray object);
 //    static QList<Order*> parseOrder(QByteArray object);

@@ -56,18 +56,24 @@ void ChatPage::setClientList(QList<Client *> &cClientList)
 
         ElaPushButton* connectBtn = new ElaPushButton("联系他", this);
         connect(connectBtn, &QPushButton::clicked, [=](){
-             chatRoom = new ChatRoom(client);
-             chatRoom->show();
-             connect(this, &ChatPage::sigReceiveMessage, chatRoom, &ChatRoom::receiveMessage);
-             connect(chatRoom, &ChatRoom::sigSendToClient, [=](QByteArray array){
+            emit sigLockBtn();
+            chatRoom = new ChatRoom(client);
+            chatRoom->show();
+            connect(this, &ChatPage::sigReceiveMessage, chatRoom, &ChatRoom::receiveMessage);
+            connect(chatRoom, &ChatRoom::sigSendToClient, [=](QByteArray array){
                 emit sigSendToClient(client, array);
-             });
-             emit lockBtn();
+            });
+            connect(chatRoom, &ChatRoom::sigUnlocked, [=]{
+                qDebug() << "[chatPage] sigUnlocked";
+                emit sigUnlockBtn();
+            });
         });
-        connect(this, &ChatPage::lockBtn, [=](){
+        connect(this, &ChatPage::sigLockBtn, [=](){
+            qDebug() << "[chatPage] locked";
             connectBtn->setEnabled(false);
         });
-        connect(this, &ChatPage::unlockBtn, [=](){
+        connect(this, &ChatPage::sigUnlockBtn, [=](){
+            qDebug() << "[chatPage] unlocked";
             connectBtn->setEnabled(true);
         });
 
