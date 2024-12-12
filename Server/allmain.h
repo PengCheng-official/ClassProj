@@ -28,6 +28,7 @@
 #include <QTime>
 
 #include "ElaWindow.h"
+#include "ElaMessageBar.h"
 #include "ui/chatpage.h"
 #include "ui/homepage.h"
 #include "ui/searchpage.h"

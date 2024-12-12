@@ -46,7 +46,7 @@ void Product::applyStrategy(double &price, int &num)
     {
     case 1:
     {
-        price = price * _num1 / 100.0;
+        price = price * _num1 / 10.0;
         break;
     }
     case 2:

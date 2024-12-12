@@ -3,6 +3,7 @@
 ProductPage::ProductPage(QWidget* parent)
     : ElaScrollPage(parent)
 {
+    connectToDB();
     setWindowTitle("修改商品信息");
     centralWidget = new QWidget(this);
     centralWidget->setWindowTitle("修改商品信息");
@@ -25,7 +26,7 @@ ProductPage::ProductPage(QWidget* parent)
     ElaText *nameText = new ElaText("名称:", 18, this);
     nameEdit = new ElaLineEdit(this);
     nameEdit->setFixedSize(270, 40);
-    nameEdit->setStyleSheet("font-size: 16px; color: black; ");
+    nameEdit->setStyleSheet("font-size: 16px; font-weight: bold; color: black; ");
 
     //图片 初始化
     ElaText *imageText = new ElaText("图片:", 18, this);
@@ -42,7 +43,7 @@ ProductPage::ProductPage(QWidget* parent)
         imagePath = QFileDialog::getOpenFileName(
                     this,
                     tr("Select Image"),
-                    "C:\\Users\\PC\\Desktop\\ClassPro\\MyPro\\Client\\include\\Resource",
+                    "C:\\Users\\PC\\Desktop\\ClassPro\\MyPro\\Server\\include\\Resource",
                     tr("Image Files (*.png *.jpg *.bmp)"
                        ));
         qDebug() << "[personPage] select image: " << imagePath;
@@ -52,7 +53,7 @@ ProductPage::ProductPage(QWidget* parent)
     ElaText *priceText = new ElaText("价格:", 18, this);
     priceEdit = new ElaLineEdit(this);
     priceEdit->setFixedSize(270, 40);
-    priceEdit->setStyleSheet("font-size: 16px; color: black; ");
+    priceEdit->setStyleSheet("font-size: 16px; color: black;");
 
     //库存 初始化
     ElaText *numText = new ElaText("库存:", 18, this);
@@ -74,7 +75,7 @@ ProductPage::ProductPage(QWidget* parent)
     strategyBox->setFixedWidth(140);
     strategyBox->setStyleSheet("font-size: 14px;");
     connect(strategyBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                    this, &ProductPage::onCurrentIndexChanged);
+            this, &ProductPage::onCurrentIndexChanged);
     //    strategyBox->setCurrentIndex(product->getStrategy() - '0');
     //    product->setStrategy(strategyBox->currentlndex())
     QHBoxLayout *strategyLayout = new QHBoxLayout();
@@ -104,19 +105,35 @@ ProductPage::ProductPage(QWidget* parent)
     ElaText *aboutText = new ElaText("简介:", 18, this);
     aboutEdit = new ElaPlainTextEdit(this);
     aboutEdit->setStyleSheet("font-size: 16px;");
-//    aboutEdit->setPlainText(product->getProductAbout());
+    aboutEdit->setFixedWidth(270);
+    //    aboutEdit->setPlainText(product->getProductAbout());
 
     //确定按钮 初始化
-    confirmBtn = new ElaPushButton(this);
-    confirmBtn->setFixedSize(120, 50);
-    confirmBtn->setText("确认修改");
+    confirmBtn = new ElaPushButton("确认新增", this);
+    confirmBtn->setFixedSize(100, 40);
+    confirmBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
+    confirmBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
+    confirmBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+    confirmBtn->setLightTextColor(Qt::white);
+    confirmBtn->setStyleSheet("font-size: 16px;");
+
+    //删除按钮 初始化
+    deleteBtn = new ElaPushButton("删除", this);
+    deleteBtn->setFixedSize(75, 40);
+    deleteBtn->setLightDefaultColor(QColor(255, 90, 31));
+    deleteBtn->setLightHoverColor(QColor(255, 107, 48));
+    deleteBtn->setLightPressColor(QColor(255, 50, 11));
+    deleteBtn->setLightTextColor(Qt::white);
+    deleteBtn->setStyleSheet("font-size: 16px;");
 
     //连接确定的点击槽函数
     connect(confirmBtn, &QPushButton::clicked, this, &ProductPage::onConFirmBtnClicked);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addStretch();
-    btnLayout->addSpacing(240);
+    btnLayout->addSpacing(140);
+    btnLayout->addWidget(deleteBtn);
+    btnLayout->addSpacing(20);
     btnLayout->addWidget(confirmBtn);
     btnLayout->addStretch();
 
@@ -146,19 +163,24 @@ ProductPage::~ProductPage()
 {
 }
 
-void ProductPage::initPage(Product *product)
+void ProductPage::initPage(Product *pProduct)
 {
-    if (product == nullptr)
+    if (pProduct == nullptr)
     {
+        IsNew = true;
+        product = nullptr;
         nameEdit->setPlaceholderText("  输入商品名称");
         priceEdit->setPlaceholderText("  输入商品价格");
         numEdit->setPlaceholderText("  输入商品库存量");
         strategyBox->setCurrentIndex(0);
-        _edit1->setText("10");
         aboutEdit->setPlaceholderText("  输入商品简介");
+        confirmBtn->setText("确认新增");
+        deleteBtn->hide();
     }
     else
     {
+        IsNew = false;
+        product = pProduct;
         nameEdit->setPlaceholderText("  " + product->getProductName());
         priceEdit->setPlaceholderText("  " + QString::number(product->getProductPrice()));
         numEdit->setPlaceholderText("  " + QString::number(product->getProductNum()));
@@ -166,7 +188,9 @@ void ProductPage::initPage(Product *product)
         onCurrentIndexChanged(product->getStrategy());
         _edit1->setText(QString::number(product->getStrategy1()));
         _edit1->setText(QString::number(product->getStrategy2()));
-        aboutEdit->setPlaceholderText(product->getProductAbout());
+        aboutEdit->setPlainText(product->getProductAbout());
+        confirmBtn->setText("确认修改");
+        deleteBtn->show();
     }
 }
 
@@ -187,6 +211,7 @@ void ProductPage::onCurrentIndexChanged(int cur)
         _text5->hide();
         _text6->hide();
         _text7->hide();
+        _text8->hide();
         break;
     case 1:
         _edit1->show();
@@ -198,6 +223,7 @@ void ProductPage::onCurrentIndexChanged(int cur)
         _text5->hide();
         _text6->hide();
         _text7->hide();
+        _text8->hide();
         break;
     case 2:
         _edit1->show();
@@ -209,6 +235,7 @@ void ProductPage::onCurrentIndexChanged(int cur)
         _text5->hide();
         _text6->hide();
         _text7->hide();
+        _text8->hide();
         break;
     case 3:
         _edit1->show();
@@ -220,17 +247,19 @@ void ProductPage::onCurrentIndexChanged(int cur)
         _text5->show();
         _text6->hide();
         _text7->hide();
+        _text8->hide();
         break;
     case 4:
         _edit1->show();
         _edit2->show();
         _text1->hide();
-        _text2->show();
+        _text2->hide();
         _text3->hide();
         _text4->hide();
         _text5->hide();
         _text6->show();
         _text7->show();
+        _text8->show();
         break;
     default:
         _edit1->hide();
@@ -242,8 +271,192 @@ void ProductPage::onCurrentIndexChanged(int cur)
         _text5->hide();
         _text6->hide();
         _text7->hide();
+        _text8->hide();
         break;
     }
+}
+
+void ProductPage::onConFirmBtnClicked()
+{
+    auto IsNum = [=](const QString &str) {
+        bool ok;
+        str.toDouble(&ok);
+        return ok;
+    };
+    auto IsInt = [=](const QString &str) {
+        bool ok;
+        str.toInt(&ok);
+        return ok;
+    };
+    if (IsNew)
+    {
+        Product *nProduct = new Product();
+        if (nameEdit->text() != "") {
+            nProduct->setProductName(nameEdit->text());
+        }
+        else {
+            emit sigCreateFail(0);  //没设置名称
+            return;
+        }
+        if (imagePath != "") {
+            nProduct->setProductImage(imagePath);
+        }
+        if (priceEdit->text() != "") {
+            if (priceEdit->text().toDouble())
+                nProduct->setProductPrice(priceEdit->text().toDouble());
+            else {
+                emit sigCreateFail(11); //价格输入不是浮点数
+                return;
+            }
+        }
+        else {
+            emit sigCreateFail(10);  //没设置价格
+            return;
+        }
+        if (numEdit->text() != "") {
+            if (numEdit->text().toInt())
+                nProduct->setProductNum(numEdit->text().toInt());
+            else {
+                emit sigCreateFail(21); //库存输入不是整数
+                return;
+            }
+        }
+        else {
+            emit sigCreateFail(20);  //没设置库存
+            return;
+        }
+        if (aboutEdit->toPlainText() != "") {
+            nProduct->setProductAbout(aboutEdit->toPlainText());
+        }
+        if ((_edit1->text() != "" && !IsNum(_edit2->text()))
+                || (_edit2->text() != "" && !IsNum(_edit2->text()))) {
+            emit sigCreateFail(31); //edit不是数字
+            return;
+        }
+        switch(strategyBox->currentIndex())
+        {
+        case 0:
+            nProduct->setStrategy(0, 0, 0);
+            break;
+        case 1:
+            if (_edit1->text() == "" || _edit1->text().toDouble() > 10) {
+                emit sigCreateFail(4); //折扣大于10
+                return;
+            }
+            nProduct->setStrategy(1, _edit1->text().toDouble(), 0);
+            break;
+        case 2:
+            if (_edit1->text() == "" || _edit2->text() == "") {
+                emit sigCreateFail(4);
+                return;
+            }
+            nProduct->setStrategy(2, _edit1->text().toDouble(), _edit2->text().toDouble());
+            break;
+        case 3:
+            if (_edit1->text() == "" || _edit2->text() == "" || !IsInt(_edit1->text()) || !IsInt(_edit2->text())) {
+                emit sigCreateFail(4); //满赠不是整数
+                return;
+            }
+            nProduct->setStrategy(3, _edit1->text().toInt(), _edit2->text().toInt());
+            break;
+        case 4:
+            if (_edit1->text() == "" || _edit2->text() == "") {
+                emit sigCreateFail(4);
+                return;
+            }
+            nProduct->setStrategy(4, _edit1->text().toDouble(), _edit2->text().toDouble());
+            break;
+        default:
+            emit sigCreateFail(4); //满赠不是整数
+            return;
+        }
+        ProductMapper *productMapper = new ProductMapper(db);
+        productMapper->insert(nProduct);
+        refreshPage();
+        emit sigCreateFail(200); //成功
+    }
+    else
+    {
+        Product *nProduct = new Product(*product);
+        ProductMapper *productMapper = new ProductMapper(db);
+        if (nameEdit->text() != "") {
+            nProduct->setProductName(nameEdit->text());
+        }
+        if (imagePath != "") {
+            nProduct->setProductImage(imagePath);
+        }
+        if (priceEdit->text() != "") {
+            if (IsNum(priceEdit->text()))
+                nProduct->setProductPrice(priceEdit->text().toDouble());
+            else {
+                emit sigCreateFail(11); //价格输入不是浮点数
+                return;
+            }
+        }
+        if (numEdit->text() != "") {
+            if (IsInt(numEdit->text()))
+                nProduct->setProductNum(numEdit->text().toInt());
+            else {
+                emit sigCreateFail(21); //价格输入不是整数
+                return;
+            }
+        }
+        if (aboutEdit->toPlainText() != "") {
+            nProduct->setProductAbout(aboutEdit->toPlainText());
+        }
+        if ((_edit1->text() != "" && !IsNum(_edit1->text()))
+                || (_edit2->text() != "" && !IsNum(_edit2->text()))) {
+            emit sigCreateFail(31); //edit不是数字
+            return;
+        }
+        switch(strategyBox->currentIndex())
+        {
+        case 0:
+            nProduct->setStrategy(0, 0, 0);
+            break;
+        case 1:
+            if (_edit1->text() == "" || _edit1->text().toDouble() > 10) {
+                emit sigCreateFail(4); //折扣大于10
+                return;
+            }
+            nProduct->setStrategy(1, _edit1->text().toDouble(), 0);
+            break;
+        case 2:
+            if (_edit1->text() == "" || _edit2->text() == "") {
+                emit sigCreateFail(4);
+                return;
+            }
+            nProduct->setStrategy(2, _edit1->text().toDouble(), _edit2->text().toDouble());
+            break;
+        case 3:
+            if (_edit1->text() == "" || _edit2->text() == "" || !IsInt(_edit1->text()) || !IsInt(_edit2->text())) {
+                emit sigCreateFail(4); //满赠不是整数
+                return;
+            }
+            nProduct->setStrategy(3, _edit1->text().toInt(), _edit2->text().toInt());
+            break;
+        case 4:
+            if (_edit1->text() == "" || _edit2->text() == "") {
+                emit sigCreateFail(4);
+                return;
+            }
+            nProduct->setStrategy(4, _edit1->text().toDouble(), _edit2->text().toDouble());
+            break;
+        default:
+            emit sigCreateFail(4); //满赠不是整数
+            return;
+        }
+        productMapper->update(product->getProductId(), nProduct);
+        refreshPage(nProduct);
+        emit sigCreateFail(200); //成功
+    }
+}
+
+void ProductPage::onDeleteBtnClicked()
+{
+    ProductMapper *productMapper = new ProductMapper(db);
+    productMapper->delet(product->getProductId());
+    refreshPage();
 }
 
 void ProductPage::createActivityLayout(ElaText *activityText)
@@ -298,8 +511,10 @@ void ProductPage::createActivityLayout(ElaText *activityText)
     activityLayouts[4]->addSpacing(11);
     _text6 = new ElaText("限时", 17, this);
     _text7 = new ElaText("秒", 17, this);
+    _text8 = new ElaText("元", 17, this);
     _text6->setFixedSize(40, 36);
     _text7->setFixedSize(30, 36);
+    _text8->setFixedSize(30, 36);
     _edit1->setFixedSize(40, 36);
     _edit1->setClearButtonEnabled(false);
     _edit2->setFixedSize(40, 36);
@@ -308,7 +523,7 @@ void ProductPage::createActivityLayout(ElaText *activityText)
     activityLayouts[4]->addWidget(_edit1);
     activityLayouts[4]->addWidget(_text7);
     activityLayouts[4]->addWidget(_edit2);
-    activityLayouts[4]->addWidget(_text2);
+    activityLayouts[4]->addWidget(_text8);
     activityLayouts[4]->addSpacing(65);
     activityLayouts[4]->addStretch();
 
@@ -321,4 +536,32 @@ void ProductPage::createActivityLayout(ElaText *activityText)
     _text5->hide();
     _text6->hide();
     _text7->hide();
+    _text7->hide();
+    _text8->hide();
+}
+
+void ProductPage::connectToDB() {
+    db = QSqlDatabase::addDatabase("QODBC", "productPage");
+    db.setHostName("localhost");
+    db.setPort(3306);
+    db.setDatabaseName("MySql");
+    db.setUserName("root");
+    db.setPassword("pengcheng_050210");
+    if(!db.open()) {
+        qDebug() << "[database] Failed to connect to db: " << db.lastError();
+        return;
+    }
+    qDebug() << "[database] Connected to MySql";
+}
+
+void ProductPage::refreshPage(Product *pProduct)
+{
+    _edit1->setText("");
+    _edit2->setText("");
+    imagePath = "";
+    nameEdit->setText("");
+    priceEdit->setText("");
+    numEdit->setText("");
+
+    initPage(pProduct);
 }

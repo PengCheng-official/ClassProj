@@ -41,15 +41,44 @@ Allmain::Allmain(QWidget *parent)
 //        emit navigationNodeClicked(ElaNavigationType::PageNode, _productPage->property("ElaPageKey").toString());
         _searchPage->hide();
         _productPage->show();
-        _productPage->initPage(product);
+        _productPage->refreshPage(product);
     });
 
     // 商品界面
     _productPage = new ProductPage(this);
+    connect(_productPage, &ProductPage::sigCreateFail, [=](int error){
+       switch(error)
+       {
+       case 0:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "未设置名称", 2000, this);
+           break;
+       case 11:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "价格不是浮点数", 2000, this);
+           break;
+       case 10:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "未设置价格", 2000, this);
+           break;
+       case 21:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "库存不是整数", 2000, this);
+           break;
+       case 20:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "未设置库存", 2000, this);
+           break;
+       case 31:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "活动请输入数字", 2000, this);
+           break;
+       case 4:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "活动输入非法", 2000, this);
+           break;
+       case 200:
+           ElaMessageBar::success(ElaMessageBarType::BottomRight, "更改成功", "", 2000, this);
+           break;
+       }
+    });
 
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
-    addPageNode("商品详情操作", _productPage, ElaIconType::Comments);
+    addPageNode("商品详情操作", _productPage, ElaIconType::Gift);
     addPageNode("联系卖家", _chatPage, ElaIconType::Comments);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
         switch(nodeType) {
@@ -66,12 +95,12 @@ Allmain::Allmain(QWidget *parent)
             {
                 qDebug() << "[Allmain] enter search Page";
                 ProductMapper *productMapper = new ProductMapper(mdb);
-                _searchPage->updatePage(productMapper->select(""));
+                _searchPage->updatePage(productMapper->selectLike(""));
             }
             else if (nodeKey == _productPage->property("ElaPageKey").toString())
             {
                 qDebug() << "[Allmain] enter product Page << empty";
-                _productPage->initPage();
+                _productPage->refreshPage();
             }
             break;
         }
@@ -266,7 +295,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         QList<Client *> clientList = ObjectToJson::parseClient(socketData);
 
         ProductMapper *productMapper = new ProductMapper(db);
-        QList<Product *> productList = productMapper->select(strList[0]);
+        QList<Product *> productList = productMapper->selectLike(strList[0]);
 
         QJsonObject message;
         ObjectToJson::addProductList(message, productList);

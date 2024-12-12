@@ -9,6 +9,8 @@
 #include "ElaMenu.h"
 #include "ElaText.h"
 #include "ElaWindow.h"
+#include <QSqlDatabase>
+#include <QSqlError>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QVBoxLayout>
@@ -18,6 +20,8 @@
 #include <QFileDialog>
 #include "ElaComboBox.h"
 #include "ElaPlainTextEdit.h"
+#include "ElaTheme.h"
+#include "dao/productmapper.h"
 
 class ProductPage : public ElaScrollPage
 {
@@ -26,10 +30,12 @@ public:
     explicit ProductPage(QWidget* parent = nullptr);
     ~ProductPage();
 
-    void initPage(Product *product = nullptr);
+    void refreshPage(Product *pProduct = nullptr);
 
 private:
     void createActivityLayout(ElaText *activityText);
+    void connectToDB();
+    void initPage(Product *pProduct = nullptr);
 
 private:
     Product *product;
@@ -52,13 +58,20 @@ private:
     ElaText *_text5;
     ElaText *_text6;
     ElaText *_text7;
+    ElaText *_text8;
     QList<QHBoxLayout *> activityLayouts{nullptr, nullptr, nullptr, nullptr, nullptr};
+    bool IsNew;
+    ElaPushButton *deleteBtn;
+    QSqlDatabase db;
 
 private slots:
     void onCurrentIndexChanged(int cur);
+    void onConFirmBtnClicked();
+    void onDeleteBtnClicked();
 
 signals:
-    void onConFirmBtnClicked();
+    void sigCreateFail(int signal);
+
 };
 
 #endif // PRODUCTPAGE_H

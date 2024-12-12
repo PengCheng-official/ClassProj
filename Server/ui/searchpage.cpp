@@ -155,7 +155,7 @@ void SearchPage::updatePage(QList<Product *> productList)
 void SearchPage::onSearchBtnClicked()
 {
     ProductMapper *productMapper = new ProductMapper(db);
-    updatePage(productMapper->select(searchEdit->text()));
+    updatePage(productMapper->selectLike(searchEdit->text()));
 }
 
 void SearchPage::connectToDB()

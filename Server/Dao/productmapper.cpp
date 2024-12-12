@@ -14,17 +14,49 @@ Product *ProductMapper::getProduct(const QSqlQuery &query)
     product->setProductNum(query.value(3).toInt());
     product->setProductSales(query.value(4).toInt());
     product->setProductAbout(query.value(5).toString());
-    product->setStrategy(query.value(6).toInt(), query.value(7).toInt(), query.value(8).toInt());
+    product->setStrategy(query.value(6).toInt(), query.value(7).toDouble(), query.value(8).toDouble());
     product->setProductImage(query.value(9).toString());
     return product;
+}
+
+QList<Product *> ProductMapper::selectLike(const QString &name)
+{
+    qDebug() << "[database] product select... " << name;
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM product WHERE product_name LIKE :name");
+    query.bindValue(":name", '%' + name + '%');
+    query.exec();
+
+    QList<Product *> ret;
+    while(query.next()) {
+        ret.push_back(getProduct(query));
+    }
+    query.finish();
+    return ret;
+}
+
+QList<Product *> ProductMapper::select(const int id)
+{
+    qDebug() << "[database] product select... " << id;
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM product WHERE product_id = :id");
+    query.bindValue(":id", id);
+    query.exec();
+
+    QList<Product *> ret;
+    while(query.next()) {
+        ret.push_back(getProduct(query));
+    }
+    query.finish();
+    return ret;
 }
 
 QList<Product *> ProductMapper::select(const QString &name)
 {
     qDebug() << "[database] product select... " << name;
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM product WHERE product_name LIKE :name");
-    query.bindValue(":name", '%' + name + '%');
+    query.prepare("SELECT * FROM product WHERE product_name = :name");
+    query.bindValue(":name", name);
     query.exec();
 
     QList<Product *> ret;
@@ -47,10 +79,10 @@ void ProductMapper::insert(Product *product)
     query.bindValue(":Num", product->getProductNum());
     query.bindValue(":Sales", product->getProductSales());
     query.bindValue(":About", product->getProductAbout());
-    query.bindValue(":Strategy", product->getStrategy() + '0');
-    query.bindValue(":Num1", product->getProductName());
-    query.bindValue(":Num2", product->getProductName());
-    query.bindValue(":Image", product->getProductName());
+    query.bindValue(":Strategy", QString::number(product->getStrategy()));
+    query.bindValue(":Num1", product->getStrategy1());
+    query.bindValue(":Num2", product->getStrategy2());
+    query.bindValue(":Image", product->getProductImage());
     query.exec();
     query.finish();
 }
@@ -62,4 +94,36 @@ void ProductMapper::insert(QList<Product *> proList)
     {
         insert(pro);
     }
+}
+
+void ProductMapper::update(const int id, const Product *product)
+{
+    qDebug() << "[database] product update... " << id;
+    QSqlQuery query(db);
+    query.prepare("UPDATE product SET \
+                  product_name=:Name, product_price=:Price, product_num=:Num, product_sales=:Sales, \
+                  product_about=:About, product_strategy=:Strategy, product_discount1=:Num1, product_discount2=:Num2, product_image=:Image  \
+            WHERE product_id=:id;");
+    query.bindValue(":id", id);
+    query.bindValue(":Name", product->getProductName());
+    query.bindValue(":Price", product->getProductPrice());
+    query.bindValue(":Num", product->getProductNum());
+    query.bindValue(":Sales", product->getProductSales());
+    query.bindValue(":About", product->getProductAbout());
+    query.bindValue(":Strategy", QString::number(product->getStrategy()));
+    query.bindValue(":Num1", product->getStrategy1());
+    query.bindValue(":Num2", product->getStrategy2());
+    query.bindValue(":Image", product->getProductImage());
+    query.exec();
+    query.finish();
+}
+
+void ProductMapper::delet(const int id)
+{
+    qDebug() << "[database] product delete... ";
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM product WHERE product_id = :id;");
+    query.bindValue(":id", id);
+    query.exec();
+    query.finish();
 }

@@ -189,6 +189,7 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
         {
             // 异常则跳转登录界面
             currentWidget->hide();
+            logIn->show();
             logIn->unconnected();
         }
     }
