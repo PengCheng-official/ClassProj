@@ -25,7 +25,7 @@ public:
     explicit SearchPage(Client *cClient, QWidget* parent = nullptr);
     ~SearchPage();
 
-    void updatePage(QList<Product *> productList);
+    void refreshPage(QList<Product *> productList);
 
     void clearPage();
 

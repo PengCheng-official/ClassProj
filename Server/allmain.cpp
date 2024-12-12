@@ -76,7 +76,7 @@ Allmain::Allmain(QWidget *parent)
        }
     });
 
-    addPageNode("首页", _homePage, ElaIconType::House);
+//    addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
     addPageNode("商品详情操作", _productPage, ElaIconType::Gift);
     addPageNode("联系卖家", _chatPage, ElaIconType::Comments);
@@ -304,6 +304,17 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         emit sigSendToClient(socket, array);
 
         // 处理搜索记录
+        break;
+    }
+    case REQUESTHOME:
+    {
+        ProductMapper *productMapper = new ProductMapper(db);
+        QList<Product *> proList = productMapper->selectRand();
+        QJsonObject message;
+        ObjectToJson::addProductList(message, proList);
+        ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
         break;
     }
     }

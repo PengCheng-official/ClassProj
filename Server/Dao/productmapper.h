@@ -13,6 +13,8 @@ public:
 
     QList<Product *> selectLike(const QString &name);
 
+    QList<Product *> selectRand();
+
     QList<Product *> select(const int id);
 
     QList<Product *> select(const QString &name);

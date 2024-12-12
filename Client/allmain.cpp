@@ -73,7 +73,11 @@ void Allmain::initAllMain(Client *cClient)
 
     // 图形界面的初始化
     // 首页
-    _homePage = new HomePage(client, this);
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
+    QByteArray array = ObjectToJson::changeJson(message);
+    onSendToServer(array);
+//    _homePage = new HomePage(client, this);
 
     // 个人信息
     _personPage = new PersonPage(client, this);
@@ -107,6 +111,14 @@ void Allmain::initAllMain(Client *cClient)
                 ObjectToJson::addStrings(message, strList);
                 ObjectToJson::addClientList(message, clientList);
                 ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
+                QByteArray array = ObjectToJson::changeJson(message);
+                onSendToServer(array);
+            }
+            else if (nodeKey == _homePage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter home Page...";
+                QJsonObject message;
+                ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
                 QByteArray array = ObjectToJson::changeJson(message);
                 onSendToServer(array);
             }
@@ -283,7 +295,16 @@ void Allmain::dealMessage(QByteArray message)
     {
         // 收到搜索结果
         QList<Product *> productList = ObjectToJson::parseProduct(message);
-        _searchPage->updatePage(productList);
+        _searchPage->refreshPage(productList);
+        break;
+    }
+    case REQUESTHOME:
+    {
+        // 收到首页传送
+
+        QList<Product *> productList = ObjectToJson::parseProduct(message);
+        if (!_homePage) _homePage = new HomePage(client, productList, this);
+        else _homePage->refreshPage(productList);
         break;
     }
     }

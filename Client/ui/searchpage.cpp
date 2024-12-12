@@ -68,7 +68,7 @@ void SearchPage::clearPage()
     }
 }
 
-void SearchPage::updatePage(QList<Product *> productList)
+void SearchPage::refreshPage(QList<Product *> productList)
 {
     clearPage();
 

@@ -17,5 +17,10 @@
         <file>Resource/loading.gif</file>
         <file>Resource/server_image.png</file>
         <file>Resource/T.jpg</file>
+        <file>Resource/card1.jpg</file>
+        <file>Resource/card2.jpg</file>
+        <file>Resource/card3.jpg</file>
+        <file>Resource/card4.jpg</file>
+        <file>Resource/card5.jpeg</file>
     </qresource>
 </RCC>

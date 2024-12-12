@@ -35,6 +35,24 @@ QList<Product *> ProductMapper::selectLike(const QString &name)
     return ret;
 }
 
+QList<Product *> ProductMapper::selectRand()
+{
+    QList<Product *> ret;
+    qDebug() << "[database] product select rand... ";
+    QSqlQuery query(db);
+    do {
+        query.prepare("SELECT DISTINCT * FROM product ORDER BY RAND() LIMIT 2;");
+        query.exec();
+
+        while(query.next()) {
+            ret.push_back(getProduct(query));
+        }
+    }
+    while (ret.size() != 2);
+    query.finish();
+    return ret;
+}
+
 QList<Product *> ProductMapper::select(const int id)
 {
     qDebug() << "[database] product select... " << id;

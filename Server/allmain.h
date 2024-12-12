@@ -26,6 +26,7 @@
 #include "dao/productmapper.h"
 #include "statement.h"
 #include <QTime>
+#include <QRandomGenerator>
 
 #include "ElaWindow.h"
 #include "ElaMessageBar.h"
