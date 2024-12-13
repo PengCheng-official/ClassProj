@@ -110,6 +110,8 @@ Allmain::Allmain(QWidget *parent)
         }
         }
     });
+    ProductMapper *productMapper = new ProductMapper(mdb);
+    _searchPage->updatePage(productMapper->selectLike(""));
 
     moveToCenter();
 }

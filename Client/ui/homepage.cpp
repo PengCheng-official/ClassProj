@@ -1,11 +1,11 @@
 #include "homepage.h"
 
-HomePage::HomePage(Client *cClient, QList<Product *> proList, QWidget* parent)
+HomePage::HomePage(Client *cClient, QWidget* parent)
     : ElaScrollPage(parent)
     , client(cClient)
 {
     _promotionView = new ElaPromotionView(this);
-    _promotionView->setFixedHeight(400);
+    _promotionView->setFixedHeight(420);
 
     ElaPromotionCard* Card1 = new ElaPromotionCard(this);
     Card1->setCardPixmap(QPixmap(":/Resource/card5.jpeg"));
@@ -34,30 +34,30 @@ HomePage::HomePage(Client *cClient, QList<Product *> proList, QWidget* parent)
     _promotionView->setIsAutoScroll(true);
 
     centralWidget = new QWidget(this);
-    centralWidget->setWindowTitle("首页 Welcome~");
+    setTitleVisible(false);
     centerLayout = new QVBoxLayout(centralWidget);
     centerLayout->setContentsMargins(0, 0, 0, 0);
     centerLayout->addWidget(_promotionView);
-    centerLayout->addSpacing(10);
     centerLayout->addStretch();
 
     mainLayout = new QHBoxLayout();
-    productArea1 = new ElaScrollPageArea();
+    productArea1 = new ElaScrollPageArea(centralWidget);
     productArea1->setFixedHeight(160);
+    productLayout1 = new QHBoxLayout(productArea1);
 
     image1 = new QLabel(productArea1);
-    image1->setPixmap(QPixmap(proList[0]->getProductImage()));
+    image1->setFixedSize(145, 145);
+    image1->setPixmap(QPixmap(client->getClientImage()));
     image1->setAlignment(Qt::AlignCenter);  // 居中显示图片
     image1->setScaledContents(true);
-    image1->setFixedSize(145, 145);
 
     name1 = new ElaText(productArea1);
-    name1->setText(proList[0]->getProductName());
-    name1->setTextStyle(ElaTextType::Title);
     name1->setFixedWidth(180);
+    name1->setText(client->getClientName());
+    name1->setTextStyle(ElaTextType::Title);
 
     price1 = new ElaText(productArea1);
-    price1->setText("￥" + QString::number(proList[0]->getProductPrice()));
+    price1->setText("￥" + QString::number(client->getClientId()));
     price1->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
     price1->setTextStyle(ElaTextType::Subtitle);
 
@@ -77,7 +77,6 @@ HomePage::HomePage(Client *cClient, QList<Product *> proList, QWidget* parent)
     textLayout1->addWidget(add1);
     textLayout1->addStretch();
 
-    productLayout1 = new QHBoxLayout();
     productLayout1->addStretch();
     productLayout1->addWidget(image1);
     productLayout1->addStretch();
@@ -85,24 +84,24 @@ HomePage::HomePage(Client *cClient, QList<Product *> proList, QWidget* parent)
     productLayout1->addStretch();
     mainLayout->addStretch();
     mainLayout->addWidget(productArea1);
-    mainLayout->addStretch();
 
-    productArea2 = new ElaScrollPageArea();
+    productArea2 = new ElaScrollPageArea(centralWidget);
     productArea2->setFixedHeight(160);
+    productLayout2 = new QHBoxLayout(productArea2);
 
     image2 = new QLabel(productArea2);
-    image2->setPixmap(QPixmap(proList[1]->getProductImage()));
+    image2->setPixmap(QPixmap(client->getClientImage()));
     image2->setAlignment(Qt::AlignCenter);  // 居中显示图片
     image2->setScaledContents(true);
     image2->setFixedSize(145, 145);
 
     name2 = new ElaText(productArea2);
-    name2->setText(proList[1]->getProductName());
+    name2->setText(client->getClientName());
     name2->setTextStyle(ElaTextType::Title);
     name2->setFixedWidth(180);
 
     price2 = new ElaText(productArea2);
-    price2->setText("￥" + QString::number(proList[1]->getProductPrice()));
+    price2->setText("￥" + QString::number(client->getClientId()));
     price2->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
     price2->setTextStyle(ElaTextType::Subtitle);
 
@@ -122,13 +121,27 @@ HomePage::HomePage(Client *cClient, QList<Product *> proList, QWidget* parent)
     textLayout2->addWidget(add2);
     textLayout2->addStretch();
 
-    productLayout2 = new QHBoxLayout();
     productLayout2->addStretch();
     productLayout2->addWidget(image2);
     productLayout2->addStretch();
     productLayout2->addLayout(textLayout2);
     productLayout2->addStretch();
     mainLayout->addWidget(productArea2);
+
+    changeBtn = new ElaPushButton("换\n一\n换", centralWidget);
+    changeBtn->setFixedSize(30, 80);
+    changeBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
+    changeBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
+    changeBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+    changeBtn->setLightTextColor(Qt::white);
+    connect(changeBtn, &QPushButton::clicked, [=](){
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToServer(array);
+    });
+
+    mainLayout->addWidget(changeBtn);
     mainLayout->addStretch();
 
     centerLayout->addLayout(mainLayout);

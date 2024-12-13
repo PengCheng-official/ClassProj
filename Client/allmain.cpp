@@ -73,11 +73,8 @@ void Allmain::initAllMain(Client *cClient)
 
     // 图形界面的初始化
     // 首页
-    QJsonObject message;
-    ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
-    QByteArray array = ObjectToJson::changeJson(message);
-    onSendToServer(array);
-//    _homePage = new HomePage(client, this);
+    _homePage = new HomePage(client, this);
+    connect(_homePage, &HomePage::sigSendToServer, this, &Allmain::onSendToServer);
 
     // 个人信息
     _personPage = new PersonPage(client, this);
@@ -143,8 +140,11 @@ void Allmain::initAllMain(Client *cClient)
             break;
         }
         }
-
     });
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
+    QByteArray array = ObjectToJson::changeJson(message);
+    onSendToServer(array);
 }
 
 void Allmain::connectToServer()
@@ -301,10 +301,8 @@ void Allmain::dealMessage(QByteArray message)
     case REQUESTHOME:
     {
         // 收到首页传送
-
         QList<Product *> productList = ObjectToJson::parseProduct(message);
-        if (!_homePage) _homePage = new HomePage(client, productList, this);
-        else _homePage->refreshPage(productList);
+        _homePage->refreshPage(productList);
         break;
     }
     }

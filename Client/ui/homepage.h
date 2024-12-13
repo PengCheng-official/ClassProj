@@ -16,12 +16,14 @@
 #include "ElaPromotionView.h"
 #include "ElaPromotionCard.h"
 #include "ElaPushButton.h"
+#include "ElaTheme.h"
+#include "ElaWidget.h"
 
 class HomePage : public ElaScrollPage
 {
     Q_OBJECT
 public:
-    explicit HomePage(Client *cClient, QList<Product *> proList, QWidget* parent = nullptr);
+    explicit HomePage(Client *cClient, QWidget* parent = nullptr);
     ~HomePage();
     void refreshPage(QList<Product *> proList);
 
@@ -45,7 +47,9 @@ private:
     ElaPushButton *add2;
     QVBoxLayout *textLayout1;
     QVBoxLayout *textLayout2;
-
+    ElaPushButton *changeBtn;
+signals:
+    void sigSendToServer(QByteArray array);
 };
 
 #endif // HOMEPAGE_H
