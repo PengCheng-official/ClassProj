@@ -91,6 +91,9 @@ void Allmain::initAllMain(Client *cClient)
     _searchPage = new SearchPage(client, this);
     connect(_searchPage, &SearchPage::sigSendToServer, this, &Allmain::onSendToServer);
 
+    // 购物车界面
+    _shoppingPage = new ShoppingPage(client, this);
+
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
@@ -116,6 +119,16 @@ void Allmain::initAllMain(Client *cClient)
                 qDebug() << "[Allmain] enter home Page...";
                 QJsonObject message;
                 ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
+                QByteArray array = ObjectToJson::changeJson(message);
+                onSendToServer(array);
+            }
+            else if (nodeKey == _shoppingPage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter shopping Page...";
+                QList<Client *> clientList = {client};
+                QJsonObject message;
+                ObjectToJson::addClientList(message, clientList);
+                ObjectToJson::addSignal(message, QString::number(REQUESTSHOPPING));
                 QByteArray array = ObjectToJson::changeJson(message);
                 onSendToServer(array);
             }
@@ -303,6 +316,20 @@ void Allmain::dealMessage(QByteArray message)
         // 收到首页传送
         QList<Product *> productList = ObjectToJson::parseProduct(message);
         _homePage->refreshPage(productList);
+        break;
+    }
+    case ADDSHOPPING:
+    {
+        // 添加购物车成功
+        ElaMessageBar::success(ElaMessageBarType::BottomRight, "添加成功", "", 2000, this);
+        //TODO: 刷新购物车页面
+        break;
+    }
+    case REQUESTSHOPPING:
+    {
+        QList<Product *> productList = ObjectToJson::parseProduct(message);
+        QList<Shopping *> shoppingList = ObjectToJson::parseShopping(message);
+        _shoppingPage->refreshPage(productList, shoppingList);
         break;
     }
     }

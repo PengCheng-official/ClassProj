@@ -7,10 +7,11 @@
 
 class Shopping
 {
+PROPERTY_CREATE_H(int, ShoppingId);
 PROPERTY_CREATE_H(int, ClientId);
 PROPERTY_CREATE_H(int, ProductId);
 PROPERTY_CREATE_H(int, ShoppingNum);
-PROPERTY_CREATE_H(double, ShoppingPrice);
+PROPERTY_CREATE_H(double, ShoppingPrice);   //加入购物车时的价格
 
 public:
     Shopping();

@@ -305,16 +305,40 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
 
-        // 处理搜索记录
+        //TODO: 处理搜索记录
         break;
     }
     case REQUESTHOME:
     {
+        // 首页信息请求
         ProductMapper *productMapper = new ProductMapper(db);
         QList<Product *> proList = productMapper->selectRand();
         QJsonObject message;
         ObjectToJson::addProductList(message, proList);
         ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
+    case ADDSHOPPING:
+    {
+        // 添加购物车: 新增或者累加
+        ShoppingMapper *shoppingMapper = new ShoppingMapper(db);
+        QList<Shopping *> shopList = ObjectToJson::parseShopping(socketData);
+        for (auto shopping : shopList)
+        {
+            int num = shoppingMapper->select(shopping);
+            if (num)
+            {
+                shopping->setShoppingNum(num + shopping->getShoppingNum());
+                shoppingMapper->update(shopping);
+            }
+            else shoppingMapper->insert(shopping);
+        }
+
+        // 返回添加成功
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
         break;

@@ -2,8 +2,7 @@
 
 
 PersonPage::PersonPage(Client *cClient, QWidget *parent)
-    : ElaScrollPage(parent)
-    , client(cClient)
+    : BasePage(cClient, parent)
 {
     setWindowTitle("我的信息");
     centralWidget = new QWidget(this);
@@ -11,7 +10,7 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     addCentralWidget(centralWidget, true, true, 0);
 
     //主Layout 初始化
-    QVBoxLayout *centerLayout = new QVBoxLayout(centralWidget);
+    centerLayout = new QVBoxLayout(centralWidget);
     //复用居中的 水平Layout
     auto midHLayout2 = [](QWidget *widget1, QWidget *widget2) -> QHBoxLayout* {
         QHBoxLayout *layout = new QHBoxLayout;
@@ -157,7 +156,6 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
 
 PersonPage::~PersonPage()
 {
-
 }
 
 void PersonPage::initPage(Client *cClient)

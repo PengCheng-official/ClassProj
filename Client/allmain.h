@@ -18,6 +18,7 @@
 #include "ui/personpage.h"
 #include "ui/searchpage.h"
 #include "ui/homepage.h"
+#include "ui/shoppingpage.h"
 #include "ElaWindow.h"
 #include "ElaContentDialog.h"
 #include "ElaMessageBar.h"
@@ -49,6 +50,7 @@ private:
     QString _chatKey{""};
     QString _personKey{""};
     SearchPage *_searchPage;
+    ShoppingPage *_shoppingPage;
 
 public:
     Allmain(QWidget *parent = nullptr);

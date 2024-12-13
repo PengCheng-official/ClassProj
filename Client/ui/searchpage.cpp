@@ -1,8 +1,7 @@
 #include "searchpage.h"
 
 SearchPage::SearchPage(Client *cClient, QWidget* parent)
-    : ElaScrollPage(parent)
-    , client(cClient)
+    : BasePage(cClient, parent)
 {
     setWindowTitle("搜索商品");
 
@@ -23,54 +22,25 @@ SearchPage::SearchPage(Client *cClient, QWidget* parent)
     centralWidget->setWindowTitle("搜索商品");
     addCentralWidget(centralWidget, true, true, 0);
 
-    mainLayout = new QVBoxLayout(centralWidget);
+    centerLayout = new QVBoxLayout(centralWidget);
     QHBoxLayout *searchLayout = new QHBoxLayout();
     searchLayout->addStretch();
     searchLayout->addWidget(searchEdit);
     searchLayout->addSpacing(10);
     searchLayout->addWidget(searchBtn);
     searchLayout->addStretch();
-    mainLayout->addLayout(searchLayout);
-    mainLayout->addSpacing(20);
-    mainLayout->addStretch();
+    centerLayout->addLayout(searchLayout);
+    centerLayout->addSpacing(20);
+    centerLayout->addStretch();
 }
 
 SearchPage::~SearchPage()
 {
 }
 
-void SearchPage::clearPage()
-{
-    qDebug() << "[searchPage] clearing:" << mainLayout->count();
-    // 先清除上次的在线列表，留下搜索layout和空间
-    if (mainLayout) {
-        // 删除旧的布局
-        int cnt = mainLayout->count();
-        for (int i = cnt - 1; i >= 2; i--)
-        {
-            QLayoutItem *item = mainLayout->takeAt(i);
-            mainLayout->removeItem(item);  // 从布局中移除项
-
-            QWidget *widget = item->widget();
-            QSpacerItem *spacer = dynamic_cast<QSpacerItem*>(item);
-            if (widget)
-            {
-                widget->setParent(nullptr);  // 移除父级关系
-                delete widget;  // 删除控件
-                delete item;    // 从布局中删除项
-            }
-            else if (spacer)
-            {
-                delete spacer;  // 删除伸缩项
-            }
-            else delete item;
-        }
-    }
-}
-
 void SearchPage::refreshPage(QList<Product *> productList)
 {
-    clearPage();
+    clearPage(2);
 
     qDebug() << "[searchPage] update products...";
     if (productList.size() == 0)
@@ -82,7 +52,7 @@ void SearchPage::refreshPage(QList<Product *> productList)
         text->setTextPixelSize(15);
         productLayout->addWidget(text);
         productLayout->addStretch();
-        mainLayout->addWidget(productArea);
+        centerLayout->addWidget(productArea);
     }
     else
     {
@@ -107,7 +77,9 @@ void SearchPage::refreshPage(QList<Product *> productList)
             about->setTextPixelSize(15);
             about->setStyleSheet("color: rgb(75, 75, 75);");
 
-            ElaText *price = new ElaText("￥" + QString::number(product->getProductPrice()), productArea);
+            ElaText *price = new ElaText(productArea);
+            price->setText("￥" + QString::number(product->getProductPrice()));
+            //TODO: 促销价格
             price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
             price->setTextStyle(ElaTextType::Subtitle);
 
@@ -125,7 +97,20 @@ void SearchPage::refreshPage(QList<Product *> productList)
             addLayout->addWidget(num);
             addLayout->addStretch();
             addLayout->addWidget(add);
-            // TODO: 加入购物车
+            // 加入购物车
+            connect(add, &QPushButton::clicked, [=](){
+                double p = product->getProductPrice(); int n = 1;
+                product->applyStrategy(p, n);
+                Shopping *shopping = new Shopping(client->getClientId(), product->getProductId(), n, p);
+                QList<Shopping *> shopList = {shopping};
+                qDebug() << "[searchPage] add shopping:" << product->getProductName();
+
+                QJsonObject message;
+                ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
+                ObjectToJson::addShoppingList(message, shopList);
+                QByteArray array = ObjectToJson::changeJson(message);
+                emit sigSendToServer(array);
+            });
 
             QVBoxLayout *textLayout = new QVBoxLayout();
             textLayout->addWidget(name);
@@ -142,11 +127,11 @@ void SearchPage::refreshPage(QList<Product *> productList)
             productLayout->addStretch();
             productLayout->addLayout(textLayout);
             productLayout->addStretch();
-            mainLayout->addWidget(productArea);
-            mainLayout->addSpacing(10);
+            centerLayout->addWidget(productArea);
+            centerLayout->addSpacing(10);
         }
     }
-    mainLayout->addStretch();
+    centerLayout->addStretch();
 }
 
 void SearchPage::onSearchBtnClicked()

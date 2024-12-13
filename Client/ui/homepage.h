@@ -1,37 +1,23 @@
 #ifndef HOMEPAGE_H
 #define HOMEPAGE_H
 
-#include <QObject>
-#include <QWidget>
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objecttojson.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include "statement.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
+
+#include "basepage.h"
 #include "ElaPromotionView.h"
 #include "ElaPromotionCard.h"
-#include "ElaPushButton.h"
-#include "ElaTheme.h"
 #include "ElaWidget.h"
 
-class HomePage : public ElaScrollPage
+class HomePage : public BasePage
 {
     Q_OBJECT
 public:
     explicit HomePage(Client *cClient, QWidget* parent = nullptr);
     ~HomePage();
+
     void refreshPage(QList<Product *> proList);
 
 private:
-    Client *client;
     ElaPromotionView* _promotionView{nullptr};
-    QWidget* centralWidget;
-    QVBoxLayout* centerLayout;
     QHBoxLayout *mainLayout;
     ElaScrollPageArea* productArea1;
     ElaScrollPageArea* productArea2;
@@ -45,11 +31,11 @@ private:
     ElaText *price2;
     ElaPushButton *add1;
     ElaPushButton *add2;
+    int id1;
+    int id2;
     QVBoxLayout *textLayout1;
     QVBoxLayout *textLayout2;
     ElaPushButton *changeBtn;
-signals:
-    void sigSendToServer(QByteArray array);
 };
 
 #endif // HOMEPAGE_H

@@ -1,8 +1,7 @@
 #include "homepage.h"
 
 HomePage::HomePage(Client *cClient, QWidget* parent)
-    : ElaScrollPage(parent)
-    , client(cClient)
+    : BasePage(cClient, parent)
 {
     _promotionView = new ElaPromotionView(this);
     _promotionView->setFixedHeight(420);
@@ -67,7 +66,18 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     add1->setLightHoverColor(QColor(255, 107, 48));
     add1->setLightPressColor(QColor(232, 50, 11));
     add1->setLightTextColor(Qt::white);
-    // TODO: 加入购物车
+    // 加入购物车
+    connect(add1, &QPushButton::clicked, [=](){
+        Shopping *shopping = new Shopping(client->getClientId(), id1, 1, price1->text().mid(1).toDouble());
+        QList<Shopping *> shopList = {shopping};
+        qDebug() << "[homePage] add shopping:" << id1 << name1->text();
+
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
+        ObjectToJson::addShoppingList(message, shopList);
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToServer(array);
+    });
 
     textLayout1 = new QVBoxLayout();
     textLayout1->addWidget(name1);
@@ -111,7 +121,18 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     add2->setLightHoverColor(QColor(255, 107, 48));
     add2->setLightPressColor(QColor(232, 50, 11));
     add2->setLightTextColor(Qt::white);
-    // TODO: 加入购物车
+    // 加入购物车
+    connect(add2, &QPushButton::clicked, [=](){
+        Shopping *shopping = new Shopping(client->getClientId(), id2, 1, price2->text().mid(1).toDouble());
+        QList<Shopping *> shopList = {shopping};
+        qDebug() << "[homePage] add shopping:" << id2 << name2->text();
+
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
+        ObjectToJson::addShoppingList(message, shopList);
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToServer(array);
+    });
 
     textLayout2 = new QVBoxLayout();
     textLayout2->addWidget(name2);
@@ -155,12 +176,14 @@ HomePage::~HomePage()
 
 void HomePage::refreshPage(QList<Product *> proList)
 {
-    qDebug() << "[homePage] product:" << proList[0]->getProductId();
+    id1 = proList[0]->getProductId();
+    qDebug() << "[homePage] product:" << id1;
     image1->setPixmap(QPixmap(proList[0]->getProductImage()));
     name1->setText(proList[0]->getProductName());
     price1->setText("￥" + QString::number(proList[0]->getProductPrice()));
 
-    qDebug() << "[homePage] product:" << proList[1]->getProductId();
+    id2 = proList[1]->getProductId();
+    qDebug() << "[homePage] product:" << id2;
     image2->setPixmap(QPixmap(proList[1]->getProductImage()));
     name2->setText(proList[1]->getProductName());
     price2->setText("￥" + QString::number(proList[1]->getProductPrice()));

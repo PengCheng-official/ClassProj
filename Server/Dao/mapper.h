@@ -12,6 +12,7 @@
 #include "../objects/orderlist.h"
 #include "../objects/product.h"
 #include "../objects/search.h"
+#include "../objects/shopping.h"
 
 class Mapper
 {

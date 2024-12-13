@@ -25,9 +25,9 @@ void Product::setStrategy(int pStrategy, double num1, double num2)
     _num2 = num2;
 }
 
-char Product::getStrategy() const
+int Product::getStrategy() const
 {
-    return _ProductStrategy + '0';
+    return _ProductStrategy;
 }
 
 double Product::getStrategy1() const
@@ -46,7 +46,7 @@ void Product::applyStrategy(double &price, int &num)
     {
     case 1:
     {
-        price = price * _num1 / 100.0;
+        price = price * _num1 / 10.0;
         break;
     }
     case 2:

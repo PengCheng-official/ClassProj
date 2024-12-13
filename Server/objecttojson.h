@@ -5,6 +5,7 @@
 #include "objects/order.h"
 #include "objects/orderlist.h"
 #include "objects/product.h"
+#include "objects/shopping.h"
 #include "objects/search.h"
 #include <QJsonArray>
 #include <QJsonObject>
@@ -28,6 +29,7 @@ public:
     static QJsonObject addClientList(QJsonObject &object, QList<Client *> clientList);
     static QJsonObject addChatList(QJsonObject &object, QList<Chat *> chatList);
     static QJsonObject addProductList(QJsonObject &object, QList<Product *> productList);
+    static QJsonObject addShoppingList(QJsonObject &object, QList<Shopping *> shoppingList);
 //    static QJsonObject integrateProductList(QJsonObject &object,QList<Product*>ProductList);
 //    static QJsonObject integrateProductTypeList(QJsonObject &object,QList<ProductType*>ProductTypeList);
 //    static QJsonObject integrateOrderList(QJsonObject &object,QList<Order*>OrderList);
@@ -39,6 +41,7 @@ public:
     static QList<Client *> parseClient(QByteArray object);
     static QList<Chat *> parseChat(QByteArray object);
     static QList<Product *> parseProduct(QByteArray object);
+    static QList<Shopping *> parseShopping(QByteArray object);
 //    static QList<Product*> parseProduct(QByteArray object);
 //    static QList<ProductType*> parseProductType(QByteArray object);
 //    static QList<Order*> parseOrder(QByteArray object);

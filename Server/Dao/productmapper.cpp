@@ -107,7 +107,7 @@ void ProductMapper::insert(Product *product)
 
 void ProductMapper::insert(QList<Product *> proList)
 {
-    qDebug() << "[database] chat insert proList ...";
+    qDebug() << "[database] product insert proList ...";
     for (auto pro : proList)
     {
         insert(pro);

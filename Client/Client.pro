@@ -40,9 +40,11 @@ SOURCES += \
     objects/strategy.cpp \
     objecttojson.cpp \
     signin.cpp \
+    ui/basepage.cpp \
     ui/homepage.cpp \
     ui/personpage.cpp \
-    ui/searchpage.cpp
+    ui/searchpage.cpp \
+    ui/shoppingpage.cpp
 
 HEADERS += \
     allmain.h \
@@ -61,9 +63,11 @@ HEADERS += \
     objecttojson.h \
     signin.h \
     statement.h \
+    ui/basepage.h \
     ui/homepage.h \
     ui/personpage.h \
-    ui/searchpage.h
+    ui/searchpage.h \
+    ui/shoppingpage.h
 
 FORMS += \
     allmain.ui \

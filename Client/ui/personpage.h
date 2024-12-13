@@ -1,26 +1,13 @@
 #ifndef PERSONPAGE_H
 #define PERSONPAGE_H
 
-#include <QObject>
-#include <QWidget>
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include "ElaLineEdit.h"
+#include "basepage.h"
 #include "ElaToggleButton.h"
 #include "ElaMessageButton.h"
-#include "ElaPushButton.h"
 #include <QFileDialog>
-#include "objecttojson.h"
-#include "statement.h"
 #include <QThread>
 
-class PersonPage : public ElaScrollPage
+class PersonPage : public BasePage
 {
     Q_OBJECT
 public:
@@ -34,9 +21,7 @@ public:
     // 初始化页面
 
 private:
-    Client *client;
     Client *nClient;
-    QWidget *centralWidget;
     ElaLineEdit *nameEdit;
     ElaLineEdit *addrEdit;
     ElaLineEdit *phoneEdit;
@@ -54,7 +39,6 @@ private slots:
     void onConFirmBtnClicked();
 
 signals:
-    void sigSendToServer(QByteArray array);
     void sigClientChanged(Client *nClient);
 };
 

@@ -2,23 +2,9 @@
 #define SEARCHPAGE_H
 
 
-#include <QObject>
-#include <QWidget>
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objecttojson.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include "statement.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include "ElaLineEdit.h"
-#include "ElaPushButton.h"
-#include "ElaTheme.h"
+#include "basepage.h"
 
-class SearchPage : public ElaScrollPage
+class SearchPage : public BasePage
 {
     Q_OBJECT
 public:
@@ -27,20 +13,12 @@ public:
 
     void refreshPage(QList<Product *> productList);
 
-    void clearPage();
-
 public slots:
     void onSearchBtnClicked();
 
 private:
-    Client *client;
-    QWidget *centralWidget;
-    QVBoxLayout *mainLayout;
     ElaLineEdit *searchEdit;
     ElaPushButton *searchBtn;
-
-signals:
-    void sigSendToServer(QByteArray array);
 };
 
 #endif // SEARCHPAGE_H

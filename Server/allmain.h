@@ -24,6 +24,7 @@
 #include "dao/clientmapper.h"
 #include "dao/chatmapper.h"
 #include "dao/productmapper.h"
+#include "dao/shoppingmapper.h"
 #include "statement.h"
 #include <QTime>
 #include <QRandomGenerator>
