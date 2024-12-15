@@ -111,9 +111,9 @@ ProductPage::ProductPage(QWidget* parent)
     //确定按钮 初始化
     confirmBtn = new ElaPushButton("确认新增", this);
     confirmBtn->setFixedSize(100, 40);
-    confirmBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
-    confirmBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
-    confirmBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+    confirmBtn->setLightDefaultColor(redDefault);
+    confirmBtn->setLightHoverColor(redHover);
+    confirmBtn->setLightPressColor(redPress);
     confirmBtn->setLightTextColor(Qt::white);
     confirmBtn->setStyleSheet("font-size: 16px;");
 

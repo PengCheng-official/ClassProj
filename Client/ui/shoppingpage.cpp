@@ -8,6 +8,28 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
     centralWidget->setWindowTitle("我的购物车");
     addCentralWidget(centralWidget, true, true, 0);
     centerLayout = new QVBoxLayout(centralWidget);
+
+    totPrice = deltaPrice = 0;
+    totText = new ElaText("共计 ￥" + QString::number(totPrice), 18, this);
+    totText->setTextStyle(ElaTextType::Title);
+
+    deltaText = new ElaText("已省 ￥" + QString::number(deltaPrice), 14, this);
+    deltaText->setTextStyle(ElaTextType::Subtitle);
+
+    confirmBtn = new ElaPushButton("去结算", this);
+    confirmBtn->setFixedSize(270, 50);
+    confirmBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
+    confirmBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
+    confirmBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+    confirmBtn->setLightTextColor(Qt::white);
+    confirmBtn->setStyleSheet("font-size: 15px;");
+    connect(confirmBtn, &QPushButton::clicked, [=](){
+        // 结算：创建订单，不通信
+        this->hide();
+        OrderPage *orderPage = new OrderPage(client, selectList, this);
+        orderPage->show();
+        //TODO: 返回
+    });
 }
 
 ShoppingPage::~ShoppingPage()
@@ -18,6 +40,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 {
     clearPage(0);
     totPrice = deltaPrice = 0;
+    confirmChanged();
     selectList.clear();
     int n = productList.size();
     qDebug() << "[shoppingPage] cnt:" << n;
@@ -67,9 +90,9 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 
         ElaPushButton *del = new ElaPushButton("删除", productArea);
         del->setFixedSize(60, 40);
-        del->setLightDefaultColor(QColor(252, 90, 31));
-        del->setLightHoverColor(QColor(255, 107, 48));
-        del->setLightPressColor(QColor(232, 50, 11));
+        del->setLightDefaultColor(redDefault);
+        del->setLightHoverColor(redHover);
+        del->setLightPressColor(redPress);
         del->setLightTextColor(Qt::white);
 
         ElaCheckBox *checkBox = new ElaCheckBox(productArea);
@@ -87,7 +110,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
                 selectList.append({productList[i], spinBox->value()});
                 //TODO: 促销价格
                 totPrice += nprice * spinBox->value();
-                deltaPrice += delta > 0 ? delta * spinBox->value() : 0;
+                deltaPrice -= delta < 0 ? delta * spinBox->value() : 0;
             }
             else if (state == Qt::Unchecked)
             {
@@ -96,7 +119,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
                 selectList.removeAll({productList[i], spinBox->value()});
                 //TODO: 促销价格
                 totPrice -= nprice * spinBox->value();
-                deltaPrice -= delta > 0 ? delta * spinBox->value() : 0;
+                deltaPrice += delta < 0 ? delta * spinBox->value() : 0;
             }
             confirmChanged();
         });
@@ -124,20 +147,6 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         centerLayout->addWidget(productArea);
         centerLayout->addSpacing(10);
     }
-    totText = new ElaText("共计 ￥" + QString::number(totPrice), 18, this);
-    totText->setTextStyle(ElaTextType::Title);
-
-    deltaText = new ElaText("已省 ￥" + QString::number(deltaPrice), 14, this);
-    deltaText->setTextStyle(ElaTextType::Subtitle);
-
-    confirmBtn = new ElaPushButton("结算", this);
-    confirmBtn->setFixedSize(130, 60);
-    confirmBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
-    confirmBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
-    confirmBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
-    confirmBtn->setLightTextColor(Qt::white);
-    confirmBtn->setStyleSheet("font-size: 15px;");
-
     QHBoxLayout *confirmLayout = new QHBoxLayout();
     confirmLayout->addSpacing(30);
     confirmLayout->addWidget(totText);

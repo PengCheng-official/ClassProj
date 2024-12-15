@@ -16,7 +16,7 @@ PROPERTY_CREATE_H(QString, FinishTime);
 
 public:
     Order();
-    Order(int cId, double totPrice, QString oStatus, QString cTime, QString fTime);
+    Order(int cId, double totPrice, QString oStatus, QString cTime);
 };
 
 #endif // ORDER_H

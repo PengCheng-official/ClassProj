@@ -62,9 +62,9 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
 
     add1 = new ElaPushButton("加入购物车", productArea1);
     add1->setFixedSize(100, 40);
-    add1->setLightDefaultColor(QColor(252, 90, 31));
-    add1->setLightHoverColor(QColor(255, 107, 48));
-    add1->setLightPressColor(QColor(232, 50, 11));
+    add1->setLightDefaultColor(redDefault);
+    add1->setLightHoverColor(redHover);
+    add1->setLightPressColor(redPress);
     add1->setLightTextColor(Qt::white);
     // 加入购物车
     connect(add1, &QPushButton::clicked, [=](){

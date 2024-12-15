@@ -28,4 +28,9 @@
 //#define searchProductType 1000007
 //#define clientUpdate 1000008
 
+#include <QColor>
+const QColor redPress(232, 50, 11);
+const QColor redDefault(252, 90, 31);
+const QColor redHover(255, 107, 48);
+
 #endif // STATEMENT_H

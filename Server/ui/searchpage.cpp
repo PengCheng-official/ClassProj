@@ -117,9 +117,9 @@ void SearchPage::updatePage(QList<Product *> productList)
 
             ElaPushButton *add = new ElaPushButton("修改商品", productArea);
             add->setFixedSize(100, 40);
-            add->setLightDefaultColor(QColor(252, 90, 31));
-            add->setLightHoverColor(QColor(255, 107, 48));
-            add->setLightPressColor(QColor(232, 50, 11));
+            add->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
+            add->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
+            add->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
             add->setLightTextColor(Qt::white);
             QHBoxLayout *addLayout = new QHBoxLayout();
             addLayout->addWidget(num);

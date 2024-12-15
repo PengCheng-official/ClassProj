@@ -7,6 +7,7 @@
 #include "ElaSpinBox.h"
 #include <QPair>
 #include <QMap>
+#include "orderpage.h"
 
 class ShoppingPage : public BasePage
 {

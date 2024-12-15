@@ -22,6 +22,7 @@
 #include "ElaPlainTextEdit.h"
 #include "ElaTheme.h"
 #include "dao/productmapper.h"
+#include "statement.h"
 
 class ProductPage : public ElaScrollPage
 {

@@ -42,6 +42,7 @@ SOURCES += \
     signin.cpp \
     ui/basepage.cpp \
     ui/homepage.cpp \
+    ui/orderpage.cpp \
     ui/personpage.cpp \
     ui/searchpage.cpp \
     ui/shoppingpage.cpp
@@ -65,6 +66,7 @@ HEADERS += \
     statement.h \
     ui/basepage.h \
     ui/homepage.h \
+    ui/orderpage.h \
     ui/personpage.h \
     ui/searchpage.h \
     ui/shoppingpage.h

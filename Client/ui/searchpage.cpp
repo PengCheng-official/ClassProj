@@ -88,9 +88,9 @@ void SearchPage::refreshPage(QList<Product *> productList)
 
             ElaPushButton *add = new ElaPushButton("加入购物车", productArea);
             add->setFixedSize(100, 40);
-            add->setLightDefaultColor(QColor(252, 90, 31));
-            add->setLightHoverColor(QColor(255, 107, 48));
-            add->setLightPressColor(QColor(232, 50, 11));
+            add->setLightDefaultColor(redDefault);
+            add->setLightHoverColor(redHover);
+            add->setLightPressColor(redPress);
             add->setLightTextColor(Qt::white);
             QHBoxLayout *addLayout = new QHBoxLayout();
             addLayout->addWidget(num);
