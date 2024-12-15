@@ -91,8 +91,8 @@ ProductPage::ProductPage(QWidget* parent)
     _edit1 = new ElaLineEdit(this);
     _edit2 = new ElaLineEdit(this);
     _edit1->setFixedSize(40, 36);
-    _edit1->setClearButtonEnabled(false);
     _edit2->setFixedSize(40, 36);
+    _edit1->setClearButtonEnabled(false);
     _edit2->setClearButtonEnabled(false);
     activityLayouts[0] = new QHBoxLayout();
     activityLayouts[1] = new QHBoxLayout();
@@ -199,6 +199,8 @@ void ProductPage::onCurrentIndexChanged(int cur)
     // 11
     centerLayout->removeItem(centerLayout->itemAt(11));
     centerLayout->insertLayout(11, activityLayouts[cur]);
+    _edit1->setClearButtonEnabled(false);
+    _edit2->setClearButtonEnabled(false);
 
     switch (cur) {
     case 0:
@@ -436,11 +438,11 @@ void ProductPage::onConFirmBtnClicked()
             nProduct->setStrategy(3, _edit1->text().toInt(), _edit2->text().toInt());
             break;
         case 4:
-            if (_edit1->text() == "" || _edit2->text() == "") {
+            if (_edit1->text() == "" || _edit2->text() == "" || !IsInt(_edit1->text())) {
                 emit sigCreateFail(4);
                 return;
             }
-            nProduct->setStrategy(4, _edit1->text().toDouble(), _edit2->text().toDouble());
+            nProduct->setStrategy(4, _edit1->text().toInt(), _edit2->text().toDouble());
             break;
         default:
             emit sigCreateFail(4); //满赠不是整数
@@ -461,6 +463,8 @@ void ProductPage::onDeleteBtnClicked()
 
 void ProductPage::createActivityLayout(ElaText *activityText)
 {
+    _edit1->setClearButtonEnabled(false);
+    _edit2->setClearButtonEnabled(false);
     activityLayouts[0]->addStretch();
     activityLayouts[0]->addWidget(activityText);
     activityLayouts[0]->addSpacing(11);
@@ -509,8 +513,8 @@ void ProductPage::createActivityLayout(ElaText *activityText)
     activityLayouts[4]->addStretch();
     activityLayouts[4]->addWidget(activityText);
     activityLayouts[4]->addSpacing(11);
-    _text6 = new ElaText("限时", 17, this);
-    _text7 = new ElaText("秒", 17, this);
+    _text6 = new ElaText("限量", 17, this);
+    _text7 = new ElaText("件", 17, this);
     _text8 = new ElaText("元", 17, this);
     _text6->setFixedSize(40, 36);
     _text7->setFixedSize(30, 36);

@@ -4,8 +4,8 @@ BasePage::BasePage(Client *cClient, QWidget* parent)
     : ElaScrollPage(parent)
     , client(cClient)
 {
-    centralWidget = new QWidget(this);
-    centerLayout = new QVBoxLayout(centralWidget);
+//    centralWidget = new QWidget(this);
+//    centerLayout = new QVBoxLayout(centralWidget);
 }
 
 BasePage::~BasePage()

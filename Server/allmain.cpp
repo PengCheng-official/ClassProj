@@ -343,6 +343,28 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         emit sigSendToClient(socket, array);
         break;
     }
+    case REQUESTSHOPPING:
+    {
+        // 购物车请求
+        Client *client = ObjectToJson::parseClient(socketData)[0];
+        ShoppingMapper *shoppingMapper = new ShoppingMapper(db);
+        QList<Shopping *> shopList =  shoppingMapper->select(client->getClientId());
+        QList<Product *> productList;
+        ProductMapper *productMapper = new ProductMapper(db);
+        for (auto shopping : shopList)
+        {
+            Product *product = productMapper->select(shopping->getProductId())[0];
+            productList.append(product);
+        }
+
+        QJsonObject message;
+        ObjectToJson::addShoppingList(message, shopList);
+        ObjectToJson::addProductList(message, productList);
+        ObjectToJson::addSignal(message, QString::number(REQUESTSHOPPING));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
     }
 
     db.close();

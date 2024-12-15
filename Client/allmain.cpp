@@ -96,8 +96,9 @@ void Allmain::initAllMain(Client *cClient)
 
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
+    addPageNode("我的购物车", _shoppingPage, ElaIconType::CartShopping);
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
-    addFooterNode("个人信息", _personPage, _personKey, 0, ElaIconType::User);
+    addFooterNode("我的信息", _personPage, _personKey, 0, ElaIconType::User);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
         switch(nodeType) {
         case ElaNavigationType::PageNode:
@@ -327,6 +328,7 @@ void Allmain::dealMessage(QByteArray message)
     }
     case REQUESTSHOPPING:
     {
+        // 刷新购物车
         QList<Product *> productList = ObjectToJson::parseProduct(message);
         QList<Shopping *> shoppingList = ObjectToJson::parseShopping(message);
         _shoppingPage->refreshPage(productList, shoppingList);

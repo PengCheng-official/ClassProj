@@ -179,42 +179,42 @@ QList<Client *> ObjectToJson::parseClient(QByteArray byteArray)
                     for (int i = 0; i < size; i++)
                     {
                         if (array[i].isObject()){
-                            QJsonObject clientObject = array[i].toObject();
+                            QJsonObject jsonObject = array[i].toObject();
                             Client * client = new Client;
-                            if(clientObject.contains("clientName")){
-                                QJsonValue object = clientObject.value("clientName");
+                            if(jsonObject.contains("clientName")){
+                                QJsonValue object = jsonObject.value("clientName");
                                 client->setClientName(object.toString());
                             }
-                            if(clientObject.contains("clientId")){
-                                QJsonValue object = clientObject.value("clientId");
+                            if(jsonObject.contains("clientId")){
+                                QJsonValue object = jsonObject.value("clientId");
                                 client->setClientId(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("clientPhone")){
-                                QJsonValue object = clientObject.value("clientPhone");
+                            if(jsonObject.contains("clientPhone")){
+                                QJsonValue object = jsonObject.value("clientPhone");
                                 client->setClientPhone(object.toString());
                             }
-                            if(clientObject.contains("clientEmail")){
-                                QJsonValue object = clientObject.value("clientEmail");
+                            if(jsonObject.contains("clientEmail")){
+                                QJsonValue object = jsonObject.value("clientEmail");
                                 client->setClientEmail(object.toString());
                             }
-                            if(clientObject.contains("clientAddr")){
-                                QJsonValue object = clientObject.value("clientAddr");
+                            if(jsonObject.contains("clientAddr")){
+                                QJsonValue object = jsonObject.value("clientAddr");
                                 client->setClientAddr(object.toString());
                             }
-                            if(clientObject.contains("clientPwd")){
-                                QJsonValue object = clientObject.value("clientPwd");
+                            if(jsonObject.contains("clientPwd")){
+                                QJsonValue object = jsonObject.value("clientPwd");
                                 client->setClientPwd(object.toString());
                             }
-                            if(clientObject.contains("clientSalt")){
-                                QJsonValue object = clientObject.value("clientSalt");
+                            if(jsonObject.contains("clientSalt")){
+                                QJsonValue object = jsonObject.value("clientSalt");
                                 client->setClientSalt(object.toString());
                             }
-                            if(clientObject.contains("clientGender")){
-                                QJsonValue object = clientObject.value("clientGender");
+                            if(jsonObject.contains("clientGender")){
+                                QJsonValue object = jsonObject.value("clientGender");
                                 client->setClientGender(object.toString());
                             }
-                            if(clientObject.contains("clientImage")){
-                                QJsonValue object = clientObject.value("clientImage");
+                            if(jsonObject.contains("clientImage")){
+                                QJsonValue object = jsonObject.value("clientImage");
                                 client->setClientImage(object.toString());
                             }
                             clientList.append(client);
@@ -246,22 +246,22 @@ QList<Chat *> ObjectToJson::parseChat(QByteArray byteArray)
                     for (int i = 0; i < size; i++)
                     {
                         if(array[i].isObject()){
-                            QJsonObject clientObject = array[i].toObject();
+                            QJsonObject jsonObject = array[i].toObject();
                             Chat * chat = new Chat;
-                            if(clientObject.contains("clientId")){
-                                QJsonValue object = clientObject.value("clientId");
+                            if(jsonObject.contains("clientId")){
+                                QJsonValue object = jsonObject.value("clientId");
                                 chat->setClientId(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("chatText")){
-                                QJsonValue object = clientObject.value("chatText");
+                            if(jsonObject.contains("chatText")){
+                                QJsonValue object = jsonObject.value("chatText");
                                 chat->setChatText(object.toString());
                             }
-                            if(clientObject.contains("chatIsserver")){
-                                QJsonValue object = clientObject.value("chatIsserver");
+                            if(jsonObject.contains("chatIsserver")){
+                                QJsonValue object = jsonObject.value("chatIsserver");
                                 chat->setChatIsserver(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("chatTime")){
-                                QJsonValue object = clientObject.value("chatTime");
+                            if(jsonObject.contains("chatTime")){
+                                QJsonValue object = jsonObject.value("chatTime");
                                 chat->setChatTime(object.toString());
                             }
                             chatList.append(chat);
@@ -293,40 +293,40 @@ QList<Product *> ObjectToJson::parseProduct(QByteArray byteArray)
                     for (int i = 0; i < size; i++)
                     {
                         if(array[i].isObject()){
-                            QJsonObject clientObject = array[i].toObject();
+                            QJsonObject jsonObject = array[i].toObject();
                             Product * product = new Product;
-                            if(clientObject.contains("productId")){
-                                QJsonValue object = clientObject.value("productId");
+                            if(jsonObject.contains("productId")){
+                                QJsonValue object = jsonObject.value("productId");
                                 product->setProductId(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("productName")){
-                                QJsonValue object = clientObject.value("productName");
+                            if(jsonObject.contains("productName")){
+                                QJsonValue object = jsonObject.value("productName");
                                 product->setProductName(object.toString());
                             }
-                            if(clientObject.contains("productPrice")){
-                                QJsonValue object = clientObject.value("productPrice");
+                            if(jsonObject.contains("productPrice")){
+                                QJsonValue object = jsonObject.value("productPrice");
                                 product->setProductPrice(object.toVariant().toDouble());
                             }
-                            if(clientObject.contains("productNum")){
-                                QJsonValue object = clientObject.value("productNum");
+                            if(jsonObject.contains("productNum")){
+                                QJsonValue object = jsonObject.value("productNum");
                                 product->setProductNum(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("productSales")){
-                                QJsonValue object = clientObject.value("productSales");
+                            if(jsonObject.contains("productSales")){
+                                QJsonValue object = jsonObject.value("productSales");
                                 product->setProductSales(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("productAbout")){
-                                QJsonValue object = clientObject.value("productAbout");
+                            if(jsonObject.contains("productAbout")){
+                                QJsonValue object = jsonObject.value("productAbout");
                                 product->setProductAbout(object.toString());
                             }
-                            if(clientObject.contains("productStrategy")){
-                                QJsonValue object = clientObject.value("productStrategy");
-                                QJsonValue object1 = clientObject.value("productStrategy1");
-                                QJsonValue object2 = clientObject.value("productStrategy2");
+                            if(jsonObject.contains("productStrategy")){
+                                QJsonValue object = jsonObject.value("productStrategy");
+                                QJsonValue object1 = jsonObject.value("productNum1");
+                                QJsonValue object2 = jsonObject.value("productNum1");
                                 product->setStrategy(object.toVariant().toInt(), object1.toVariant().toDouble(), object2.toVariant().toDouble());
                             }
-                            if(clientObject.contains("productImage")){
-                                QJsonValue object = clientObject.value("productImage");
+                            if(jsonObject.contains("productImage")){
+                                QJsonValue object = jsonObject.value("productImage");
                                 product->setProductImage(object.toString());
                             }
                             productList.append(product);
@@ -358,26 +358,26 @@ QList<Shopping *> ObjectToJson::parseShopping(QByteArray byteArray)
                     for (int i = 0; i < size; i++)
                     {
                         if(array[i].isObject()){
-                            QJsonObject clientObject = array[i].toObject();
+                            QJsonObject jsonObject = array[i].toObject();
                             Shopping * shopping = new Shopping;
-                            if(clientObject.contains("shoppingId")){
-                                QJsonValue object = clientObject.value("shoppingId");
+                            if(jsonObject.contains("shoppingId")){
+                                QJsonValue object = jsonObject.value("shoppingId");
                                 shopping->setShoppingId(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("clientId")){
-                                QJsonValue object = clientObject.value("clientId");
+                            if(jsonObject.contains("clientId")){
+                                QJsonValue object = jsonObject.value("clientId");
                                 shopping->setClientId(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("productId")){
-                                QJsonValue object = clientObject.value("productId");
+                            if(jsonObject.contains("productId")){
+                                QJsonValue object = jsonObject.value("productId");
                                 shopping->setProductId(object.toVariant().toDouble());
                             }
-                            if(clientObject.contains("shoppingNum")){
-                                QJsonValue object = clientObject.value("shoppingNum");
+                            if(jsonObject.contains("shoppingNum")){
+                                QJsonValue object = jsonObject.value("shoppingNum");
                                 shopping->setShoppingNum(object.toVariant().toInt());
                             }
-                            if(clientObject.contains("shoppingPrice")){
-                                QJsonValue object = clientObject.value("shoppingPrice");
+                            if(jsonObject.contains("shoppingPrice")){
+                                QJsonValue object = jsonObject.value("shoppingPrice");
                                 shopping->setShoppingPrice(object.toVariant().toDouble());
                             }
                             shoppingList.append(shopping);
