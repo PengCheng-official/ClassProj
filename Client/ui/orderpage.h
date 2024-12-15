@@ -5,6 +5,7 @@
 #include "ElaWidget.h"
 #include "basepage.h"
 #include <QTime>
+#include "ElaContentDialog.h"
 
 class OrderPage : public ElaWidget
 {
@@ -15,6 +16,8 @@ public:
 
 private slots:
     void onConfirmBtnClicked();
+    void onRightBtnClicked();
+    void onMiddleBtnClicked();
 
 private:
     Client *client;
@@ -26,6 +29,7 @@ private:
     ElaText *deltaText;
     double totPrice;
     double deltaPrice;
+    ElaContentDialog *payDialog;
 };
 
 #endif // ORDERPAGE_H

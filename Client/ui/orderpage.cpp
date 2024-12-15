@@ -13,6 +13,16 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, 
     setWindowButtonFlags(ElaAppBarType::CloseButtonHint);
     totPrice = deltaPrice = 0;
 
+    // 支付实现
+    payDialog = new ElaContentDialog(this);
+    payDialog->setTitleText("移动支付中...");
+    payDialog->setSubTitleText("确定要支付吗？");
+    payDialog->setRightButtonText("确定");
+    payDialog->setMiddleButtonText("取消");
+    payDialog->isLeftButtonVisible(false);
+    connect(payDialog, &ElaContentDialog::rightButtonClicked, this, &OrderPage::onRightBtnClicked);
+    connect(payDialog, &ElaContentDialog::middleButtonClicked, this, &OrderPage::onMiddleBtnClicked);
+
     centerLayout = new QVBoxLayout(this);
     for (auto [product, num] : selectList)
     {
@@ -83,6 +93,9 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, 
     confirmBtn->setLightPressColor(redPress);
     confirmBtn->setLightTextColor(Qt::white);
     confirmBtn->setStyleSheet("font-size: 15px;");
+    connect(confirmBtn, &QPushButton::clicked, [=](){
+        payDialog->exec();
+    });
 
     QHBoxLayout *confirmLayout = new QHBoxLayout();
     confirmLayout->addSpacing(30);
@@ -101,6 +114,16 @@ OrderPage::~OrderPage()
 }
 
 void OrderPage::onConfirmBtnClicked()
+{
+
+}
+
+void OrderPage::onRightBtnClicked()
+{
+
+}
+
+void OrderPage::onMiddleBtnClicked()
 {
 
 }
