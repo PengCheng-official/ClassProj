@@ -40,3 +40,28 @@ void BasePage::clearPage(int left)
         }
     }
 }
+
+void BasePage::makePriceText(ElaText *price, Product *product)
+{
+    if (!product->getStrategy()) price->setText("￥" + QString::number(product->getProductPrice()));
+    else
+    {
+        double nprice = product->getProductPrice(); int num = 1;
+        product->applyStrategy(nprice, num);
+        switch(product->getStrategy())
+        {
+        case 1:
+            price->setText("促销 ￥"+QString::number(nprice)+" | "+QString::number(product->getStrategy1())+"折");
+            break;
+        case 2:
+            price->setText("促销 ￥"+QString::number(nprice)+" | 满￥"+QString::number(product->getStrategy1())+"减￥"+QString::number(product->getStrategy2()));
+            break;
+        case 3:
+            price->setText("促销 ￥"+QString::number(nprice)+" | 满"+QString::number(product->getStrategy1())+"赠"+QString::number(product->getStrategy2()));
+            break;
+        case 4:
+            price->setText("促销 ￥"+QString::number(nprice)+" | 共"+QString::number(product->getStrategy1())+"件");
+            break;
+        }
+    }
+}

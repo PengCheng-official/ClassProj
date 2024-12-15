@@ -46,21 +46,22 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         about->setStyleSheet("color: rgb(75, 75, 75);");
 
         ElaText *price = new ElaText(productArea);
-        price->setText("￥" + QString::number(productList[i]->getProductPrice()));
-        //TODO: 促销价格
+        makePriceText(price, productList[i]);
         price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
         price->setTextStyle(ElaTextType::Subtitle);
 
         //TODO: 促销价格 delta 也要改
-        double delta = productList[i]->getProductPrice() - shoppingList[i]->getShoppingPrice();
+        double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
+        productList[i]->applyStrategy(nprice, nnum);
+        double delta = nprice - shoppingList[i]->getShoppingPrice();
         ElaText *num = new ElaText(productArea);
         if (delta > 0) {
-            num->setText("价格变动: -" + QString::number(delta));
-            num->setStyleSheet("color: green;");
+            num->setText("价格变动: +" + QString::number(delta));
+            num->setStyleSheet("color: red;");
         }
         else {
-            num->setText("价格变动: +" + QString::number(delta));
-            num->setStyleSheet("color: rad;");
+            num->setText("价格变动: " + QString::number(delta));
+            num->setStyleSheet("color: green;");
         }
         num->setTextStyle(ElaTextType::Body);
 
@@ -81,16 +82,20 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         connect(checkBox, &QCheckBox::stateChanged, [=](int state){
             if (state == Qt::Checked)
             {
+                double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
+                productList[i]->applyStrategy(nprice, nnum);
                 selectList.append({productList[i], spinBox->value()});
                 //TODO: 促销价格
-                totPrice += productList[i]->getProductPrice() * spinBox->value();
+                totPrice += nprice * spinBox->value();
                 deltaPrice += delta > 0 ? delta * spinBox->value() : 0;
             }
             else if (state == Qt::Unchecked)
             {
+                double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
+                productList[i]->applyStrategy(nprice, nnum);
                 selectList.removeAll({productList[i], spinBox->value()});
                 //TODO: 促销价格
-                totPrice -= productList[i]->getProductPrice() * spinBox->value();
+                totPrice -= nprice * spinBox->value();
                 deltaPrice -= delta > 0 ? delta * spinBox->value() : 0;
             }
             confirmChanged();
@@ -100,7 +105,9 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
             selectList.removeAll({productList[i], spinMap[spinBox]});
             selectList.append({productList[i], value});
             //TODO: 促销价格
-            totPrice += productList[i]->getProductPrice() * (value - spinMap[spinBox]);
+            double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
+            productList[i]->applyStrategy(nprice, nnum);
+            totPrice += nprice * (value - spinMap[spinBox]);
             deltaPrice += delta > 0 ? delta * (value - spinMap[spinBox]) : 0;
             spinMap[spinBox] = value;
             confirmChanged();

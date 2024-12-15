@@ -28,6 +28,8 @@ public:
 protected:
     void clearPage(int left);
 
+    void makePriceText(ElaText *price, Product *product);
+
 protected:
     Client *client;
     QWidget *centralWidget;

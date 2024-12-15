@@ -180,11 +180,11 @@ void HomePage::refreshPage(QList<Product *> proList)
     qDebug() << "[homePage] product:" << id1;
     image1->setPixmap(QPixmap(proList[0]->getProductImage()));
     name1->setText(proList[0]->getProductName());
-    price1->setText("￥" + QString::number(proList[0]->getProductPrice()));
+    makePriceText(price1, proList[0]);
 
     id2 = proList[1]->getProductId();
     qDebug() << "[homePage] product:" << id2;
     image2->setPixmap(QPixmap(proList[1]->getProductImage()));
     name2->setText(proList[1]->getProductName());
-    price2->setText("￥" + QString::number(proList[1]->getProductPrice()));
+    makePriceText(price2, proList[1]);
 }

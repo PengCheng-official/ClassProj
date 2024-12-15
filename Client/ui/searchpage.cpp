@@ -78,29 +78,7 @@ void SearchPage::refreshPage(QList<Product *> productList)
             about->setStyleSheet("color: rgb(75, 75, 75);");
 
             ElaText *price = new ElaText(productArea);
-            if (!product->getStrategy()) price->setText("￥" + QString::number(product->getProductPrice()));
-            else
-            {
-                double nprice = product->getProductPrice(); int num = 1;
-                product->applyStrategy(nprice, num);
-                qDebug() << nprice << num << product->getStrategy();
-                switch(product->getStrategy())
-                {
-                case 1:
-                    price->setText("促销 ￥"+QString::number(nprice)+" | "+QString::number(product->getStrategy1())+"折");
-                    break;
-                case 2:
-                    price->setText("促销 ￥"+QString::number(nprice)+" | 满￥"+QString::number(product->getStrategy1())+"减￥"+QString::number(product->getStrategy2()));
-                    break;
-                case 3:
-                    price->setText("促销 ￥"+QString::number(nprice)+" | 满"+QString::number(product->getStrategy1())+"赠"+QString::number(product->getStrategy2()));
-                    break;
-                case 4:
-                    price->setText("促销 ￥"+QString::number(nprice)+" | 共"+QString::number(product->getStrategy1())+"件");
-                    break;
-                }
-            }
-            //TODO: 促销价格
+            makePriceText(price, product);
             price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
             price->setTextStyle(ElaTextType::Subtitle);
 
