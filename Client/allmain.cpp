@@ -93,6 +93,12 @@ void Allmain::initAllMain(Client *cClient)
 
     // 购物车界面
     _shoppingPage = new ShoppingPage(client, this);
+    connect(_shoppingPage, &ShoppingPage::sigShoppingTooMore, [=](){
+        ElaMessageBar::error(ElaMessageBarType::BottomRight, "结算失败", "最多单次下单3种商品", 2000, this);
+    });
+    connect(_shoppingPage, &ShoppingPage::sigShoppingTooLess, [=](){
+        ElaMessageBar::error(ElaMessageBarType::BottomRight, "结算失败", "至少单次下单1种商品", 2000, this);
+    });
 
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);

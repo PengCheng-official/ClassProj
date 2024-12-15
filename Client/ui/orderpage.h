@@ -2,10 +2,11 @@
 #define ORDERPAGE_H
 
 
+#include "ElaWidget.h"
 #include "basepage.h"
 #include <QTime>
 
-class OrderPage : public BasePage
+class OrderPage : public ElaWidget
 {
     Q_OBJECT
 public:
@@ -16,6 +17,8 @@ private slots:
     void onConfirmBtnClicked();
 
 private:
+    Client *client;
+    QVBoxLayout *centerLayout;
     ElaPushButton *confirmBtn;
     Order* order;
     QList<OrderList *> orderList;

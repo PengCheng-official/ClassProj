@@ -17,7 +17,7 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
     deltaText->setTextStyle(ElaTextType::Subtitle);
 
     confirmBtn = new ElaPushButton("去结算", this);
-    confirmBtn->setFixedSize(270, 50);
+    confirmBtn->setFixedSize(100, 50);
     confirmBtn->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
     confirmBtn->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
     confirmBtn->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
@@ -25,8 +25,16 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
     confirmBtn->setStyleSheet("font-size: 15px;");
     connect(confirmBtn, &QPushButton::clicked, [=](){
         // 结算：创建订单，不通信
-        this->hide();
-        OrderPage *orderPage = new OrderPage(client, selectList, this);
+        if (checkNum > 3) {
+            emit sigShoppingTooMore();
+            return;
+        }
+        if (checkNum == 0) {
+            emit sigShoppingTooLess();
+            return;
+        }
+        OrderPage *orderPage = new OrderPage(client, selectList);
+        orderPage->moveToCenter();
         orderPage->show();
         //TODO: 返回
     });
@@ -36,12 +44,17 @@ ShoppingPage::~ShoppingPage()
 {
 }
 
-void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> shoppingList)
+void ShoppingPage::initPage()
 {
     clearPage(0);
-    totPrice = deltaPrice = 0;
+    totPrice = deltaPrice = checkNum = 0;
     confirmChanged();
     selectList.clear();
+}
+
+void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> shoppingList)
+{
+    initPage();
     int n = productList.size();
     qDebug() << "[shoppingPage] cnt:" << n;
 
@@ -97,7 +110,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 
         ElaCheckBox *checkBox = new ElaCheckBox(productArea);
         ElaSpinBox * spinBox = new ElaSpinBox(productArea);
-        spinBox->setFixedSize(80, 20);
+        spinBox->setFixedSize(75, 30);
         spinBox->setMinimum(1);
         spinBox->setValue(shoppingList[i]->getShoppingNum());
         spinMap[spinBox] = spinBox->value();
@@ -105,6 +118,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         connect(checkBox, &QCheckBox::stateChanged, [=](int state){
             if (state == Qt::Checked)
             {
+                ++ checkNum;
                 double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
                 productList[i]->applyStrategy(nprice, nnum);
                 selectList.append({productList[i], spinBox->value()});
@@ -114,6 +128,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
             }
             else if (state == Qt::Unchecked)
             {
+                -- checkNum;
                 double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
                 productList[i]->applyStrategy(nprice, nnum);
                 selectList.removeAll({productList[i], spinBox->value()});

@@ -1,17 +1,22 @@
 #include "orderpage.h"
 
 OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, QWidget* parent)
-    : BasePage(cClient, parent)
+    : ElaWidget(parent)
+    , client(cClient)
 {
     // 初始化时不建立 order，没有申请 order_id
-    centralWidget = new QWidget(this);
-    centralWidget->setWindowTitle("订单状态：未支付");
-    addCentralWidget(centralWidget, true, true, 0);
+    setWindowTitle("订单状态：未支付");
+    setWindowIcon(QIcon(":/Resource/order_icon.png"));
+    this->setFixedHeight(660);
+    this->setIsFixedSize(true);
+    setWindowModality(Qt::ApplicationModal);
+    setWindowButtonFlags(ElaAppBarType::CloseButtonHint);
+    totPrice = deltaPrice = 0;
 
-    centerLayout = new QVBoxLayout(centralWidget);
+    centerLayout = new QVBoxLayout(this);
     for (auto [product, num] : selectList)
     {
-        ElaScrollPageArea* productArea = new ElaScrollPageArea(centralWidget);
+        ElaScrollPageArea* productArea = new ElaScrollPageArea(this);
         productArea->setFixedHeight(160);
         QHBoxLayout* productLayout = new QHBoxLayout(productArea);
 
@@ -33,24 +38,27 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, 
         double nprice = product->getProductPrice(); int nnum = num;
         product->applyStrategy(nprice, nnum);
         price->setText("小计 ￥" + QString::number(nprice * nnum));
-        price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
         price->setTextStyle(ElaTextType::Subtitle);
+        price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
 
         ElaText *numText = new ElaText(productArea);
         if (num == nnum) numText->setText("共"+QString::number(nnum)+"件");
         else numText->setText("共"+QString::number(nnum)+"件 (赠"+QString::number(nnum - num)+"件)");
+        numText->setStyleSheet("font-size: 16px;");
 
         totPrice += nprice * nnum;
-        deltaPrice += (product->getProductPrice() * num - nprice * nnum);
+        double delta = (product->getProductPrice() * num - nprice * nnum);
+        delta = qFloor(delta * 100) / 100.0;
+        deltaPrice += delta;
 
         QVBoxLayout *textLayout = new QVBoxLayout();
         textLayout->addWidget(name);
         textLayout->addSpacing(5);
         textLayout->addWidget(about);
         textLayout->addSpacing(5);
-        textLayout->addWidget(numText);
-        textLayout->addSpacing(5);
         textLayout->addWidget(price);
+        textLayout->addSpacing(5);
+        textLayout->addWidget(numText);
         textLayout->addSpacing(5);
         textLayout->addStretch();
 
@@ -62,21 +70,29 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, 
         centerLayout->addWidget(productArea);
         centerLayout->addSpacing(10);
     }
-    totText = new ElaText("共计 ￥" + QString::number(totPrice), 18, this);
+    totText = new ElaText("共计 ￥" + QString::number(qFloor(totPrice*100) / 100), 18, this);
     totText->setTextStyle(ElaTextType::Title);
 
-    deltaText = new ElaText("已省 ￥" + QString::number(deltaPrice), 14, this);
+    deltaText = new ElaText("已省 ￥" + QString::number(qFloor(deltaPrice*100) / 100), 14, this);
     deltaText->setTextStyle(ElaTextType::Subtitle);
 
     confirmBtn = new ElaPushButton("确定下单", this);
-    confirmBtn->setFixedSize(270, 50);
+    confirmBtn->setFixedSize(100, 50);
     confirmBtn->setLightDefaultColor(redDefault);
     confirmBtn->setLightHoverColor(redHover);
     confirmBtn->setLightPressColor(redPress);
     confirmBtn->setLightTextColor(Qt::white);
     confirmBtn->setStyleSheet("font-size: 15px;");
 
-    centerLayout->addWidget(confirmBtn);
+    QHBoxLayout *confirmLayout = new QHBoxLayout();
+    confirmLayout->addSpacing(30);
+    confirmLayout->addWidget(totText);
+    confirmLayout->addSpacing(20);
+    confirmLayout->addWidget(deltaText);
+    confirmLayout->addStretch();
+    confirmLayout->addWidget(confirmBtn);
+    confirmLayout->addSpacing(20);
+    centerLayout->addLayout(confirmLayout);
     centerLayout->addStretch();
 }
 
