@@ -1,5 +1,7 @@
 #include "shoppingmapper.h"
+
 #include <QSqlQuery>
+#include <QReadWriteLock>
 #include "../objects/shopping.h"
 
 
@@ -21,6 +23,8 @@ Shopping *ShoppingMapper::getShopping(const QSqlQuery &query)
 
 QList<Shopping *> ShoppingMapper::select(const int cid)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] shopping select... " << cid;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM shopping WHERE client_id = :id;");
@@ -37,6 +41,8 @@ QList<Shopping *> ShoppingMapper::select(const int cid)
 
 int ShoppingMapper::select(const Shopping *shopping)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] shopping select... " << shopping->getClientId() << shopping->getProductId();
     QSqlQuery query(db);
     query.prepare("SELECT * FROM shopping WHERE client_id = :cid AND product_id = :pid;");
@@ -62,6 +68,8 @@ void ShoppingMapper::insert(const QList<Shopping *> shopList)
 
 void ShoppingMapper::update(const Shopping *shopping)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] shopping update...";
     QSqlQuery query(db);
     query.prepare("UPDATE shopping SET \
@@ -77,6 +85,8 @@ void ShoppingMapper::update(const Shopping *shopping)
 
 void ShoppingMapper::delet(const Shopping *shopping)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] shopping delete...";
     QSqlQuery query(db);
     query.prepare("DELETE FROM shopping \
@@ -98,6 +108,8 @@ void ShoppingMapper::delet(const QList<Shopping *> shoppings)
 
 void ShoppingMapper::insert(const Shopping *shopping)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] shopping insert shopping...";
     QSqlQuery query(db);
     query.prepare("INSERT INTO shopping ( client_id, product_id, shopping_num, shopping_price)\

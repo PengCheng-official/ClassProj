@@ -1,6 +1,8 @@
 #include "chatmapper.h"
+
 #include <QSqlQuery>
 #include <QTime>
+#include <QReadWriteLock>
 #include "../objects/chat.h"
 
 ChatMapper::ChatMapper(QSqlDatabase &database)
@@ -21,6 +23,8 @@ Chat *ChatMapper::getChat(QSqlQuery &query)
 
 QList<Chat *> ChatMapper::select(int id)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] chat select... " << id;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM chat WHERE client_id = :id");
@@ -37,6 +41,8 @@ QList<Chat *> ChatMapper::select(int id)
 
 void ChatMapper::insert(Chat *chat)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] chat insert chat ... " << chat->getClientId();
     QSqlQuery query(db);
     query.prepare("INSERT chat ( `client_id`, `chat_text`, `chat_isserver`, `chat_time` ) \

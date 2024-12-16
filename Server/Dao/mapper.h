@@ -4,6 +4,7 @@
 
 #include <QSqlDatabase>
 #include <QString>
+#include "../allmain.h"
 
 class Mapper
 {

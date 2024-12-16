@@ -1,5 +1,7 @@
 #include "clientmapper.h"
+
 #include <QSqlQuery>
+#include <QReadWriteLock>
 #include "../objects/client.h"
 
 ClientMapper::ClientMapper(QSqlDatabase &database)
@@ -24,6 +26,8 @@ Client* ClientMapper::getClient(QSqlQuery &query)
 
 QList<Client *> ClientMapper::select(const QString &name)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] client select...";
     QSqlQuery query(db);
     query.prepare("SELECT * FROM client WHERE client_name = :name");
@@ -40,6 +44,8 @@ QList<Client *> ClientMapper::select(const QString &name)
 
 QList<Client *> ClientMapper::select(int id)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] client select...";
     QSqlQuery query(db);
     query.prepare("SELECT * FROM client WHERE client_id = :id");
@@ -56,6 +62,8 @@ QList<Client *> ClientMapper::select(int id)
 
 void ClientMapper::insert(Client *client)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] client insert ...";
     QSqlQuery query(db);
     query.prepare("INSERT INTO client ( client_name, client_password, client_salt, client_address,\
@@ -73,6 +81,8 @@ void ClientMapper::insert(Client *client)
 
 void ClientMapper::update(const QString &name, Client *client)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] client's name update ...";
     QSqlQuery query(db);
     query.prepare("UPDATE client SET \
@@ -93,6 +103,8 @@ void ClientMapper::update(const QString &name, Client *client)
 
 void ClientMapper::update(const int id, Client *client)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] client's id update ...";
     QSqlQuery query(db);
     query.prepare("UPDATE client SET \

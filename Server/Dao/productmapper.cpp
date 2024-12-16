@@ -1,5 +1,7 @@
 #include "productmapper.h"
+
 #include <QSqlQuery>
+#include <QReadWriteLock>
 #include "../objects/product.h"
 
 ProductMapper::ProductMapper(QSqlDatabase &database)
@@ -23,6 +25,8 @@ Product *ProductMapper::getProduct(const QSqlQuery &query)
 
 QList<Product *> ProductMapper::selectLike(const QString &name)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] product select... " << name;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM product WHERE product_name LIKE :name");
@@ -39,6 +43,8 @@ QList<Product *> ProductMapper::selectLike(const QString &name)
 
 QList<Product *> ProductMapper::selectRand()
 {
+    QReadLocker locker(&dbLock);
+
     QList<Product *> ret;
     qDebug() << "[database] product select rand... ";
     QSqlQuery query(db);
@@ -57,6 +63,8 @@ QList<Product *> ProductMapper::selectRand()
 
 QList<Product *> ProductMapper::select(const int id)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] product select... " << id;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM product WHERE product_id = :id");
@@ -73,6 +81,8 @@ QList<Product *> ProductMapper::select(const int id)
 
 QList<Product *> ProductMapper::select(const QString &name)
 {
+    QReadLocker locker(&dbLock);
+
     qDebug() << "[database] product select... " << name;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM product WHERE product_name = :name");
@@ -89,6 +99,8 @@ QList<Product *> ProductMapper::select(const QString &name)
 
 void ProductMapper::insert(Product *product)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] product insert pro ... " << product->getProductName();
     QSqlQuery query(db);
     query.prepare("INSERT INTO product ( product_name, product_price, product_num, product_sales, \
@@ -118,6 +130,8 @@ void ProductMapper::insert(QList<Product *> proList)
 
 void ProductMapper::update(const int id, const Product *product)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] product update... " << id;
     QSqlQuery query(db);
     query.prepare("UPDATE product SET \
@@ -140,6 +154,8 @@ void ProductMapper::update(const int id, const Product *product)
 
 void ProductMapper::delet(const int id)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] product delete... ";
     QSqlQuery query(db);
     query.prepare("DELETE FROM product WHERE product_id = :id;");

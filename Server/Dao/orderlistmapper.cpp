@@ -1,5 +1,7 @@
 #include "orderlistmapper.h"
+
 #include <QSqlQuery>
+#include <QReadWriteLock>
 #include "../objects/orderlist.h"
 
 OrderListMapper::OrderListMapper(QSqlDatabase &database)
@@ -20,6 +22,8 @@ OrderList *OrderListMapper::getOrderList(const QSqlQuery &query)
 
 void OrderListMapper::insert(const OrderList *orderList)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] orderList insert...";
     QSqlQuery query(db);
     query.prepare("INSERT orderlist ( `order_id`, `product_id`, `product_num`, `product_price` ) \

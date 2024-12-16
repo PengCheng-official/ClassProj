@@ -6,6 +6,7 @@
 
 class QTcpSocket;
 class QTcpServer;
+class QReadWriteLock;
 class Client;
 class ThreadPool;
 class HomePage;
@@ -17,6 +18,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
 QT_END_NAMESPACE
 
+extern QReadWriteLock dbLock;
 class Allmain : public ElaWindow
 {
     Q_OBJECT

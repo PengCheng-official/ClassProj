@@ -9,6 +9,7 @@
 #include <QRandomGenerator>
 #include <QSqlError>
 #include <QJsonObject>
+#include <QReadWriteLock>
 
 #include "ThreadPool.h"
 #include "objects/client.h"
@@ -33,7 +34,7 @@
 #include "ui/searchpage.h"
 #include "ui/productpage.h"
 
-
+QReadWriteLock dbLock;
 Allmain::Allmain(QWidget *parent)
     : ElaWindow(parent)
     , ui(new Ui::Allmain)
@@ -419,6 +420,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         ObjectToJson::addSignal(message, QString::number(CREATEORDER));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
+        break;
     }
     case CREATEORDERLIST:
     {
@@ -436,6 +438,9 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         orderMapper->update(order);
         break;
     }
+    default:
+        qDebug() << QString("[thread_%1]|[database] unknown signal").arg(threadName);
+        break;
     }
 
     db.close();

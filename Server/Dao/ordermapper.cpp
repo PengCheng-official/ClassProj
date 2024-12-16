@@ -1,6 +1,8 @@
 #include "ordermapper.h"
+
 #include <QSqlQuery>
 #include <QTime>
+#include <QReadWriteLock>
 #include "../objects/order.h"
 
 OrderMapper::OrderMapper(QSqlDatabase &database)
@@ -22,6 +24,8 @@ Order *OrderMapper::getOrder(const QSqlQuery &query)
 
 int OrderMapper::insert(const Order *order)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] order insert... ";
     QSqlQuery query(db);
     query.prepare("INSERT `order` ( `client_id`, `total_price`, `order_status`, `create_time`, `finish_time`) \
@@ -40,6 +44,8 @@ int OrderMapper::insert(const Order *order)
 
 void OrderMapper::update(const Order *order)
 {
+    QWriteLocker locker(&dbLock);
+
     qDebug() << "[database] order update..." << order->getOrderId();
     QSqlQuery query(db);
     query.prepare("UPDATE `order` SET \
