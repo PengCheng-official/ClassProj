@@ -8,6 +8,7 @@
 
 class OrderList
 {
+PROPERTY_CREATE_H(int, OrderListId);
 PROPERTY_CREATE_H(int, OrderId);
 PROPERTY_CREATE_H(int, ProductId);
 PROPERTY_CREATE_H(int, ProductNum);

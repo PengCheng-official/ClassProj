@@ -1,8 +1,9 @@
 #include "orderpage.h"
 
-OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, QWidget* parent)
+OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList, QWidget* parent)
     : ElaWidget(parent)
     , client(cClient)
+    , selectList(sSelectList)
 {
     // 初始化时不建立 order，没有申请 order_id
     setWindowTitle("订单状态：未支付");
@@ -13,12 +14,17 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, 
     setWindowButtonFlags(ElaAppBarType::CloseButtonHint);
     totPrice = deltaPrice = 0;
 
+    order = new Order;
+    order->setClientId(client->getClientId());
+    order->setOrderStatus("未支付");
+    order->setCreateTime(QTime::currentTime().toString("yyyy-MM-dd hh:mm:ss"));
+
     // 支付实现
     payDialog = new ElaContentDialog(this);
     payDialog->setTitleText("移动支付中...");
     payDialog->setSubTitleText("确定要支付吗？");
-    payDialog->setRightButtonText("确定");
-    payDialog->setMiddleButtonText("取消");
+    payDialog->setRightButtonText("确定支付");
+    payDialog->setMiddleButtonText("取消订单");
     payDialog->isLeftButtonVisible(false);
     connect(payDialog, &ElaContentDialog::rightButtonClicked, this, &OrderPage::onRightBtnClicked);
     connect(payDialog, &ElaContentDialog::middleButtonClicked, this, &OrderPage::onMiddleBtnClicked);
@@ -93,6 +99,7 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, 
     confirmBtn->setLightPressColor(redPress);
     confirmBtn->setLightTextColor(Qt::white);
     confirmBtn->setStyleSheet("font-size: 15px;");
+    connect(confirmBtn, &QPushButton::clicked, this, &OrderPage::onConfirmBtnClicked);
     connect(confirmBtn, &QPushButton::clicked, [=](){
         payDialog->exec();
     });
@@ -115,15 +122,37 @@ OrderPage::~OrderPage()
 
 void OrderPage::onConfirmBtnClicked()
 {
+    // 下单
+    order->setTotalPrice(totPrice);
+    order->setFinishTime(QTime::currentTime().toString("yyyy-MM-dd hh:mm:ss"));
 
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(CREATEORDER));
+    //TODO: objectToJson
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
+    QThread::msleep(100);
+}
+
+void OrderPage::createOrderList(int oid)
+{
+    for (int i = 0; i < selectList.size(); ++i)
+    {
+        auto [product, num] = selectList[i];
+        double nprice = product->getProductPrice(); int nnum = num;
+        product->applyStrategy(nprice, nnum);
+        orderList[i] = new OrderList(oid, product->getProductId(), nnum, nprice);
+        //TODO: objectToJson
+    }
+    //TODO: objectToJson
 }
 
 void OrderPage::onRightBtnClicked()
 {
-
+    // 已完成
 }
 
 void OrderPage::onMiddleBtnClicked()
 {
-
+    // 已取消
 }

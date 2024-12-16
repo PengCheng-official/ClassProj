@@ -7,6 +7,7 @@
 
 class Order
 {
+PROPERTY_CREATE_H(int, OrderId);
 PROPERTY_CREATE_H(int, ClientId);
 PROPERTY_CREATE_H(double, TotalPrice);
 PROPERTY_CREATE_H(QString, OrderStatus);
@@ -16,7 +17,7 @@ PROPERTY_CREATE_H(QString, FinishTime);
 
 public:
     Order();
-    Order(int cId, double totPrice, QString oStatus, QString cTime, QString fTime);
+    Order(int cId, double totPrice, QString oStatus, QString cTime);
 };
 
 #endif // ORDER_H

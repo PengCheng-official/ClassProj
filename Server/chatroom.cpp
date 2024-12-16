@@ -128,7 +128,7 @@ void ChatRoom::on_sendBtn_clicked()
     chatList.append(chat);
 
     QJsonObject message;
-    ObjectToJson::addChatList(message, chatList);
+    ObjectToJson::addChats(message, chatList);
     ObjectToJson::addSignal(message, QString::number(CHATMSG));    //向 Client 发送信息
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToClient(array);

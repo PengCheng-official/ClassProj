@@ -74,7 +74,7 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
-        ObjectToJson::addShoppingList(message, shopList);
+        ObjectToJson::addShoppings(message, shopList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToServer(array);
     });
@@ -129,7 +129,7 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
-        ObjectToJson::addShoppingList(message, shopList);
+        ObjectToJson::addShoppings(message, shopList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToServer(array);
     });

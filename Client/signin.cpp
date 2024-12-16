@@ -189,7 +189,7 @@ void SignIn::onCreateBtnClicked()
     QList<Client*> clientList;
     clientList.append(client);
     QJsonObject message;
-    ObjectToJson::addClientList(message, clientList);
+    ObjectToJson::addClients(message, clientList);
     ObjectToJson::addSignal(message, QString::number(SIGNIN));
     QByteArray array =ObjectToJson::changeJson(message);
     emit sigSendToSignIn(array);

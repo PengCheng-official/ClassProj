@@ -116,7 +116,7 @@ void Allmain::initAllMain(Client *cClient)
                 QList<QString> strList = {""};
                 QList<Client *> clientList = {client};
                 ObjectToJson::addStrings(message, strList);
-                ObjectToJson::addClientList(message, clientList);
+                ObjectToJson::addClients(message, clientList);
                 ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
                 QByteArray array = ObjectToJson::changeJson(message);
                 onSendToServer(array);
@@ -134,7 +134,7 @@ void Allmain::initAllMain(Client *cClient)
                 qDebug() << "[Allmain] enter shopping Page...";
                 QList<Client *> clientList = {client};
                 QJsonObject message;
-                ObjectToJson::addClientList(message, clientList);
+                ObjectToJson::addClients(message, clientList);
                 ObjectToJson::addSignal(message, QString::number(REQUESTSHOPPING));
                 QByteArray array = ObjectToJson::changeJson(message);
                 onSendToServer(array);
@@ -249,7 +249,7 @@ void Allmain::dealMessage(QByteArray message)
     case LOGIN:
     {
         // 登录成功
-        QList<Client*> clientList = ObjectToJson::parseClient(message);
+        QList<Client*> clientList = ObjectToJson::parseClients(message);
         client = clientList[0];
         logIn->logInSuccess(client);
         break;
@@ -263,7 +263,7 @@ void Allmain::dealMessage(QByteArray message)
     case SIGNIN:
     {
         // 注册成功
-        QList<Client*> clientList = ObjectToJson::parseClient(message);
+        QList<Client*> clientList = ObjectToJson::parseClients(message);
         client = clientList[0];
         signIn->signInSuccess(client);
         break;
@@ -277,14 +277,14 @@ void Allmain::dealMessage(QByteArray message)
     case CHATMSG:
     {
         // 接收到一条信息
-        QList<Chat *> chatList = ObjectToJson::parseChat(message);
+        QList<Chat *> chatList = ObjectToJson::parseChats(message);
         chatRoom->receiveMessage(chatList[0]);
         break;
     }
     case CHATHISTORY:
     {
         // 接收到消息历史
-        QList<Chat *> chatList = ObjectToJson::parseChat(message);
+        QList<Chat *> chatList = ObjectToJson::parseChats(message);
         chatRoom->initHistory(chatList);
         chatRoom->initClient(client);
         chatRoom->show();
@@ -314,14 +314,14 @@ void Allmain::dealMessage(QByteArray message)
     case SEARCHPRODUCT:
     {
         // 收到搜索结果
-        QList<Product *> productList = ObjectToJson::parseProduct(message);
+        QList<Product *> productList = ObjectToJson::parseProducts(message);
         _searchPage->refreshPage(productList);
         break;
     }
     case REQUESTHOME:
     {
         // 收到首页传送
-        QList<Product *> productList = ObjectToJson::parseProduct(message);
+        QList<Product *> productList = ObjectToJson::parseProducts(message);
         _homePage->refreshPage(productList);
         break;
     }
@@ -335,8 +335,8 @@ void Allmain::dealMessage(QByteArray message)
     case REQUESTSHOPPING:
     {
         // 刷新购物车
-        QList<Product *> productList = ObjectToJson::parseProduct(message);
-        QList<Shopping *> shoppingList = ObjectToJson::parseShopping(message);
+        QList<Product *> productList = ObjectToJson::parseProducts(message);
+        QList<Shopping *> shoppingList = ObjectToJson::parseShoppings(message);
         _shoppingPage->refreshPage(productList, shoppingList);
         break;
     }

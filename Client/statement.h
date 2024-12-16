@@ -16,6 +16,7 @@
 #define REQUESTHOME 200107 //首页请求
 #define ADDSHOPPING 200108  //加入购物车
 #define REQUESTSHOPPING 200109  //购物车请求
+#define CREATEORDER 200110  // 创建订单
 //#define RESETPWD 20010103
 //#define RESETPWDF 40410103
 //#define RESETPWDE 30410103

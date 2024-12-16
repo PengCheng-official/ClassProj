@@ -106,7 +106,7 @@ void SearchPage::refreshPage(QList<Product *> productList)
 
                 QJsonObject message;
                 ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
-                ObjectToJson::addShoppingList(message, shopList);
+                ObjectToJson::addShoppings(message, shopList);
                 QByteArray array = ObjectToJson::changeJson(message);
                 emit sigSendToServer(array);
             });
@@ -140,7 +140,7 @@ void SearchPage::onSearchBtnClicked()
 
     QJsonObject message;
     ObjectToJson::addStrings(message, strList);
-    ObjectToJson::addClientList(message, clientList);
+    ObjectToJson::addClients(message, clientList);
     ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToServer(array);

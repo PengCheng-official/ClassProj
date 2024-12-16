@@ -6,13 +6,16 @@
 #include "basepage.h"
 #include <QTime>
 #include "ElaContentDialog.h"
+#include <QThread>
 
 class OrderPage : public ElaWidget
 {
     Q_OBJECT
 public:
-    explicit OrderPage(Client *cClient, QList<QPair<Product *, int> > selectList, QWidget* parent = nullptr);
+    explicit OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList, QWidget* parent = nullptr);
     ~OrderPage();
+
+    void createOrderList(int oid);
 
 private slots:
     void onConfirmBtnClicked();
@@ -25,11 +28,15 @@ private:
     ElaPushButton *confirmBtn;
     Order* order;
     QList<OrderList *> orderList;
+    QList<QPair<Product *, int> > selectList;
     ElaText *totText;
     ElaText *deltaText;
     double totPrice;
     double deltaPrice;
     ElaContentDialog *payDialog;
+
+signals:
+    void sigSendToServer(QByteArray array);
 };
 
 #endif // ORDERPAGE_H

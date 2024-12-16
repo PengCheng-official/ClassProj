@@ -120,7 +120,7 @@ void LogIn::onLoginBtnClicked()
     QList<Client*> clientList;
     clientList.append(client);
     QJsonObject message;
-    ObjectToJson::addClientList(message, clientList);
+    ObjectToJson::addClients(message, clientList);
     ObjectToJson::addSignal(message, QString::number(LOGIN));    //登录请求
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToLogIn(array);

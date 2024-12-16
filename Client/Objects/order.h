@@ -7,6 +7,7 @@
 
 class Order
 {
+PROPERTY_CREATE_H(int, OrderId);
 PROPERTY_CREATE_H(int, ClientId);
 PROPERTY_CREATE_H(double, TotalPrice);
 PROPERTY_CREATE_H(QString, OrderStatus);

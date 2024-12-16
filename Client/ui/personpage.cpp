@@ -259,7 +259,7 @@ void PersonPage::onConFirmBtnClicked()
     QList<Client*> clientList;
     clientList.append(nClient);
     QJsonObject message;
-    ObjectToJson::addClientList(message, clientList);
+    ObjectToJson::addClients(message, clientList);
     ObjectToJson::addStrings(message, stringList);  //输入的原密码
     ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));    //个人信息修改请求
     QByteArray array = ObjectToJson::changeJson(message);

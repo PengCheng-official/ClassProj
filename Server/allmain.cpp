@@ -145,7 +145,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     switch(signal) {
     case LOGIN:
     {
-        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
+        QList<Client*> clientList = ObjectToJson::parseClients(socketData);
         client = new Client(*clientList[0]);
         QJsonObject message;
 
@@ -165,14 +165,14 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
             clientList.pop_front();
         }
 
-        ObjectToJson::addClientList(message, clientList);
+        ObjectToJson::addClients(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
         break;
     }
     case SIGNIN:
     {
-        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
+        QList<Client*> clientList = ObjectToJson::parseClients(socketData);
         client = new Client(*clientList[0]);
         ClientMapper *clientMapper = new ClientMapper(db);
         QList<Client*> dbClient = clientMapper->select(client->getClientName());
@@ -192,7 +192,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
             ObjectToJson::addSignal(message, QString::number(SIGNIN));    //注册成功
             clientList[0] = dbClient[0];
         }
-        ObjectToJson::addClientList(message, clientList);
+        ObjectToJson::addClients(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
         break;
@@ -209,7 +209,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
-        ObjectToJson::addChatList(message, chatList);
+        ObjectToJson::addChats(message, chatList);
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
         break;
@@ -217,7 +217,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     case CHATMSG:
     {
         // 处理 Client 发来的信息，就一条
-        QList<Chat *> chatList = ObjectToJson::parseChat(socketData);
+        QList<Chat *> chatList = ObjectToJson::parseChats(socketData);
         ChatMapper *chatMapper = new ChatMapper(db);
         chatMapper->insert(chatList);
         //TODO 发送失败
@@ -229,7 +229,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     case PERSONCHANGE:
     {
         // 查询用户名是否合法，修改并返回
-        QList<Client*> clientList = ObjectToJson::parseClient(socketData);
+        QList<Client*> clientList = ObjectToJson::parseClients(socketData);
         QList<QString> stringList = ObjectToJson::parseStrings(socketData);   //原密码
         bool pwd = stringList.size() == 0 ? false : true;
         QString rawPassword;
@@ -294,13 +294,13 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     {
         // 处理商品搜索
         QList<QString> strList = ObjectToJson::parseStrings(socketData);
-        QList<Client *> clientList = ObjectToJson::parseClient(socketData);
+        QList<Client *> clientList = ObjectToJson::parseClients(socketData);
 
         ProductMapper *productMapper = new ProductMapper(db);
         QList<Product *> productList = productMapper->selectLike(strList[0]);
 
         QJsonObject message;
-        ObjectToJson::addProductList(message, productList);
+        ObjectToJson::addProducts(message, productList);
         ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
@@ -314,7 +314,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         ProductMapper *productMapper = new ProductMapper(db);
         QList<Product *> proList = productMapper->selectRand();
         QJsonObject message;
-        ObjectToJson::addProductList(message, proList);
+        ObjectToJson::addProducts(message, proList);
         ObjectToJson::addSignal(message, QString::number(REQUESTHOME));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
@@ -324,7 +324,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     {
         // 添加购物车: 新增或者累加
         ShoppingMapper *shoppingMapper = new ShoppingMapper(db);
-        QList<Shopping *> shopList = ObjectToJson::parseShopping(socketData);
+        QList<Shopping *> shopList = ObjectToJson::parseShoppings(socketData);
         for (auto shopping : shopList)
         {
             int num = shoppingMapper->select(shopping);
@@ -346,7 +346,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     case REQUESTSHOPPING:
     {
         // 购物车请求
-        Client *client = ObjectToJson::parseClient(socketData)[0];
+        Client *client = ObjectToJson::parseClients(socketData)[0];
         ShoppingMapper *shoppingMapper = new ShoppingMapper(db);
         QList<Shopping *> shopList =  shoppingMapper->select(client->getClientId());
         QList<Product *> productList;
@@ -358,8 +358,8 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         }
 
         QJsonObject message;
-        ObjectToJson::addShoppingList(message, shopList);
-        ObjectToJson::addProductList(message, productList);
+        ObjectToJson::addShoppings(message, shopList);
+        ObjectToJson::addProducts(message, productList);
         ObjectToJson::addSignal(message, QString::number(REQUESTSHOPPING));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);

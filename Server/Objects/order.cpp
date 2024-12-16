@@ -5,11 +5,10 @@ Order::Order()
 {
 }
 
-Order::Order(int cId, double totPrice, QString oStatus, QString cTime, QString fTime)
+Order::Order(int cId, double totPrice, QString oStatus, QString cTime)
     : _ClientId(cId),
       _TotalPrice(totPrice),
       _OrderStatus(oStatus),
-      _CreateTime(cTime),
-      _FinishTime(fTime)
+      _CreateTime(cTime)
 {
 }
