@@ -2,23 +2,24 @@
 #define STATEMENT_H
 
 //200 成功；302 重定向；403 拒绝；404 找不到；500 运行错误；
-#define LOGIN 200101  //登录请求，登录成功
-#define LOGINFAIL 404101 //登录失败：账号或密码错误
-#define SIGNIN 200102 //注册请求，注册成功
-#define SIGNINFAIL 404102  //注册失败：账号已存在
-#define SIGNINERROR 304102  //NULL
-#define CHATMSG 200103  //发送聊天信息
-#define CHATHISTORY 200104  //请求聊天历史
-#define PERSONCHANGE 200105 //修改个人账号，修改成功
-#define PERSONCHANGEFAIL 404105  //修改个人账号失败
-#define PERSONCHANGEERROR 403105 //修改个人密码错误
-#define SEARCHPRODUCT 200106 //搜索商品
-#define REQUESTHOME 200107 //首页请求
-#define ADDSHOPPING 200108  //加入购物车
-#define REQUESTSHOPPING 200109  //购物车请求
-#define CREATEORDER 200110  // 创建订单
-#define UPDATEORDER 200111  // 更新订单
-#define CREATEORDERLIST 200112  // 创建订单List
+#define LOGIN 20010101  //登录请求，登录成功
+#define LOGINFAIL 40410101 //登录失败：账号或密码错误
+#define SIGNIN 20010201 //注册请求，注册成功
+#define SIGNINFAIL 40410201  //注册失败：账号已存在
+#define SIGNINERROR 30410201  //NULL
+#define CHATMSG 20010301  //发送聊天信息
+#define CHATHISTORY 20010302  //请求聊天历史
+#define PERSONCHANGE 20010401 //修改个人账号，修改成功
+#define PERSONCHANGEFAIL 40410401  //修改个人账号失败
+#define PERSONCHANGEERROR 40310401 //修改个人密码错误
+#define SEARCHPRODUCT 20010501 //搜索商品
+#define REQUESTHOME 20010601 //首页请求
+#define ADDSHOPPING 20010701  //加入购物车
+#define REQUESTSHOPPING 20010702  //购物车请求
+#define DELSHOPPING 20010703  //删除购物车
+#define CREATEORDER 20010801  //创建订单
+#define UPDATEORDER 20010802  //更新订单
+#define CREATEORDERLIST 20010901  //创建订单List
 //#define RESETPWD 20010103
 //#define RESETPWDF 40410103
 //#define RESETPWDE 30410103

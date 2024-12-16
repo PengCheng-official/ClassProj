@@ -365,6 +365,14 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         emit sigSendToClient(socket, array);
         break;
     }
+    case DELSHOPPING:
+    {
+        // 删除购物车
+        QList<Shopping *> shoppingList = ObjectToJson::parseShoppings(socketData);
+        ShoppingMapper *shoppingMapper = new ShoppingMapper(db);
+        shoppingMapper->delet(shoppingList);
+        break;
+    }
     case CREATEORDER:
     {
         // 创建订单
@@ -378,7 +386,6 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         ObjectToJson::addSignal(message, QString::number(CREATEORDER));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
-        break;
     }
     case CREATEORDERLIST:
     {
@@ -399,7 +406,6 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     }
 
     db.close();
-    QSqlDatabase::removeDatabase(QString::number(threadName));
     qDebug() << QString("[thread_%1]|[database] disconnect to database").arg(threadName);
 }
 
@@ -427,17 +433,26 @@ void Allmain::onNewConnection()
         qDebug() << "[server] state changed: " << socketState;
     });
     connect(socket, &QTcpSocket::readyRead,[this, socket](){
-        qDebug() << "[server] receive message...";
+        qDebug() << "[server] receive message:" << socket->bytesAvailable();
         //接受到通讯请求，启动新的线程处理请求
         //QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+
         threadPool->enqueue([this, socket]{
             qDebug() << "[threadPool] create a new thread";
+
             while(socket->bytesAvailable() > 0)
             {
-                QByteArray datagram;
-                datagram = socket->readAll();
-                dealMessage(socket, datagram, this->threadPool->getThreadName());
+                QByteArray buffer;
+                buffer = socket->readAll();
+                while (buffer.contains("\r\n"))
+                {
+                    int index = buffer.indexOf("\r\n");
+                    QByteArray completeMsg = buffer.left(index); // 提取完整消息
+                    buffer.remove(0, index + 2);
+                    dealMessage(socket, completeMsg, this->threadPool->getThreadName());
+                }
             }
+            QSqlDatabase::removeDatabase(QString::number(this->threadPool->getThreadName()));
         });
     });
     sockets.append(socket);
@@ -448,7 +463,7 @@ void Allmain::startToListen()
     QString IP = "127.0.0.1";
     int port = 23333;
     server->listen(QHostAddress(IP), port);
-    connect(this, &Allmain::sigSendToClient, this, &Allmain::on_sendToClient);
+    connect(this, &Allmain::sigSendToClient, this, &Allmain::onSendToClient);
     qDebug() << "[server] listening...";
 }
 
@@ -484,7 +499,7 @@ QString Allmain::sha256Hash(const QString &data, const QString &salt)
     return QString::fromUtf8(hash.toHex());
 }
 
-void Allmain::on_sendToClient(QTcpSocket *socket, const QByteArray &array)
+void Allmain::onSendToClient(QTcpSocket *socket, const QByteArray &array)
 {
     // 子线程外，传输通讯
     socket->write(array);

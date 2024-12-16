@@ -31,7 +31,7 @@ int OrderMapper::insert(const Order *order)
     query.exec();
 
     int oid = query.lastInsertId().toInt();
-    query.finish();
+    query.clear();
     return oid;
 }
 
@@ -50,5 +50,5 @@ void OrderMapper::update(const Order *order)
     query.bindValue(":cTime", order->getCreateTime());
     query.bindValue(":fTime", order->getFinishTime());
     query.exec();
-    query.finish();
+    query.clear();
 }

@@ -12,7 +12,7 @@ void Mapper::truncate(QString tableName)
     query.prepare("TRUNCATE TABLE :name");
     query.bindValue(":name", tableName);
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void Mapper::Delete(QString tableName)
@@ -22,5 +22,5 @@ void Mapper::Delete(QString tableName)
     query.prepare("DELETE FROM :name");
     query.bindValue(":name", tableName);
     query.exec();
-    query.finish();
+    query.clear();
 }

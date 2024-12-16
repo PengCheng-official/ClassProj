@@ -26,11 +26,11 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
     connect(confirmBtn, &QPushButton::clicked, [=](){
         // 结算：创建订单，不通信
         if (checkNum > 3) {
-            emit sigShoppingTooMore();
+            emit sigSendMessageBar(false, "结算失败", "最多单次下单3种商品");
             return;
         }
         if (checkNum == 0) {
-            emit sigShoppingTooLess();
+            emit sigSendMessageBar(false, "结算失败", "至少单次下单1种商品");
             return;
         }
         OrderPage *orderPage = new OrderPage(client, selectList);
@@ -39,7 +39,7 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
         connect(orderPage, &OrderPage::sigSendToServer, this, &ShoppingPage::sigSendToServer);
         connect(orderPage, &OrderPage::sigSendMessageBar, this, &ShoppingPage::sigSendMessageBar);
         connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrderId, [=](int oid){
-            orderPage->createOrderList(oid);
+            orderPage->toCreateOrderList(oid);
         });
         //TODO: 返回
     });
@@ -91,17 +91,16 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
         price->setTextStyle(ElaTextType::Subtitle);
 
-        //TODO: 促销价格 delta 也要改
         double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
         productList[i]->applyStrategy(nprice, nnum);
-        double delta = nprice - shoppingList[i]->getShoppingPrice();
+        double changePrice = nprice - shoppingList[i]->getShoppingPrice();
         ElaText *num = new ElaText(productArea);
-        if (delta > 0) {
-            num->setText("价格变动: +" + QString::number(delta));
+        if (changePrice > 0) {
+            num->setText("价格变动: +" + QString::number(changePrice));
             num->setStyleSheet("color: red;");
         }
         else {
-            num->setText("价格变动: " + QString::number(delta));
+            num->setText("价格变动: " + QString::number(changePrice));
             num->setStyleSheet("color: green;");
         }
         num->setTextStyle(ElaTextType::Body);
@@ -115,7 +114,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 
         ElaCheckBox *checkBox = new ElaCheckBox(productArea);
         ElaSpinBox * spinBox = new ElaSpinBox(productArea);
-        spinBox->setFixedSize(75, 30);
+        spinBox->setFixedSize(90, 30);
         spinBox->setMinimum(1);
         spinBox->setValue(shoppingList[i]->getShoppingNum());
         spinMap[spinBox] = spinBox->value();
@@ -127,9 +126,11 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
                 double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
                 productList[i]->applyStrategy(nprice, nnum);
                 selectList.append({productList[i], spinBox->value()});
-                //TODO: 促销价格
+                // 促销价格
+                double delta = (productList[i]->getProductPrice() - nprice);
+                delta = qFloor(delta * 100) / 100.0;
                 totPrice += nprice * spinBox->value();
-                deltaPrice -= delta < 0 ? delta * spinBox->value() : 0;
+                deltaPrice += delta > 0 ? delta * spinBox->value() : 0;
             }
             else if (state == Qt::Unchecked)
             {
@@ -137,9 +138,11 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
                 double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
                 productList[i]->applyStrategy(nprice, nnum);
                 selectList.removeAll({productList[i], spinBox->value()});
-                //TODO: 促销价格
+                // 促销价格
+                double delta = (productList[i]->getProductPrice() - nprice);
+                delta = qFloor(delta * 100) / 100.0;
                 totPrice -= nprice * spinBox->value();
-                deltaPrice += delta < 0 ? delta * spinBox->value() : 0;
+                deltaPrice -= delta > 0 ? delta * spinBox->value() : 0;
             }
             confirmChanged();
         });
@@ -147,13 +150,44 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         connect(spinBox, &QSpinBox::valueChanged, [=](int value){
             selectList.removeAll({productList[i], spinMap[spinBox]});
             selectList.append({productList[i], value});
-            //TODO: 促销价格
-            double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
-            productList[i]->applyStrategy(nprice, nnum);
-            totPrice += nprice * (value - spinMap[spinBox]);
-            deltaPrice += delta < 0 ? delta * abs(value - spinMap[spinBox]) : 0;
+
+            if (checkBox->isChecked())
+            {
+                // 被选中了，更新价格
+                double nprice = productList[i]->getProductPrice(); int nnum = spinMap[spinBox];
+                productList[i]->applyStrategy(nprice, nnum);
+                double delta = (productList[i]->getProductPrice() - nprice);
+                delta = qFloor(delta * 100) / 100.0;
+                totPrice += nprice * (value - spinMap[spinBox]);
+                deltaPrice += delta > 0 ? delta * (value - spinMap[spinBox]) : 0;
+            }
             spinMap[spinBox] = value;
             confirmChanged();
+        });
+
+        // 删除按钮点击
+        connect(del, &QPushButton::clicked, [=](){
+            if (checkBox->isChecked())
+            {
+                -- checkNum;
+                double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
+                productList[i]->applyStrategy(nprice, nnum);
+                selectList.removeAll({productList[i], spinBox->value()});
+                double delta = (productList[i]->getProductPrice() - nprice);
+                delta = qFloor(delta * 100) / 100.0;
+                totPrice -= nprice * spinBox->value();
+                deltaPrice -= delta > 0 ? delta * spinBox->value() : 0;
+                confirmChanged();
+            }
+
+            QList<Shopping *> shopList = {shoppingList[i]};
+            QJsonObject message;
+            ObjectToJson::addShoppings(message, shopList);
+            ObjectToJson::addSignal(message, QString::number(DELSHOPPING));
+            QByteArray array = ObjectToJson::changeJson(message);
+            emit sigSendToServer(array);
+            emit sigRefreshPage();
+            emit sigSendMessageBar(true, "删除成功");
         });
 
         productLayout->addWidget(checkBox, 0, 0, -1, 1);

@@ -34,9 +34,8 @@ private:
     QList<QPair<Product *, int> > selectList;
 
 signals:
-    void sigShoppingTooMore();
-    void sigShoppingTooLess();
-    void sigSendMessageBar(bool success, QString Title);
+    void sigRefreshPage();
+    void sigSendMessageBar(bool success, QString Title, QString subTitle = "");
 };
 
 #endif // SHOPPINGPAGE_H

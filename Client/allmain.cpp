@@ -93,16 +93,19 @@ void Allmain::initAllMain(Client *cClient)
 
     // 购物车界面
     _shoppingPage = new ShoppingPage(client, this);
-    connect(_shoppingPage, &ShoppingPage::sigShoppingTooMore, [=](){
-        ElaMessageBar::error(ElaMessageBarType::BottomRight, "结算失败", "最多单次下单3种商品", 2000, this);
-    });
-    connect(_shoppingPage, &ShoppingPage::sigShoppingTooLess, [=](){
-        ElaMessageBar::error(ElaMessageBarType::BottomRight, "结算失败", "至少单次下单1种商品", 2000, this);
-    });
     connect(_shoppingPage, &ShoppingPage::sigSendToServer, this, &Allmain::onSendToServer);
-    connect(_shoppingPage, &ShoppingPage::sigSendMessageBar, [=](bool success, QString title){
-        if (success) ElaMessageBar::success(ElaMessageBarType::BottomRight, title, "", 2000, this);
-        else ElaMessageBar::error(ElaMessageBarType::BottomRight, title, "", 2000, this);
+    connect(_shoppingPage, &ShoppingPage::sigSendMessageBar, [=](bool success, QString title, QString subTitle){
+        if (success) ElaMessageBar::success(ElaMessageBarType::BottomRight, title, subTitle, 2000, this);
+        else ElaMessageBar::error(ElaMessageBarType::BottomRight, title, subTitle, 2000, this);
+    });
+    connect(_shoppingPage, &ShoppingPage::sigRefreshPage, [=](){
+        qDebug() << "[Allmain] refresh shopping Page...";
+        QList<Client *> clientList = {client};
+        QJsonObject message;
+        ObjectToJson::addClients(message, clientList);
+        ObjectToJson::addSignal(message, QString::number(REQUESTSHOPPING));
+        QByteArray array = ObjectToJson::changeJson(message);
+        onSendToServer(array);
     });
 
     addPageNode("首页", _homePage, ElaIconType::House);
@@ -198,7 +201,7 @@ void Allmain::connectToServer()
 
 void Allmain::onSendToServer(QByteArray array)
 {
-    qDebug() << "[socket] send to Server ...";
+    qDebug() << "[socket] send to Server: signal-" << ObjectToJson::parseSignal(array).toInt();
     socket->write(array);
 }
 
@@ -238,10 +241,15 @@ void Allmain::onReadyRead()
     qDebug() << "[socket] receive message ...";
     while(socket->bytesAvailable() > 0)
     {
-        // 有可用信息，开始处理
-        QByteArray datagram;
-        datagram = socket->readAll();
-        dealMessage(datagram);
+        QByteArray buffer;
+        buffer = socket->readAll();
+        while (buffer.contains("\r\n"))
+        {
+            int index = buffer.indexOf("\r\n");
+            QByteArray completeMsg = buffer.left(index); // 提取完整消息
+            buffer.remove(0, index + 2);
+            dealMessage(completeMsg);
+        }
     }
 }
 

@@ -28,7 +28,7 @@ QList<Chat *> ChatMapper::select(int id)
     while(query.next()) {
         ret.push_back(getChat(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -43,7 +43,7 @@ void ChatMapper::insert(Chat *chat)
     query.bindValue(":isserver", chat->getChatIsserver());
     query.bindValue(":time", chat->getChatTime());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void ChatMapper::insert(QList<Chat *> chatList)

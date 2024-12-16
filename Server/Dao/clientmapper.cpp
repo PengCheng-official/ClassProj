@@ -32,7 +32,7 @@ QList<Client *> ClientMapper::select(const QString &name)
     while(query.next()) {
         ret.push_back(getClient(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -48,7 +48,7 @@ QList<Client *> ClientMapper::select(int id)
     while(query.next()) {
         ret.push_back(getClient(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -66,7 +66,7 @@ void ClientMapper::insert(Client *client)
     query.bindValue(":email", client->getClientEmail());
     query.bindValue(":image", client->getClientImage());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void ClientMapper::update(const QString &name, Client *client)
@@ -86,7 +86,7 @@ void ClientMapper::update(const QString &name, Client *client)
     query.bindValue(":Email", client->getClientEmail());
     query.bindValue(":Image", client->getClientImage());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void ClientMapper::update(const int id, Client *client)
@@ -107,6 +107,6 @@ void ClientMapper::update(const int id, Client *client)
     query.bindValue(":Email", client->getClientEmail());
     query.bindValue(":Image", client->getClientImage());
     query.exec();
-    query.finish();
+    query.clear();
 }
 

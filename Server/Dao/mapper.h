@@ -23,7 +23,7 @@ public:
     void Delete(QString tableName);
 
 protected:
-    QSqlDatabase db;
+    QSqlDatabase& db;
 };
 
 #endif // MAPPER_H

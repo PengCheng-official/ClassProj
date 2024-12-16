@@ -16,7 +16,7 @@ public:
     ~OrderPage();
 
 public:
-    void createOrderList(int oid);
+    void toCreateOrderList(int oid);
 
 private slots:
     void onConfirmBtnClicked();
@@ -38,7 +38,7 @@ private:
 
 signals:
     void sigSendToServer(QByteArray array);
-    void sigSendMessageBar(bool success, QString Title);
+    void sigSendMessageBar(bool success, QString Title, QString subTitle = "");
 };
 
 #endif // ORDERPAGE_H

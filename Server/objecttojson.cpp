@@ -1,4 +1,4 @@
-﻿#include "objecttojson.h"
+#include "objecttojson.h"
 
 ObjectToJson::ObjectToJson()
 {
@@ -675,6 +675,7 @@ QByteArray ObjectToJson::changeJson(QJsonObject &object)
     QJsonDocument document;
     document.setObject(object);
     QByteArray byteArray = document.toJson(QJsonDocument::Compact);
+    byteArray.append("\r\n");   //分隔符
     return byteArray;
 }
 

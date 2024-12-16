@@ -29,7 +29,7 @@ QList<Shopping *> ShoppingMapper::select(const int cid)
     while(query.next()) {
         ret.push_back(getShopping(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -45,7 +45,7 @@ int ShoppingMapper::select(const Shopping *shopping)
     int ret = 0;
     if (query.next())
         ret = getShopping(query)->getShoppingNum();
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -70,7 +70,7 @@ void ShoppingMapper::update(const Shopping *shopping)
     query.bindValue(":Num", shopping->getShoppingNum());
     query.bindValue(":Price", shopping->getShoppingPrice());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void ShoppingMapper::delet(const Shopping *shopping)
@@ -82,7 +82,16 @@ void ShoppingMapper::delet(const Shopping *shopping)
     query.bindValue(":cid", shopping->getClientId());
     query.bindValue(":pid", shopping->getProductId());
     query.exec();
-    query.finish();
+    query.clear();
+}
+
+void ShoppingMapper::delet(const QList<Shopping *> shoppings)
+{
+    qDebug() << "[database] shopping delete list...";
+    for (auto shopping : shoppings)
+    {
+        delet(shopping);
+    }
 }
 
 void ShoppingMapper::insert(const Shopping *shopping)
@@ -96,5 +105,5 @@ void ShoppingMapper::insert(const Shopping *shopping)
     query.bindValue(":Num", shopping->getShoppingNum());
     query.bindValue(":Price", shopping->getShoppingPrice());
     query.exec();
-    query.finish();
+    query.clear();
 }

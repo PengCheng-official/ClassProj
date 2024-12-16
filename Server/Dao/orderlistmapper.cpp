@@ -27,7 +27,7 @@ void OrderListMapper::insert(const OrderList *orderList)
     query.bindValue(":Num", orderList->getProductNum());
     query.bindValue(":Price", orderList->getProductPrice());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void OrderListMapper::insert(const QList<OrderList *> orderLists)

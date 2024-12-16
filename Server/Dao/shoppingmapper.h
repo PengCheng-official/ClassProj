@@ -25,6 +25,7 @@ public:
     // shopping中存新购物车数据 cid和pid为已存在的不变量
 
     void delet(const Shopping *shopping);
+    void delet(const QList<Shopping *> shoppings);
     // 删除cid和pid的数据
 };
 

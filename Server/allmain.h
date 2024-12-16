@@ -82,7 +82,7 @@ protected:
     //服务端处理socket通讯
 
 public slots:
-    void on_sendToClient(QTcpSocket* socket, const QByteArray &array);
+    void onSendToClient(QTcpSocket* socket, const QByteArray &array);
     //socket发送信息
 
 private slots:

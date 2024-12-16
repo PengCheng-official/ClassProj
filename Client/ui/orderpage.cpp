@@ -112,8 +112,9 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
     confirmLayout->addStretch();
     confirmLayout->addWidget(confirmBtn);
     confirmLayout->addSpacing(20);
-    centerLayout->addLayout(confirmLayout);
     centerLayout->addStretch();
+    centerLayout->addLayout(confirmLayout);
+    centerLayout->addSpacing(10);
 }
 
 OrderPage::~OrderPage()
@@ -122,7 +123,7 @@ OrderPage::~OrderPage()
 
 void OrderPage::onConfirmBtnClicked()
 {
-    // 下单
+    // 下单，同时清楚购物车
     order->setTotalPrice(totPrice);
     order->setFinishTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     QList<Order *> orders = {order};
@@ -132,10 +133,24 @@ void OrderPage::onConfirmBtnClicked()
     ObjectToJson::addOrders(message, orders);
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToServer(array);
+
+    QList<Shopping *> shoppings;
+    for (auto [product, num] : selectList)
+    {
+         Shopping *shopping = new Shopping;
+         shopping->setClientId(client->getClientId());
+         shopping->setProductId(product->getProductId());
+         shoppings.append(shopping);
+    }
+    QJsonObject message1;
+    ObjectToJson::addShoppings(message1, shoppings);
+    ObjectToJson::addSignal(message1, QString::number(DELSHOPPING));
+    QByteArray array1 = ObjectToJson::changeJson(message1);
+    emit sigSendToServer(array1);
     QThread::msleep(100);
 }
 
-void OrderPage::createOrderList(int oid)
+void OrderPage::toCreateOrderList(int oid)
 {
     orderLists.clear();
     for (int i = 0; i < selectList.size(); ++i)

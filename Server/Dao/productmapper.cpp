@@ -31,7 +31,7 @@ QList<Product *> ProductMapper::selectLike(const QString &name)
     while(query.next()) {
         ret.push_back(getProduct(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -49,7 +49,7 @@ QList<Product *> ProductMapper::selectRand()
         }
     }
     while (ret.size() != 2);
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -65,7 +65,7 @@ QList<Product *> ProductMapper::select(const int id)
     while(query.next()) {
         ret.push_back(getProduct(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -81,7 +81,7 @@ QList<Product *> ProductMapper::select(const QString &name)
     while(query.next()) {
         ret.push_back(getProduct(query));
     }
-    query.finish();
+    query.clear();
     return ret;
 }
 
@@ -102,7 +102,7 @@ void ProductMapper::insert(Product *product)
     query.bindValue(":Num2", product->getStrategy2());
     query.bindValue(":Image", product->getProductImage());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void ProductMapper::insert(QList<Product *> proList)
@@ -133,7 +133,7 @@ void ProductMapper::update(const int id, const Product *product)
     query.bindValue(":Num2", product->getStrategy2());
     query.bindValue(":Image", product->getProductImage());
     query.exec();
-    query.finish();
+    query.clear();
 }
 
 void ProductMapper::delet(const int id)
@@ -143,5 +143,5 @@ void ProductMapper::delet(const int id)
     query.prepare("DELETE FROM product WHERE product_id = :id;");
     query.bindValue(":id", id);
     query.exec();
-    query.finish();
+    query.clear();
 }
