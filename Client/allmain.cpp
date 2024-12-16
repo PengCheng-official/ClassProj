@@ -99,6 +99,11 @@ void Allmain::initAllMain(Client *cClient)
     connect(_shoppingPage, &ShoppingPage::sigShoppingTooLess, [=](){
         ElaMessageBar::error(ElaMessageBarType::BottomRight, "结算失败", "至少单次下单1种商品", 2000, this);
     });
+    connect(_shoppingPage, &ShoppingPage::sigSendToServer, this, &Allmain::onSendToServer);
+    connect(_shoppingPage, &ShoppingPage::sigSendMessageBar, [=](bool success, QString title){
+        if (success) ElaMessageBar::success(ElaMessageBarType::BottomRight, title, "", 2000, this);
+        else ElaMessageBar::error(ElaMessageBarType::BottomRight, title, "", 2000, this);
+    });
 
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
@@ -338,6 +343,13 @@ void Allmain::dealMessage(QByteArray message)
         QList<Product *> productList = ObjectToJson::parseProducts(message);
         QList<Shopping *> shoppingList = ObjectToJson::parseShoppings(message);
         _shoppingPage->refreshPage(productList, shoppingList);
+        break;
+    }
+    case CREATEORDER:
+    {
+        // 返回订单号
+        int oid = ObjectToJson::parseNums(message)[0];
+        emit sigCreateOrderId(oid);
         break;
     }
     }

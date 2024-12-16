@@ -7,6 +7,7 @@
 
 class Chat
 {
+PROPERTY_CREATE_H(int, ChatId);
 PROPERTY_CREATE_H(int, ClientId);
 PROPERTY_CREATE_H(QString, ChatText);
 PROPERTY_CREATE_H(int, ChatIsserver);

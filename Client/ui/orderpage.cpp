@@ -17,7 +17,7 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
     order = new Order;
     order->setClientId(client->getClientId());
     order->setOrderStatus("未支付");
-    order->setCreateTime(QTime::currentTime().toString("yyyy-MM-dd hh:mm:ss"));
+    order->setCreateTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 
     // 支付实现
     payDialog = new ElaContentDialog(this);
@@ -124,11 +124,12 @@ void OrderPage::onConfirmBtnClicked()
 {
     // 下单
     order->setTotalPrice(totPrice);
-    order->setFinishTime(QTime::currentTime().toString("yyyy-MM-dd hh:mm:ss"));
+    order->setFinishTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    QList<Order *> orders = {order};
 
     QJsonObject message;
     ObjectToJson::addSignal(message, QString::number(CREATEORDER));
-    //TODO: objectToJson
+    ObjectToJson::addOrders(message, orders);
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToServer(array);
     QThread::msleep(100);
@@ -136,23 +137,51 @@ void OrderPage::onConfirmBtnClicked()
 
 void OrderPage::createOrderList(int oid)
 {
+    orderLists.clear();
     for (int i = 0; i < selectList.size(); ++i)
     {
         auto [product, num] = selectList[i];
         double nprice = product->getProductPrice(); int nnum = num;
         product->applyStrategy(nprice, nnum);
-        orderList[i] = new OrderList(oid, product->getProductId(), nnum, nprice);
-        //TODO: objectToJson
+        OrderList *orderList = new OrderList(oid, product->getProductId(), nnum, nprice);
+        orderLists.append(orderList);
     }
-    //TODO: objectToJson
+
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(CREATEORDERLIST));
+    ObjectToJson::addOrderLists(message, orderLists);
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
 }
 
 void OrderPage::onRightBtnClicked()
 {
-    // 已完成
+    order->setOrderStatus("已完成");
+    QList<Order *> orders = {order};
+
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(UPDATEORDER));
+    ObjectToJson::addOrders(message, orders);
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
+    emit sigSendMessageBar(true, "订单已完成");
+
+    setWindowTitle("订单状态：已完成");
+    confirmBtn->setEnabled(false);
 }
 
 void OrderPage::onMiddleBtnClicked()
 {
-    // 已取消
+    order->setOrderStatus("已取消");
+    QList<Order *> orders = {order};
+
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(UPDATEORDER));
+    ObjectToJson::addOrders(message, orders);
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
+    emit sigSendMessageBar(false, "订单已取消");
+
+    setWindowTitle("订单状态：已取消");
+    confirmBtn->setEnabled(false);
 }

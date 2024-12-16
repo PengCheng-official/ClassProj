@@ -36,6 +36,11 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
         OrderPage *orderPage = new OrderPage(client, selectList);
         orderPage->moveToCenter();
         orderPage->show();
+        connect(orderPage, &OrderPage::sigSendToServer, this, &ShoppingPage::sigSendToServer);
+        connect(orderPage, &OrderPage::sigSendMessageBar, this, &ShoppingPage::sigSendMessageBar);
+        connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrderId, [=](int oid){
+            orderPage->createOrderList(oid);
+        });
         //TODO: 返回
     });
 }
@@ -146,7 +151,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
             double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
             productList[i]->applyStrategy(nprice, nnum);
             totPrice += nprice * (value - spinMap[spinBox]);
-            deltaPrice += delta > 0 ? delta * (value - spinMap[spinBox]) : 0;
+            deltaPrice += delta < 0 ? delta * abs(value - spinMap[spinBox]) : 0;
             spinMap[spinBox] = value;
             confirmChanged();
         });

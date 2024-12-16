@@ -32,6 +32,8 @@ SOURCES += \
     dao/chatmapper.cpp \
     dao/clientmapper.cpp \
     dao/mapper.cpp \
+    dao/orderlistmapper.cpp \
+    dao/ordermapper.cpp \
     dao/productmapper.cpp \
     dao/shoppingmapper.cpp \
     main.cpp \
@@ -58,6 +60,8 @@ HEADERS += \
     dao/chatmapper.h \
     dao/clientmapper.h \
     dao/mapper.h \
+    dao/orderlistmapper.h \
+    dao/ordermapper.h \
     dao/productmapper.h \
     dao/shoppingmapper.h \
     objects/chat.h \

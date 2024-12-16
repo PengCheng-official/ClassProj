@@ -8,7 +8,7 @@ ChatMapper::ChatMapper(QSqlDatabase &database)
 Chat *ChatMapper::getChat(QSqlQuery &query)
 {
     Chat* chat = new Chat();
-    // 放弃了value(0)（chat_id）
+    chat->setChatId(query.value(0).toInt());
     chat->setClientId(query.value(1).toInt());
     chat->setChatText(query.value(2).toString());
     chat->setChatIsserver(query.value(3).toInt());

@@ -365,6 +365,37 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         emit sigSendToClient(socket, array);
         break;
     }
+    case CREATEORDER:
+    {
+        // 创建订单
+        Order *order = ObjectToJson::parseOrders(socketData)[0];
+        qDebug() << order->getCreateTime() << order->getFinishTime();
+        OrderMapper *orderMapper = new OrderMapper(db);
+        QList<int> oids = {orderMapper->insert(order)};
+
+        QJsonObject message;
+        ObjectToJson::addNums(message, oids);
+        ObjectToJson::addSignal(message, QString::number(CREATEORDER));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
+    case CREATEORDERLIST:
+    {
+        // 创建关联订单List
+        QList<OrderList *> orderLists = ObjectToJson::parseOrderLists(socketData);
+        OrderListMapper *orderListMapper = new OrderListMapper(db);
+        orderListMapper->insert(orderLists);
+        break;
+    }
+    case UPDATEORDER:
+    {
+        // 更新订单
+        Order *order = ObjectToJson::parseOrders(socketData)[0];
+        OrderMapper *orderMapper = new OrderMapper(db);
+        orderMapper->update(order);
+        break;
+    }
     }
 
     db.close();

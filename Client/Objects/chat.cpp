@@ -2,7 +2,6 @@
 
 Chat::Chat()
 {
-
 }
 
 Chat::Chat(int cClientId, QString cChatText, int cChatIsserver, QString cChatTime)

@@ -17,6 +17,8 @@
 #define ADDSHOPPING 200108  //加入购物车
 #define REQUESTSHOPPING 200109  //购物车请求
 #define CREATEORDER 200110  // 创建订单
+#define UPDATEORDER 200111  // 更新订单
+#define CREATEORDERLIST 200112  // 创建订单List
 //#define RESETPWD 20010103
 //#define RESETPWDF 40410103
 //#define RESETPWDE 30410103

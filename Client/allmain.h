@@ -23,7 +23,6 @@
 #include "ElaContentDialog.h"
 #include "ElaMessageBar.h"
 
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
 QT_END_NAMESPACE
@@ -32,6 +31,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
 QT_END_NAMESPACE
 
+class ShoppingPage;
 class Allmain : public ElaWindow
 {
     Q_OBJECT
@@ -69,6 +69,7 @@ private slots:
     void onReadyRead();
     void onStateChanged(QAbstractSocket::SocketState socketState);
 
-
+signals:
+    void sigCreateOrderId(int oid);
 };
 #endif // ALLMAIN_H

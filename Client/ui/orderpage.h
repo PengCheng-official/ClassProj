@@ -15,6 +15,7 @@ public:
     explicit OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList, QWidget* parent = nullptr);
     ~OrderPage();
 
+public:
     void createOrderList(int oid);
 
 private slots:
@@ -27,7 +28,7 @@ private:
     QVBoxLayout *centerLayout;
     ElaPushButton *confirmBtn;
     Order* order;
-    QList<OrderList *> orderList;
+    QList<OrderList *> orderLists;
     QList<QPair<Product *, int> > selectList;
     ElaText *totText;
     ElaText *deltaText;
@@ -37,6 +38,7 @@ private:
 
 signals:
     void sigSendToServer(QByteArray array);
+    void sigSendMessageBar(bool success, QString Title);
 };
 
 #endif // ORDERPAGE_H

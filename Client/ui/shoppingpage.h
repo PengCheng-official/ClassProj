@@ -8,6 +8,7 @@
 #include <QPair>
 #include <QMap>
 #include "orderpage.h"
+#include "allmain.h"
 
 class ShoppingPage : public BasePage
 {
@@ -35,6 +36,7 @@ private:
 signals:
     void sigShoppingTooMore();
     void sigShoppingTooLess();
+    void sigSendMessageBar(bool success, QString Title);
 };
 
 #endif // SHOPPINGPAGE_H
