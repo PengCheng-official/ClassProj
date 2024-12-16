@@ -1,16 +1,8 @@
 #ifndef HOMEPAGE_H
 #define HOMEPAGE_H
 
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objects/objects.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
 
+#include "ElaScrollPage.h"
 
 class HomePage : public ElaScrollPage
 {

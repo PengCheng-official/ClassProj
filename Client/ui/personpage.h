@@ -1,12 +1,15 @@
 #ifndef PERSONPAGE_H
 #define PERSONPAGE_H
 
-#include "basepage.h"
-#include "ElaToggleButton.h"
-#include "ElaMessageButton.h"
-#include <QFileDialog>
-#include <QThread>
 
+#include "basepage.h"
+
+class QLabel;
+class ElaPushButton;
+class ElaLineEdit;
+class ElaToggleButton;
+class ElaMessageButton;
+class ElaScrollPageArea;
 class PersonPage : public BasePage
 {
     Q_OBJECT

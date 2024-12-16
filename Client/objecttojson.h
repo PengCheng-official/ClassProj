@@ -1,23 +1,16 @@
-﻿#ifndef OBJECTTOJSON_H
+#ifndef OBJECTTOJSON_H
 #define OBJECTTOJSON_H
-#include "objects/client.h"
-#include "objects/chat.h"
-#include "objects/order.h"
-#include "objects/orderlist.h"
-#include "objects/product.h"
-#include "objects/shopping.h"
-#include "objects/search.h"
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonDocument>
-#include <QString>
-#include <QList>
-#include <QByteArray>
-#include <QJsonValue>
-#include <QVariant>
 
 //解析json类和转换json类
+#include <QObject>
+
+class QJsonObject;
+class Client;
+class Product;
+class Chat;
+class Shopping;
+class Order;
+class OrderList;
 
 class ObjectToJson
 {

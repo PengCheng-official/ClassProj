@@ -1,5 +1,24 @@
 #include "orderpage.h"
 
+#include <QTime>
+#include <QThread>
+#include <QJsonObject>
+
+#include "../objects/client.h"
+#include "../objects/product.h"
+#include "../objects/shopping.h"
+#include "../objects/order.h"
+#include "../objects/orderlist.h"
+#include "../objecttojson.h"
+#include "../statement.h"
+
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaText.h"
+#include "ElaPushButton.h"
+#include "ElaTheme.h"
+#include "ElaContentDialog.h"
+
 OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList, QWidget* parent)
     : ElaWidget(parent)
     , client(cClient)

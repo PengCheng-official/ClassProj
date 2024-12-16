@@ -1,6 +1,26 @@
 #include "login.h"
 #include "ui_login.h"
 
+#include <QTcpSocket>
+#include <QHostAddress>
+#include "objects/client.h"
+#include "objecttojson.h"
+#include "signin.h"
+#include "chatroom.h"
+#include "statement.h"
+
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPixmap>
+#include <QGraphicsOpacityEffect>
+#include "Def.h"
+#include "stdafx.h"
+#include "ElaLineEdit.h"
+#include "ElaPushButton.h"
+#include "ElaText.h"
+#include "ElaTheme.h"
+#include "ElaProgressBar.h"
+
 LogIn::LogIn(QWidget *parent) :
     ElaWidget(parent),
     ui(new Ui::LogIn)

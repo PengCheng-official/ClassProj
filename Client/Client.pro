@@ -37,7 +37,6 @@ SOURCES += \
     objects/product.cpp \
     objects/search.cpp \
     objects/shopping.cpp \
-    objects/strategy.cpp \
     objecttojson.cpp \
     signin.cpp \
     ui/basepage.cpp \
@@ -60,7 +59,6 @@ HEADERS += \
     objects/product.h \
     objects/search.h \
     objects/shopping.h \
-    objects/strategy.h \
     objecttojson.h \
     signin.h \
     statement.h \

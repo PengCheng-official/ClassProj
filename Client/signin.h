@@ -2,39 +2,16 @@
 #define SIGNIN_H
 
 // 注册界面
-#include <iostream>
-#include <QLabel>
-#include <QObject>
-#include <QMouseEvent>
-#include <QTcpSocket>
-#include <QHostAddress>
-#include "objects/client.h"
-#include "objects/chat.h"
-#include "objects/order.h"
-#include "objects/orderlist.h"
-#include "objects/product.h"
-#include "objects/search.h"
-#include "objecttojson.h"
-#include "statement.h"
-
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <ElaScrollPage.h>
-#include "Def.h"
-#include "stdafx.h"
 #include "ElaWidget.h"
-#include "ElaLineEdit.h"
-#include "ElaPushButton.h"
-#include "ElaImageCard.h"
-#include "ElaTheme.h"
-#include "ElaText.h"
-#include "ElaIcon.h"
-#include "ElaToolButton.h"
-#include "ElaProgressBar.h"
 
 class TcpSocket;
-
+class Client;
+class QVBoxLayout;
+class QLabel;
+class QFrame;
+class ElaLineEdit;
+class ElaText;
+class ElaPushButton;
 namespace Ui {
 class SignIn;
 }

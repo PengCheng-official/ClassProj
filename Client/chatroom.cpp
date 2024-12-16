@@ -1,6 +1,25 @@
 #include "chatroom.h"
 #include "ui_chatroom.h"
-#include <windows.h>
+
+#include <QMouseEvent>
+#include <QTcpSocket>
+#include <QHostAddress>
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objecttojson.h"
+#include "chatmessage/qnchatmessage.h"
+#include "statement.h"
+
+#include <QListWidgetItem>
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include "Def.h"
+#include "stdafx.h"
+#include "ElaPushButton.h"
+#include "ElaPlainTextEdit.h"
+#include "ElaListView.h"
+#include "ElaTheme.h"
 
 ChatRoom::ChatRoom(QWidget *parent) :
     ElaWidget(parent),

@@ -1,6 +1,7 @@
 #ifndef CHATMAPPER_H
 #define CHATMAPPER_H
 
+
 #include "mapper.h"
 
 class Chat;

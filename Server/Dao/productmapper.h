@@ -1,6 +1,7 @@
 #ifndef PRODUCTMAPPER_H
 #define PRODUCTMAPPER_H
 
+
 #include "mapper.h"
 
 class Product;

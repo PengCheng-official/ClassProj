@@ -1,7 +1,7 @@
 #ifndef BASEPAGE_H
 #define BASEPAGE_H
 
-#include <QObject>
+
 #include "ElaScrollPage.h"
 
 class BasePage : public ElaScrollPage

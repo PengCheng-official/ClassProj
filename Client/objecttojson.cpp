@@ -1,8 +1,23 @@
 #include "objecttojson.h"
 
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonDocument>
+#include <QByteArray>
+#include <QJsonValue>
+#include <QVariant>
+
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objects/order.h"
+#include "objects/orderlist.h"
+#include "objects/product.h"
+#include "objects/shopping.h"
+#include "objects/search.h"
+
 ObjectToJson::ObjectToJson()
 {
-
 }
 
 QJsonObject ObjectToJson::addClients(QJsonObject &object, QList<Client *> clients)

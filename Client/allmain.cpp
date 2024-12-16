@@ -1,6 +1,27 @@
 #include "allmain.h"
 #include "ui_allmain.h"
 
+#include <iostream>
+#include <QWidget>
+#include "login.h"
+#include "signin.h"
+#include "chatroom.h"
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objects/order.h"
+#include "objects/orderlist.h"
+#include "objects/product.h"
+#include "objects/search.h"
+#include "objecttojson.h"
+#include "statement.h"
+
+#include "ui/personpage.h"
+#include "ui/searchpage.h"
+#include "ui/homepage.h"
+#include "ui/shoppingpage.h"
+#include "ElaContentDialog.h"
+#include "ElaMessageBar.h"
+
 Allmain::Allmain(QWidget *parent)
     : ElaWindow(parent)
     , ui(new Ui::Allmain)

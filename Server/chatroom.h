@@ -2,7 +2,6 @@
 #define CHATROOM_H
 
 // 联系客服界面
-#include <QWidget>
 #include "ElaWidget.h"
 #include <QSqlDatabase>
 #include "chatmessage/qnchatmessage.h"

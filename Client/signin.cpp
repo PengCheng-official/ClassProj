@@ -1,6 +1,28 @@
 #include "signin.h"
 #include "ui_signin.h"
 
+#include <QMouseEvent>
+#include <QTcpSocket>
+#include <QHostAddress>
+#include <QJsonObject>
+
+#include "objects/client.h"
+#include "objecttojson.h"
+#include "statement.h"
+
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include "Def.h"
+#include "stdafx.h"
+#include "ElaLineEdit.h"
+#include "ElaPushButton.h"
+#include "ElaTheme.h"
+#include "ElaText.h"
+#include "ElaIcon.h"
+#include "ElaToolButton.h"
+#include "ElaProgressBar.h"
+
 SignIn::SignIn(QWidget *parent) :
     ElaWidget(parent),
     ui(new Ui::SignIn)

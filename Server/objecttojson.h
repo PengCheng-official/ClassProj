@@ -2,8 +2,7 @@
 #define OBJECTTOJSON_H
 
 //解析json类和转换json类
-#include <QString>
-#include <QList>
+#include <QObject>
 
 class QJsonObject;
 class Client;

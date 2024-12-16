@@ -1,5 +1,20 @@
 #include "basepage.h"
 
+#include "../objects/product.h"
+#include "objecttojson.h"
+#include "statement.h"
+
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaMenu.h"
+#include "ElaText.h"
+#include "ElaWindow.h"
+#include "ElaPushButton.h"
+#include "ElaLineEdit.h"
+#include "ElaTheme.h"
+
 BasePage::BasePage(Client *cClient, QWidget* parent)
     : ElaScrollPage(parent)
     , client(cClient)

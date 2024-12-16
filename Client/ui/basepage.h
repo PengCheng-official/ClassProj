@@ -2,22 +2,11 @@
 #define BASEPAGE_H
 
 
-#include <QObject>
-#include <QWidget>
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objecttojson.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include "statement.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include "ElaPushButton.h"
-#include "ElaLineEdit.h"
-#include "ElaTheme.h"
+#include "ElaScrollPage.h"
 
+class Client;
+class Product;
+class QVBoxLayout;
 class BasePage : public ElaScrollPage
 {
     Q_OBJECT

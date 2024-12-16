@@ -4,6 +4,8 @@
 
 #include "basepage.h"
 
+class ElaLineEdit;
+class ElaPushButton;
 class SearchPage : public BasePage
 {
     Q_OBJECT

@@ -1,5 +1,22 @@
 #include "homepage.h"
 
+#include <QJsonObject>
+
+#include "../objects/client.h"
+#include "../objects/product.h"
+#include "../objects/shopping.h"
+#include "../objecttojson.h"
+#include "../statement.h"
+
+#include <QVBoxLayout>
+#include <QLabel>
+#include "ElaScrollPageArea.h"
+#include "ElaText.h"
+#include "ElaPushButton.h"
+#include "ElaTheme.h"
+#include "ElaPromotionView.h"
+#include "ElaPromotionCard.h"
+
 HomePage::HomePage(Client *cClient, QWidget* parent)
     : BasePage(cClient, parent)
 {

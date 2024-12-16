@@ -4,7 +4,6 @@
 
 #include <QString>
 #include "objects.h"
-#include "product.h"
 
 class OrderList
 {

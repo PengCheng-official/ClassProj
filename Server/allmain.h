@@ -1,7 +1,6 @@
 #ifndef ALLMAIN_H
 #define ALLMAIN_H
 
-#include <QWidget>
 #include "ElaWindow.h"
 #include <QSqlDatabase>
 

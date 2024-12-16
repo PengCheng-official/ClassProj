@@ -1,6 +1,7 @@
 #ifndef CLIENTMAPPER_H
 #define CLIENTMAPPER_H
 
+
 #include "mapper.h"
 
 class Client;

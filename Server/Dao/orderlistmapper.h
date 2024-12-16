@@ -2,7 +2,6 @@
 #define ORDERLISTMAPPER_H
 
 
-
 #include "mapper.h"
 
 class OrderList;

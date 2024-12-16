@@ -1,5 +1,23 @@
 #include "shoppingpage.h"
 
+#include <QJsonObject>
+
+#include "orderpage.h"
+#include "../allmain.h"
+#include "../objects/client.h"
+#include "../objects/product.h"
+#include "../objects/shopping.h"
+#include "../objecttojson.h"
+#include "../statement.h"
+
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaText.h"
+#include "ElaPushButton.h"
+#include "ElaTheme.h"
+#include "ElaCheckBox.h"
+#include "ElaSpinBox.h"
+
 ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
     : BasePage(cClient, parent)
 {

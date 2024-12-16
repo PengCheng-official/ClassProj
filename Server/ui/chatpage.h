@@ -1,8 +1,8 @@
 #ifndef CHATPAGE_H
 #define CHATPAGE_H
 
+
 #include "ElaScrollPage.h"
-#include <QList>
 
 class Client;
 class ElaToggleSwitch;

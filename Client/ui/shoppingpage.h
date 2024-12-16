@@ -3,13 +3,10 @@
 
 
 #include "basepage.h"
-#include "ElaCheckBox.h"
-#include "ElaSpinBox.h"
-#include <QPair>
-#include <QMap>
-#include "orderpage.h"
-#include "allmain.h"
 
+class Shopping;
+class ElaPushButton;
+class ElaSpinBox;
 class ShoppingPage : public BasePage
 {
     Q_OBJECT

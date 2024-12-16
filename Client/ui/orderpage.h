@@ -3,11 +3,15 @@
 
 
 #include "ElaWidget.h"
-#include "basepage.h"
-#include <QTime>
-#include "ElaContentDialog.h"
-#include <QThread>
 
+class Client;
+class Product;
+class Order;
+class OrderList;
+class QVBoxLayout;
+class ElaPushButton;
+class ElaText;
+class ElaContentDialog;
 class OrderPage : public ElaWidget
 {
     Q_OBJECT

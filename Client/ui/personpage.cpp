@@ -1,5 +1,21 @@
 #include "personpage.h"
 
+#include <QJsonObject>
+#include <QThread>
+
+#include "../objects/client.h"
+#include "../objecttojson.h"
+#include "../statement.h"
+
+#include <QVBoxLayout>
+#include <QFileDialog>
+#include "ElaScrollPageArea.h"
+#include "ElaText.h"
+#include "ElaPushButton.h"
+#include "ElaLineEdit.h"
+#include "ElaTheme.h"
+#include "ElaToggleButton.h"
+#include "ElaMessageButton.h"
 
 PersonPage::PersonPage(Client *cClient, QWidget *parent)
     : BasePage(cClient, parent)

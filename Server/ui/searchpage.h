@@ -2,7 +2,6 @@
 #define SEARCHPAGE_H
 
 
-#include <QObject>
 #include "ElaScrollPage.h"
 #include <QSqlDatabase>
 

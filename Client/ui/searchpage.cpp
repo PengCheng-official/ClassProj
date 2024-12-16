@@ -1,5 +1,20 @@
 #include "searchpage.h"
 
+#include <QJsonObject>
+
+#include "../objects/client.h"
+#include "../objects/product.h"
+#include "../objects/shopping.h"
+#include "../objecttojson.h"
+#include "../statement.h"
+
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaText.h"
+#include "ElaPushButton.h"
+#include "ElaLineEdit.h"
+#include "ElaTheme.h"
+
 SearchPage::SearchPage(Client *cClient, QWidget* parent)
     : BasePage(cClient, parent)
 {

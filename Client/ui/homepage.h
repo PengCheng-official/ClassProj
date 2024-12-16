@@ -3,10 +3,11 @@
 
 
 #include "basepage.h"
-#include "ElaPromotionView.h"
-#include "ElaPromotionCard.h"
-#include "ElaWidget.h"
 
+class QLabel;
+class ElaPushButton;
+class ElaScrollPageArea;
+class ElaPromotionView;
 class HomePage : public BasePage
 {
     Q_OBJECT

@@ -2,40 +2,17 @@
 #define LOGIN_H
 
 // 登录界面
-#include <iostream>
-#include <QObject>
-#include <QTcpSocket>
-#include <QHostAddress>
-#include "objects/client.h"
-#include "objects/chat.h"
-#include "objects/order.h"
-#include "objects/orderlist.h"
-#include "objects/product.h"
-#include "objects/search.h"
-#include "objecttojson.h"
-#include "signin.h"
-#include "chatroom.h"
-#include "statement.h"
-
-#include <QWidget>
 #include "ElaWidget.h"
-#include "Def.h"
-#include "stdafx.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <ElaScrollPage.h>
-#include <QPixmap>
-#include <QGraphicsOpacityEffect>
-#include "ElaLineEdit.h"
-#include "ElaText.h"
-#include "ElaPushButton.h"
-#include "ElaImageCard.h"
-#include "ElaTheme.h"
-#include "ElaProgressBar.h"
 
 class SignIn;
 class ChatRoom;
-
+class Client;
+class QVBoxLayout;
+class QLabel;
+class QFrame;
+class ElaLineEdit;
+class ElaText;
+class ElaPushButton;
 namespace Ui {
 class LogIn;
 }
