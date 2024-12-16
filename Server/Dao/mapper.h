@@ -3,16 +3,7 @@
 
 
 #include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
-#include "../objects/client.h"
-#include "../objects/chat.h"
-#include "../objects/order.h"
-#include "../objects/orderlist.h"
-#include "../objects/product.h"
-#include "../objects/search.h"
-#include "../objects/shopping.h"
+#include <QString>
 
 class Mapper
 {

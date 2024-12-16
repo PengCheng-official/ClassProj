@@ -2,28 +2,15 @@
 #define PRODUCTPAGE_H
 
 
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objects/objects.h"
-#include "objecttojson.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
+#include "ElaScrollPage.h"
 #include <QSqlDatabase>
-#include <QSqlError>
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include "ElaLineEdit.h"
-#include "ElaToggleButton.h"
-#include "ElaPushButton.h"
-#include <QFileDialog>
-#include "ElaComboBox.h"
-#include "ElaPlainTextEdit.h"
-#include "ElaTheme.h"
-#include "dao/productmapper.h"
-#include "statement.h"
 
+class Product;
+class QVBoxLayout;
+class ElaLineEdit;
+class ElaComboBox;
+class ElaPushButton;
+class ElaPlainTextEdit;
 class ProductPage : public ElaScrollPage
 {
     Q_OBJECT

@@ -1,4 +1,7 @@
 #include "ordermapper.h"
+#include <QSqlQuery>
+#include <QTime>
+#include "../objects/order.h"
 
 OrderMapper::OrderMapper(QSqlDatabase &database)
     : Mapper(database)

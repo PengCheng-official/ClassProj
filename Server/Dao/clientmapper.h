@@ -3,6 +3,7 @@
 
 #include "mapper.h"
 
+class Client;
 class ClientMapper : public Mapper
 {
 public:

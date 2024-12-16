@@ -1,5 +1,22 @@
 #include "searchpage.h"
 
+#include <QSqlError>
+
+#include "../dao/productmapper.h"
+#include "../objects/product.h"
+#include "objecttojson.h"
+#include "statement.h"
+
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaText.h"
+#include "ElaWindow.h"
+#include "ElaLineEdit.h"
+#include "ElaPushButton.h"
+#include "ElaTheme.h"
+
 SearchPage::SearchPage(QWidget* parent)
     : ElaScrollPage(parent)
 {

@@ -3,6 +3,7 @@
 
 #include "mapper.h"
 
+class Product;
 class ProductMapper : public Mapper
 {
 public:

@@ -1,6 +1,39 @@
 #include "allmain.h"
 #include "ui_allmain.h"
 
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QCryptographicHash>
+#include <QRandomGenerator>
+#include <QTime>
+#include <QRandomGenerator>
+#include <QSqlError>
+#include <QJsonObject>
+
+#include "ThreadPool.h"
+#include "objects/client.h"
+#include "objects/chat.h"
+#include "objects/order.h"
+#include "objects/orderlist.h"
+#include "objects/product.h"
+#include "objects/search.h"
+#include "objects/shopping.h"
+#include "objecttojson.h"
+#include "dao/clientmapper.h"
+#include "dao/chatmapper.h"
+#include "dao/productmapper.h"
+#include "dao/shoppingmapper.h"
+#include "dao/orderlistmapper.h"
+#include "dao/ordermapper.h"
+#include "statement.h"
+
+#include "ElaMessageBar.h"
+#include "ui/chatpage.h"
+#include "ui/homepage.h"
+#include "ui/searchpage.h"
+#include "ui/productpage.h"
+
+
 Allmain::Allmain(QWidget *parent)
     : ElaWindow(parent)
     , ui(new Ui::Allmain)

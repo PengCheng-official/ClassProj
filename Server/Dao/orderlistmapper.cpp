@@ -1,4 +1,6 @@
 #include "orderlistmapper.h"
+#include <QSqlQuery>
+#include "../objects/orderlist.h"
 
 OrderListMapper::OrderListMapper(QSqlDatabase &database)
     : Mapper(database)

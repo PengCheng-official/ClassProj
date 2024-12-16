@@ -1,4 +1,6 @@
 #include "shoppingmapper.h"
+#include <QSqlQuery>
+#include "../objects/shopping.h"
 
 
 ShoppingMapper::ShoppingMapper(QSqlDatabase &database)

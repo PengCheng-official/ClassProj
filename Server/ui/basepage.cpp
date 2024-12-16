@@ -1,4 +1,11 @@
 #include "basepage.h"
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaMenu.h"
+#include "ElaText.h"
+#include "ElaWindow.h"
 
 BasePage::BasePage(QWidget* parent)
     : ElaScrollPage(parent)

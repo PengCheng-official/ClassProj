@@ -1,4 +1,17 @@
 #include "chatpage.h"
+#include <QMouseEvent>
+#include "chatroom.h"
+#include "../objects/client.h"
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QVBoxLayout>
+#include "ElaScrollPageArea.h"
+#include "ElaMenu.h"
+#include "ElaText.h"
+#include "ElaWindow.h"
+#include "ElaToggleSwitch.h"
+#include "ElaPushButton.h"
+
 
 int ChatPage::restMsg = 0;
 ChatPage::ChatPage(QWidget *parent)

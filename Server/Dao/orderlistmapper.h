@@ -5,6 +5,7 @@
 
 #include "mapper.h"
 
+class OrderList;
 class OrderListMapper : public Mapper
 {
 public:

@@ -1,5 +1,26 @@
 #include "productpage.h"
 
+#include "objecttojson.h"
+#include "../dao/productmapper.h"
+#include "../objects/product.h"
+#include "statement.h"
+
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QVBoxLayout>
+#include <QFileDialog>
+#include "ElaText.h"
+#include "ElaWindow.h"
+#include "ElaLineEdit.h"
+#include "ElaToggleButton.h"
+#include "ElaPushButton.h"
+#include "ElaScrollPageArea.h"
+#include "ElaComboBox.h"
+#include "ElaPlainTextEdit.h"
+#include "ElaTheme.h"
+
 ProductPage::ProductPage(QWidget* parent)
     : ElaScrollPage(parent)
 {

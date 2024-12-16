@@ -1,4 +1,6 @@
 #include "productmapper.h"
+#include <QSqlQuery>
+#include "../objects/product.h"
 
 ProductMapper::ProductMapper(QSqlDatabase &database)
     : Mapper(database)

@@ -2,41 +2,17 @@
 #define ALLMAIN_H
 
 #include <QWidget>
-#include <QTcpServer>
-#include <QTcpSocket>
-#include <QObject>
-#include <QString>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QCryptographicHash>
-#include <QRandomGenerator>
-#include <QThread>
-#include <QThreadPool>
-#include "ThreadPool.h"
-#include "objects/client.h"
-#include "objects/chat.h"
-#include "objects/order.h"
-#include "objects/orderlist.h"
-#include "objects/product.h"
-#include "objects/search.h"
-#include "objecttojson.h"
-#include "dao/clientmapper.h"
-#include "dao/chatmapper.h"
-#include "dao/productmapper.h"
-#include "dao/shoppingmapper.h"
-#include "dao/ordermapper.h"
-#include "dao/orderlistmapper.h"
-#include "statement.h"
-#include <QTime>
-#include <QRandomGenerator>
-
 #include "ElaWindow.h"
-#include "ElaMessageBar.h"
-#include "ui/chatpage.h"
-#include "ui/homepage.h"
-#include "ui/searchpage.h"
-#include "ui/productpage.h"
+#include <QSqlDatabase>
+
+class QTcpSocket;
+class QTcpServer;
+class Client;
+class ThreadPool;
+class HomePage;
+class ChatPage;
+class SearchPage;
+class ProductPage;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }

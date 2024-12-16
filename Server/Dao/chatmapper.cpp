@@ -1,4 +1,7 @@
 #include "chatmapper.h"
+#include <QSqlQuery>
+#include <QTime>
+#include "../objects/chat.h"
 
 ChatMapper::ChatMapper(QSqlDatabase &database)
     : Mapper(database)

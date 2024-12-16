@@ -4,6 +4,7 @@
 
 #include "mapper.h"
 
+class Order;
 class OrderMapper : public Mapper
 {
 public:

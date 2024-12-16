@@ -1,21 +1,13 @@
 #ifndef CHATPAGE_H
 #define CHATPAGE_H
 
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objects/objects.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
+#include "ElaScrollPage.h"
+#include <QList>
 
-#include <QMouseEvent>
-#include "ElaToggleSwitch.h"
-#include "ElaPushButton.h"
-#include "chatroom.h"
-
+class Client;
+class ElaToggleSwitch;
+class ChatRoom;
+class Chat;
 class ChatPage : public ElaScrollPage
 {
     Q_OBJECT

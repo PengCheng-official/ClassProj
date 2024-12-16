@@ -3,6 +3,7 @@
 
 #include "mapper.h"
 
+class Chat;
 class ChatMapper : public Mapper
 {
 public:

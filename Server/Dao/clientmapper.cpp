@@ -1,4 +1,6 @@
 #include "clientmapper.h"
+#include <QSqlQuery>
+#include "../objects/client.h"
 
 ClientMapper::ClientMapper(QSqlDatabase &database)
     : Mapper(database)

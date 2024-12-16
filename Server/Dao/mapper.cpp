@@ -1,4 +1,14 @@
 #include "mapper.h"
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
+#include "../objects/client.h"
+#include "../objects/chat.h"
+#include "../objects/order.h"
+#include "../objects/orderlist.h"
+#include "../objects/product.h"
+#include "../objects/search.h"
+#include "../objects/shopping.h"
 
 Mapper::Mapper(QSqlDatabase &database)
     : db(database)

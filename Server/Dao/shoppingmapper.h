@@ -4,6 +4,7 @@
 
 #include "mapper.h"
 
+class Shopping;
 class ShoppingMapper : public Mapper
 {
 public:

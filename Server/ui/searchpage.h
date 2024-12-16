@@ -3,22 +3,13 @@
 
 
 #include <QObject>
-#include <QWidget>
-#include <ElaScrollPage.h>
-#include <ElaScrollPageArea.h>
-#include "objecttojson.h"
-#include "ElaMenu.h"
-#include "ElaText.h"
-#include "ElaWindow.h"
-#include "statement.h"
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include "ElaLineEdit.h"
-#include "ElaPushButton.h"
-#include "ElaTheme.h"
-#include "../dao/productmapper.h"
+#include "ElaScrollPage.h"
+#include <QSqlDatabase>
 
+class Product;
+class QVBoxLayout;
+class ElaLineEdit;
+class ElaPushButton;
 class SearchPage : public ElaScrollPage
 {
     Q_OBJECT
