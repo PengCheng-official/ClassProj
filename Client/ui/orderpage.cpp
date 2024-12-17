@@ -27,10 +27,11 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
     // 初始化时不建立 order，没有申请 order_id
     setWindowTitle("订单状态：未支付");
     setWindowIcon(QIcon(":/Resource/order_icon.png"));
-    this->setFixedHeight(660);
-    this->setIsFixedSize(true);
+    setFixedHeight(660);
+    setIsFixedSize(true);
     setWindowModality(Qt::ApplicationModal);
     setWindowButtonFlags(ElaAppBarType::CloseButtonHint);
+    setIsDefaultClosed(false);
     totPrice = deltaPrice = 0;
 
     order = new Order;

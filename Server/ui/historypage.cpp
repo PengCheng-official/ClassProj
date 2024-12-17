@@ -145,7 +145,7 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
             productLayout->addLayout(textLayout);
             productLayout->addStretch();
             centerLayout->addWidget(productArea);
-            centerLayout->addSpacing(10);
+            centerLayout->addSpacing(5);
         }
         i += order->getProductNum();
         centerLayout->addSpacing(15);

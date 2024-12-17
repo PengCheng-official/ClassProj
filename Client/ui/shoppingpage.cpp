@@ -57,9 +57,12 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
         orderPage->show();
         connect(orderPage, &OrderPage::sigSendToServer, this, &ShoppingPage::sigSendToServer);
         connect(orderPage, &OrderPage::sigSendMessageBar, this, &ShoppingPage::sigSendMessageBar);
+        connect(orderPage, &OrderPage::sigRefreshPage, this, &ShoppingPage::initPage);
         connect(orderPage, &OrderPage::sigRefreshPage, this, &ShoppingPage::sigRefreshPage);
-        connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrderId, [=](int oid){
-            orderPage->toCreateOrderList(oid);
+        connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrderId, orderPage, &OrderPage::toCreateOrderList);
+        connect(orderPage, &OrderPage::closeButtonClicked, [=](){
+            orderPage->window()->close();
+            delete orderPage;
         });
     });
 }
@@ -73,6 +76,8 @@ void ShoppingPage::initPage()
     clearPage(0);
     totPrice = deltaPrice = checkNum = 0;
     confirmChanged();
+    selectList.clear();
+    spinMap.clear();
     selectList.clear();
 }
 

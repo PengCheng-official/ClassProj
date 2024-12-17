@@ -46,7 +46,7 @@ ChatRoom::ChatRoom(Client *cClient, QWidget *parent) :
 
     connectToDB();
     initHistory();
-    this->setIsDefaultClosed(false);
+    setIsDefaultClosed(false);
     connect(this, &ChatRoom::closeButtonClicked, [=](){
         qDebug() << "[chatroom] close";
         emit sigUnlocked();
