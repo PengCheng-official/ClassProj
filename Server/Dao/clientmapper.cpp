@@ -9,7 +9,7 @@ ClientMapper::ClientMapper(QSqlDatabase &database)
 {
 }
 
-Client* ClientMapper::getClient(QSqlQuery &query)
+Client* ClientMapper::getClient(QSqlQuery &query) const
 {
     Client* client = new Client();
     client->setClientId(query.value(0).toInt());
@@ -24,7 +24,7 @@ Client* ClientMapper::getClient(QSqlQuery &query)
     return client;
 }
 
-QList<Client *> ClientMapper::select(const QString &name)
+QList<Client *> ClientMapper::select(const QString &name) const
 {
     QReadLocker locker(&dbLock);
 
@@ -42,7 +42,7 @@ QList<Client *> ClientMapper::select(const QString &name)
     return ret;
 }
 
-QList<Client *> ClientMapper::select(int id)
+QList<Client *> ClientMapper::select(const int id) const
 {
     QReadLocker locker(&dbLock);
 
@@ -60,7 +60,7 @@ QList<Client *> ClientMapper::select(int id)
     return ret;
 }
 
-int ClientMapper::insert(Client *client)
+int ClientMapper::insert(const Client *client) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -83,7 +83,7 @@ int ClientMapper::insert(Client *client)
     return cid;
 }
 
-void ClientMapper::update(const QString &name, Client *client)
+void ClientMapper::update(const QString &name, const Client *client) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -105,7 +105,7 @@ void ClientMapper::update(const QString &name, Client *client)
     query.clear();
 }
 
-void ClientMapper::update(const int id, Client *client)
+void ClientMapper::update(const int id, const Client *client) const
 {
     QWriteLocker locker(&dbLock);
 

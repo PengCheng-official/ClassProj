@@ -142,7 +142,7 @@ OrderPage::~OrderPage()
     delete order;
 }
 
-void OrderPage::onConfirmBtnClicked()
+void OrderPage::createOrder()
 {
     // 下单，同时清楚购物车
     qDebug() << selectList.size();
@@ -172,9 +172,32 @@ void OrderPage::onConfirmBtnClicked()
     emit sigSendToServer(array1);
     emit sigRefreshPage();
     QThread::msleep(100);
+
 }
 
-void OrderPage::toCreateOrderList(int oid)
+void OrderPage::onConfirmBtnClicked()
+{
+    // 检查库存是否充足，并占用库存（实现秒杀活动）
+    orderLists.clear();
+    for (int i = 0; i < selectList.size(); ++i)
+    {
+        auto [product, num] = selectList[i];
+        double nprice = product->getProductPrice(); int nnum = num;
+        product->applyStrategy(nprice, nnum);
+        OrderList *orderList = new OrderList;
+        orderList->setProductId(product->getProductId());
+        orderList->setProductNum(nnum);
+        orderLists.append(orderList);
+    }
+
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(CREATEORDERLIST));
+    ObjectToJson::addOrderLists(message, orderLists);
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
+}
+
+void OrderPage::createOrderList(int oid)
 {
     order->setOrderId(oid);
     orderLists.clear();

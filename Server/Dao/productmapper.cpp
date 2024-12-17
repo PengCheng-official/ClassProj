@@ -3,13 +3,14 @@
 #include <QSqlQuery>
 #include <QReadWriteLock>
 #include "../objects/product.h"
+#include "../objects/orderlist.h"
 
 ProductMapper::ProductMapper(QSqlDatabase &database)
     : Mapper(database)
 {
 }
 
-Product *ProductMapper::getProduct(const QSqlQuery &query)
+Product *ProductMapper::getProduct(const QSqlQuery &query) const
 {
     Product *product = new Product();
     product->setProductId(query.value(0).toInt());
@@ -23,7 +24,7 @@ Product *ProductMapper::getProduct(const QSqlQuery &query)
     return product;
 }
 
-QList<Product *> ProductMapper::selectLike(const QString &name)
+QList<Product *> ProductMapper::selectLike(const QString &name) const
 {
     QReadLocker locker(&dbLock);
 
@@ -41,7 +42,7 @@ QList<Product *> ProductMapper::selectLike(const QString &name)
     return ret;
 }
 
-QList<Product *> ProductMapper::selectRand()
+QList<Product *> ProductMapper::selectRand() const
 {
     QReadLocker locker(&dbLock);
 
@@ -62,7 +63,7 @@ QList<Product *> ProductMapper::selectRand()
     return ret;
 }
 
-QList<Product *> ProductMapper::select(const int pid)
+QList<Product *> ProductMapper::select(const int pid) const
 {
     QReadLocker locker(&dbLock);
 
@@ -80,7 +81,7 @@ QList<Product *> ProductMapper::select(const int pid)
     return ret;
 }
 
-QList<Product *> ProductMapper::select(const QString &name)
+QList<Product *> ProductMapper::select(const QString &name) const
 {
     QReadLocker locker(&dbLock);
 
@@ -98,7 +99,7 @@ QList<Product *> ProductMapper::select(const QString &name)
     return ret;
 }
 
-void ProductMapper::insert(Product *product)
+void ProductMapper::insert(const Product *product) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -120,7 +121,7 @@ void ProductMapper::insert(Product *product)
     query.clear();
 }
 
-void ProductMapper::insert(QList<Product *> proList)
+void ProductMapper::insert(const QList<Product *> proList) const
 {
     qDebug() << "[database] product insert proList ...";
     for (auto pro : proList)
@@ -129,17 +130,17 @@ void ProductMapper::insert(QList<Product *> proList)
     }
 }
 
-void ProductMapper::update(const int id, const Product *product)
+void ProductMapper::update(const Product *product) const
 {
     QWriteLocker locker(&dbLock);
 
-    qDebug() << "[database] product update... " << id;
+    qDebug() << "[database] product update... " << product->getProductId();
     QSqlQuery query(db);
     query.prepare("UPDATE product SET \
                   product_name=:Name, product_price=:Price, product_num=:Num, product_sales=:Sales, \
                   product_about=:About, product_strategy=:Strategy, product_discount1=:Num1, product_discount2=:Num2, product_image=:Image  \
             WHERE product_id=:id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", product->getProductId());
     query.bindValue(":Name", product->getProductName());
     query.bindValue(":Price", product->getProductPrice());
     query.bindValue(":Num", product->getProductNum());
@@ -153,14 +154,14 @@ void ProductMapper::update(const int id, const Product *product)
     query.clear();
 }
 
-void ProductMapper::delet(const int id)
+void ProductMapper::delet(const int pid) const
 {
     QWriteLocker locker(&dbLock);
 
     qDebug() << "[database] product delete... ";
     QSqlQuery query(db);
     query.prepare("DELETE FROM product WHERE product_id = :id;");
-    query.bindValue(":id", id);
+    query.bindValue(":id", pid);
     query.exec();
     query.clear();
 }

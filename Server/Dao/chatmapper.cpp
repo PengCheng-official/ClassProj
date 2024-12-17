@@ -10,7 +10,7 @@ ChatMapper::ChatMapper(QSqlDatabase &database)
 {
 }
 
-Chat *ChatMapper::getChat(QSqlQuery &query)
+Chat *ChatMapper::getChat(QSqlQuery &query) const
 {
     Chat* chat = new Chat();
     chat->setChatId(query.value(0).toInt());
@@ -21,14 +21,14 @@ Chat *ChatMapper::getChat(QSqlQuery &query)
     return chat;
 }
 
-QList<Chat *> ChatMapper::select(int id)
+QList<Chat *> ChatMapper::select(const int cid) const
 {
     QReadLocker locker(&dbLock);
 
-    qDebug() << "[database] chat select... " << id;
+    qDebug() << "[database] chat select... " << cid;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM chat WHERE client_id = :id");
-    query.bindValue(":id", id);
+    query.bindValue(":id", cid);
     query.exec();
 
     QList<Chat *> ret;
@@ -39,7 +39,7 @@ QList<Chat *> ChatMapper::select(int id)
     return ret;
 }
 
-void ChatMapper::insert(Chat *chat)
+void ChatMapper::insert(const Chat *chat) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -55,7 +55,7 @@ void ChatMapper::insert(Chat *chat)
     query.clear();
 }
 
-void ChatMapper::insert(QList<Chat *> chatList)
+void ChatMapper::insert(const QList<Chat *> chatList) const
 {
     qDebug() << "[database] chat insert chatList ...";
     for (auto chat : chatList)

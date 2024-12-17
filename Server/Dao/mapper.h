@@ -11,8 +11,11 @@ class Mapper
 public:
     Mapper(QSqlDatabase &database);
 
-    void truncate(QString tableName);
-    void Delete(QString tableName);
+    void truncate(const QString &tableName) const;
+    // truncate 速度快，无法回滚
+
+    void Delete(const QString &tableName) const;
+    // delete 速度慢，但是可以回滚
 
 protected:
     QSqlDatabase& db;

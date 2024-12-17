@@ -18,11 +18,10 @@ Mapper::Mapper(QSqlDatabase &database)
 {
 }
 
-void Mapper::truncate(QString tableName)
+void Mapper::truncate(const QString &tableName) const
 {
     QWriteLocker locker(&dbLock);
 
-    // truncate 速度快，无法回滚
     QSqlQuery query(db);
     query.prepare("TRUNCATE TABLE :name");
     query.bindValue(":name", tableName);
@@ -30,11 +29,10 @@ void Mapper::truncate(QString tableName)
     query.clear();
 }
 
-void Mapper::Delete(QString tableName)
+void Mapper::Delete(const QString &tableName) const
 {
     QWriteLocker locker(&dbLock);
 
-    // delete 速度慢，但是可以回滚
     QSqlQuery query(db);
     query.prepare("DELETE FROM :name");
     query.bindValue(":name", tableName);

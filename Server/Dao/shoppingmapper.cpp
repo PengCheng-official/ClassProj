@@ -10,7 +10,7 @@ ShoppingMapper::ShoppingMapper(QSqlDatabase &database)
 {
 }
 
-Shopping *ShoppingMapper::getShopping(const QSqlQuery &query)
+Shopping *ShoppingMapper::getShopping(const QSqlQuery &query) const
 {
     Shopping *shopping = new Shopping();
     shopping->setShoppingId(query.value(0).toInt());
@@ -21,7 +21,7 @@ Shopping *ShoppingMapper::getShopping(const QSqlQuery &query)
     return shopping;
 }
 
-QList<Shopping *> ShoppingMapper::select(const int cid)
+QList<Shopping *> ShoppingMapper::select(const int cid) const
 {
     QReadLocker locker(&dbLock);
 
@@ -39,7 +39,7 @@ QList<Shopping *> ShoppingMapper::select(const int cid)
     return ret;
 }
 
-int ShoppingMapper::select(const Shopping *shopping)
+int ShoppingMapper::select(const Shopping *shopping) const
 {
     QReadLocker locker(&dbLock);
 
@@ -57,7 +57,7 @@ int ShoppingMapper::select(const Shopping *shopping)
     return ret;
 }
 
-void ShoppingMapper::insert(const QList<Shopping *> shopList)
+void ShoppingMapper::insert(const QList<Shopping *> shopList) const
 {
     qDebug() << "[database] shopping insert shopList...";
     for (auto shopping : shopList)
@@ -66,7 +66,7 @@ void ShoppingMapper::insert(const QList<Shopping *> shopList)
     }
 }
 
-void ShoppingMapper::update(const Shopping *shopping)
+void ShoppingMapper::update(const Shopping *shopping) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -83,7 +83,7 @@ void ShoppingMapper::update(const Shopping *shopping)
     query.clear();
 }
 
-void ShoppingMapper::delet(const Shopping *shopping)
+void ShoppingMapper::delet(const Shopping *shopping) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -96,7 +96,7 @@ void ShoppingMapper::delet(const Shopping *shopping)
     query.clear();
 }
 
-void ShoppingMapper::delet(const QList<Shopping *> shoppings)
+void ShoppingMapper::delet(const QList<Shopping *> shoppings) const
 {
     qDebug() << "[database] shopping delete list...";
     for (auto shopping : shoppings)
@@ -105,7 +105,7 @@ void ShoppingMapper::delet(const QList<Shopping *> shoppings)
     }
 }
 
-void ShoppingMapper::insert(const Shopping *shopping)
+void ShoppingMapper::insert(const Shopping *shopping) const
 {
     QWriteLocker locker(&dbLock);
 

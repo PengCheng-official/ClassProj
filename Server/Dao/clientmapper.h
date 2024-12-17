@@ -11,22 +11,22 @@ public:
     ClientMapper(QSqlDatabase &database);
 
 public:
-    Client* getClient(QSqlQuery &query);
+    Client *getClient(QSqlQuery &query) const;
     //DAO层，数据转对象
 
-    QList<Client *> select(const QString &name);
+    QList<Client *> select(const QString &name) const;
     //通过用户名查找
 
-    QList<Client *> select(int id);
+    QList<Client *> select(const int id) const;
     //通过id查找
 
-    int insert(Client *client);
+    int insert(const Client *client) const;
     //插入用户
 
-    void update(const QString &name, Client *client);
+    void update(const QString &name,const Client *client) const;
     //根据用户名，修改用户信息
 
-    void update(const int id, Client *client);
+    void update(const int id,const Client *client) const;
     //根据id，修改用户信息
 };
 

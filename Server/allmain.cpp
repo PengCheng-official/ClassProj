@@ -434,6 +434,31 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         shoppingMapper->delet(shoppingList);
         break;
     }
+    case CHECKORDER:
+    {
+        // 检查库存并占用
+        QList<int> accept = {true};
+        QList<OrderList *> orderLists = ObjectToJson::parseOrderLists(socketData);
+        ProductMapper *productMapper = new ProductMapper(db);
+        for (auto orderList : orderLists)
+        {
+            Product *product = productMapper->select(orderList->getProductId())[0];
+            int num = product->getProductNum();
+            if (num < orderList->getProductNum()) {
+                accept[0] = false;
+                break;
+            }
+            product->setProductNum(num - orderList->getProductNum());
+            productMapper->update(product);
+        }
+
+        QJsonObject message;
+        ObjectToJson::addNums(message, accept);
+        ObjectToJson::addSignal(message, QString::number(CHECKORDER));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
     case CREATEORDER:
     {
         // 创建订单

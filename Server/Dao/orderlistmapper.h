@@ -11,15 +11,17 @@ public:
     OrderListMapper(QSqlDatabase &database);
 
 public:
-    OrderList *getOrderList(const QSqlQuery &query);
+    OrderList *getOrderList(const QSqlQuery &query) const;
+    //DAO层，数据转对象
 
-    QList<OrderList *> select(int oid);
-    // 返回订单oid的订单详情
+    QList<OrderList *> select(const int oid) const;
+    //通过订单oid，查找订单详情
 
-    void insert(const OrderList *orderList);
-    // 插入orderList
+    void insert(const OrderList *orderList) const;
+    //插入orderList
 
-    void insert(const QList<OrderList *> orderLists);
+    void insert(const QList<OrderList *> orderLists) const;
+    //插入多个orderList
 };
 
 #endif // ORDERLISTMAPPER_H

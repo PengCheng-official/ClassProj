@@ -469,7 +469,7 @@ void ProductPage::onConFirmBtnClicked()
             emit sigCreateFail(4); //满赠不是整数
             return;
         }
-        productMapper->update(product->getProductId(), nProduct);
+        productMapper->update(nProduct);
         refreshPage(nProduct);
         emit sigCreateFail(200); //成功
     }

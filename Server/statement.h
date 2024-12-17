@@ -19,6 +19,7 @@
 #define DELSHOPPING 20010703  //删除购物车
 #define CREATEORDER 20010801  //创建订单
 #define UPDATEORDER 20010802  //更新订单
+#define CHECKORDER 20010803 //检查库存是否充足
 #define CREATEORDERLIST 20010901  //创建订单List
 #define REQUESTORDER 20011001   //请求订单历史
 //#define RESETPWD 20010103

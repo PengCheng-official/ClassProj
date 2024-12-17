@@ -20,7 +20,9 @@ public:
     ~OrderPage();
 
 public:
-    void toCreateOrderList(int oid);
+    void createOrder();
+
+    void createOrderList(int oid);
 
 private slots:
     void onConfirmBtnClicked();

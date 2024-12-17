@@ -10,7 +10,7 @@ OrderMapper::OrderMapper(QSqlDatabase &database)
 {
 }
 
-Order *OrderMapper::getOrder(const QSqlQuery &query)
+Order *OrderMapper::getOrder(const QSqlQuery &query) const
 {
     Order *order = new Order();
     order->setOrderId(query.value(0).toInt());
@@ -23,7 +23,7 @@ Order *OrderMapper::getOrder(const QSqlQuery &query)
     return order;
 }
 
-QList<Order *> OrderMapper::select(int cid)
+QList<Order *> OrderMapper::select(const int cid) const
 {
     QReadLocker locker(&dbLock);
 
@@ -41,7 +41,7 @@ QList<Order *> OrderMapper::select(int cid)
     return ret;
 }
 
-QList<Order *> OrderMapper::select()
+QList<Order *> OrderMapper::select() const
 {
     QReadLocker locker(&dbLock);
 
@@ -58,7 +58,7 @@ QList<Order *> OrderMapper::select()
     return ret;
 }
 
-int OrderMapper::insert(const Order *order)
+int OrderMapper::insert(const Order *order) const
 {
     QWriteLocker locker(&dbLock);
 
@@ -79,7 +79,7 @@ int OrderMapper::insert(const Order *order)
     return oid;
 }
 
-void OrderMapper::update(const Order *order)
+void OrderMapper::update(const Order *order) const
 {
     QWriteLocker locker(&dbLock);
 
