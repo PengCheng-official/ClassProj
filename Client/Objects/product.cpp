@@ -65,7 +65,10 @@ void Product::applyStrategy(double &price, int &num)
     }
     case 4:
     {
-        price = _num1;
+        if (num <= _num1) price = _num2;
+        else {
+            price = _num1 * _num2 + _ProductPrice * (num - _num1);
+        }
         break;
     }
     default: break;

@@ -17,6 +17,7 @@
 #define ADDSHOPPING 20010701  //加入购物车
 #define REQUESTSHOPPING 20010702  //购物车请求
 #define DELSHOPPING 20010703  //删除购物车
+#define UPDATESHOPPING 20010704 //更新购物车
 #define CREATEORDER 20010801  //创建订单
 #define UPDATEORDER 20010802  //更新订单
 #define CHECKORDER 20010803 //检查库存是否充足

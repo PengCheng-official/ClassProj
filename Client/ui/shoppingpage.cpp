@@ -144,6 +144,7 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         spinBox->setValue(shoppingList[i]->getShoppingNum());
         spinMap[spinBox] = spinBox->value();
 
+        // 多选框响应
         connect(checkBox, &QCheckBox::stateChanged, [=](int state){
             if (state == Qt::Checked)
             {
@@ -174,9 +175,17 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
             confirmChanged();
         });
 
+        // 数量框响应
         connect(spinBox, &QSpinBox::valueChanged, [=](int value){
             selectList.removeAll({productList[i], spinMap[spinBox]});
             selectList.append({productList[i], value});
+            shoppingList[i]->setShoppingNum(value);
+            QList<Shopping *> shopList = {shoppingList[i]};
+            QJsonObject message;
+            ObjectToJson::addShoppings(message, shopList);
+            ObjectToJson::addSignal(message, QString::number(UPDATESHOPPING));
+            QByteArray array = ObjectToJson::changeJson(message);
+            emit sigSendToServer(array);
 
             if (checkBox->isChecked())
             {

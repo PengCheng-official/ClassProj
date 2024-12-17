@@ -420,6 +420,14 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         shoppingMapper->delet(shoppingList);
         break;
     }
+    case UPDATESHOPPING:
+    {
+        // 修改购物车
+        QList<Shopping *> shoppingList = ObjectToJson::parseShoppings(socketData);
+        ShoppingMapper *shoppingMapper = new ShoppingMapper(db);
+        shoppingMapper->update(shoppingList[0]);
+        break;
+    }
     case CHECKORDER:
     {
         // 检查库存并占用，增加销量
