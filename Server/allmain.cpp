@@ -114,7 +114,7 @@ Allmain::Allmain(QWidget *parent)
     // 订单历史
     _historyPage = new HistoryPage(this);
 
-//    addPageNode("首页", _homePage, ElaIconType::House);
+    addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
     addPageNode("商品详情操作", _productPage, ElaIconType::Gift);
     addPageNode("订单历史", _historyPage, ElaIconType::RectangleHistory);
@@ -123,7 +123,12 @@ Allmain::Allmain(QWidget *parent)
         switch(nodeType) {
         case ElaNavigationType::PageNode:
         {
-            if (nodeKey == _chatPage->property("ElaPageKey").toString())
+            if (nodeKey == _homePage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter home Page";
+                _homePage->refreshPage();
+            }
+            else if (nodeKey == _chatPage->property("ElaPageKey").toString())
             {
                 qDebug() << "[Allmain] enter chat online: " << clients.size();
                 _chatPage->setClientList(clients);
@@ -134,7 +139,7 @@ Allmain::Allmain(QWidget *parent)
             {
                 qDebug() << "[Allmain] enter search Page";
                 ProductMapper *productMapper = new ProductMapper(mdb);
-                _searchPage->updatePage(productMapper->selectLike(""));
+                _searchPage->updatePage(productMapper->selectLike("")); //初始化显示所有
             }
             else if (nodeKey == _productPage->property("ElaPageKey").toString())
             {
@@ -143,27 +148,8 @@ Allmain::Allmain(QWidget *parent)
             }
             else if (nodeKey == _historyPage->property("ElaPageKey").toString())
             {
-                OrderMapper *orderMapper = new OrderMapper(mdb);
-                OrderListMapper *orderListMapper = new OrderListMapper(mdb);
-
-                QList<Order *> orders = orderMapper->select();
-                QList<OrderList *> orderLists;
-                QList<Product *> products;
-                for (auto order : orders)
-                {
-                    QList<OrderList *> orderListList = orderListMapper->select(order->getOrderId());
-                    // product_id 可能为 0，表示商品已被下架
-                    for (auto orderList : orderListList)
-                    {
-                        ProductMapper *productMapper = new ProductMapper(mdb);
-                        Product *product = productMapper->select(orderList->getProductId())[0];
-                        // 用product中的 price 和 num 暂存数据
-                        product->setProductNum(orderList->getProductNum());
-                        product->setProductPrice(orderList->getProductPrice());
-                        products.append(product);
-                    }
-                }
-                _historyPage->refreshPage(orders, products);
+                qDebug() << "[Allmain] enter history Page";
+                _historyPage->refreshPage();
             }
             break;
         }
@@ -436,7 +422,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
     }
     case CHECKORDER:
     {
-        // 检查库存并占用
+        // 检查库存并占用，增加销量
         QList<int> accept = {true};
         QList<OrderList *> orderLists = ObjectToJson::parseOrderLists(socketData);
         ProductMapper *productMapper = new ProductMapper(db);
@@ -449,6 +435,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
                 break;
             }
             product->setProductNum(num - orderList->getProductNum());
+            product->setProductSales(product->getProductSales() + orderList->getProductNum());
             productMapper->update(product);
         }
 
@@ -593,7 +580,7 @@ void Allmain::startToListen()
 
 void Allmain::connectToDB()
 {
-    mdb = QSqlDatabase::addDatabase("QODBC", "main");
+    mdb = QSqlDatabase::addDatabase("QODBC", "Allmain");
     mdb.setHostName("localhost");
     mdb.setPort(3306);
     mdb.setDatabaseName("MySql");

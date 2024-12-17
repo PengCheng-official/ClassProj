@@ -566,7 +566,7 @@ void ProductPage::createActivityLayout(ElaText *activityText)
 }
 
 void ProductPage::connectToDB() {
-    db = QSqlDatabase::addDatabase("QODBC", "productPage");
+    db = QSqlDatabase::addDatabase("QODBC", "ProductPage");
     db.setHostName("localhost");
     db.setPort(3306);
     db.setDatabaseName("MySql");

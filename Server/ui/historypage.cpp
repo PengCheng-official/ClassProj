@@ -1,11 +1,15 @@
 #include "historypage.h"
 
 #include <QJsonObject>
+#include <QSqlError>
 
 #include "../objects/client.h"
 #include "../objects/product.h"
 #include "../objects/order.h"
 #include "../objects/orderlist.h"
+#include "../dao/productmapper.h"
+#include "../dao/ordermapper.h"
+#include "../dao/orderlistmapper.h"
 #include "../objecttojson.h"
 #include "../statement.h"
 
@@ -24,6 +28,7 @@ HistoryPage::HistoryPage(QWidget* parent)
     centralWidget->setWindowTitle("订单历史");
     addCentralWidget(centralWidget, true, true, 0);
     centerLayout = new QVBoxLayout(centralWidget);
+    connectToDB();
 }
 
 HistoryPage::~HistoryPage()
@@ -64,9 +69,47 @@ void HistoryPage::clearPage(int left)
     }
 }
 
-void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
+void HistoryPage::connectToDB()
+{
+    db = QSqlDatabase::addDatabase("QODBC", "HistoryPage");
+    db.setHostName("localhost");
+    db.setPort(3306);
+    db.setDatabaseName("MySql");
+    db.setUserName("root");
+    db.setPassword("pengcheng_050210");
+    if(!db.open()) {
+        qDebug() << "[database] Failed to connect to db: " << db.lastError();
+        return;
+    }
+    qDebug() << "[database] Connected to MySql";
+}
+
+void HistoryPage::refreshPage()
 {
     initPage();
+    // 从数据库获得数据
+    OrderMapper *orderMapper = new OrderMapper(db);
+    OrderListMapper *orderListMapper = new OrderListMapper(db);
+
+    QList<Order *> orders = orderMapper->select();
+    QList<OrderList *> orderLists;
+    QList<Product *> products;
+    for (auto order : orders)
+    {
+        QList<OrderList *> orderListList = orderListMapper->select(order->getOrderId());
+        // product_id 可能为 0，表示商品已被下架
+        for (auto orderList : orderListList)
+        {
+            ProductMapper *productMapper = new ProductMapper(db);
+            Product *product = productMapper->select(orderList->getProductId())[0];
+            // 用product中的 price 和 num 暂存数据
+            product->setProductNum(orderList->getProductNum());
+            product->setProductPrice(orderList->getProductPrice());
+            products.append(product);
+        }
+    }
+
+    // 刷新页面
     int i = 0;
     if (orders.size() == 0)
     {

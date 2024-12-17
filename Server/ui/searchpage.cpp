@@ -178,7 +178,7 @@ void SearchPage::onSearchBtnClicked()
 
 void SearchPage::connectToDB()
 {
-    db = QSqlDatabase::addDatabase("QODBC", "searchPage");
+    db = QSqlDatabase::addDatabase("QODBC", "SearchPage");
     db.setHostName("localhost");
     db.setPort(3306);
     db.setDatabaseName("MySql");

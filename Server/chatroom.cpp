@@ -183,7 +183,7 @@ void ChatRoom::resizeEvent(QResizeEvent *event)
 
 void ChatRoom::connectToDB()
 {
-    db = QSqlDatabase::addDatabase("QODBC", "chatroom");
+    db = QSqlDatabase::addDatabase("QODBC", "ChatRoom");
     db.setHostName("localhost");
     db.setPort(3306);
     db.setDatabaseName("MySql");
