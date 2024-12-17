@@ -1,9 +1,12 @@
 #include "historypage.h"
 
+#include <QJsonObject>
+
 #include "../objects/client.h"
 #include "../objects/product.h"
 #include "../objects/order.h"
 #include "../objects/orderlist.h"
+#include "../objecttojson.h"
 #include "../statement.h"
 
 #include <QVBoxLayout>
@@ -39,7 +42,7 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
     if (orders.size() == 0)
     {
         ElaScrollPageArea* orderArea = new ElaScrollPageArea(this);
-        orderArea->setFixedHeight(65);
+        orderArea->setFixedHeight(60);
         ElaText *noContent = new ElaText("还没买过东西，快去逛逛吧~", 18, orderArea);
         QHBoxLayout *orderLayout = new QHBoxLayout(orderArea);
         orderLayout->addWidget(noContent);
@@ -50,7 +53,7 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
     for (auto order : orders)
     {
         ElaScrollPageArea* orderArea = new ElaScrollPageArea(this);
-        orderArea->setFixedHeight(65);
+        orderArea->setFixedHeight(55);
         ElaText *finishTime = new ElaText(order->getFinishTime(), 16, orderArea);
         ElaText *totPrice = new ElaText("小计 ￥"+QString::number(order->getTotalPrice())+" | 共"+QString::number(order->getProductNum())+"件", 17, orderArea);
         ElaText *orderStatus = new ElaText("状态："+order->getOrderStatus(), 17, orderArea);
@@ -61,6 +64,22 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
         returnBtn->setLightHoverColor(redHover);
         returnBtn->setLightPressColor(redPress);
         returnBtn->setLightTextColor(Qt::white);
+        if (order->getOrderStatus() == "已退款") {
+            returnBtn->setEnabled(false);
+            returnBtn->setText("已退款");
+        }
+        connect(returnBtn, &QPushButton::clicked, [=](){
+            order->setOrderStatus("已退款");
+            QList<Order *> orderList = {order};
+            QJsonObject message;
+            ObjectToJson::addOrders(message, orderList);
+            ObjectToJson::addSignal(message, QString::number(UPDATEORDER));
+            QByteArray array = ObjectToJson::changeJson(message);
+            emit sigSendToServer(array);
+
+            returnBtn->setEnabled(false);
+            returnBtn->setText("已退款");
+        });
 
         QHBoxLayout *orderLayout = new QHBoxLayout(orderArea);
         orderLayout->addWidget(finishTime);
@@ -93,15 +112,12 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
             about->setStyleSheet("color: rgb(75, 75, 75);");
 
             ElaText *price = new ElaText(productArea);
-            double nprice = product->getProductPrice(); int nnum = product->getProductNum();
-            product->applyStrategy(nprice, nnum);
-            price->setText("小计 ￥" + QString::number(nprice * nnum));
+            price->setText("小计 ￥" + QString::number(product->getProductPrice()));
             price->setTextStyle(ElaTextType::Subtitle);
             price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
 
             ElaText *numText = new ElaText(productArea);
-            if (product->getProductNum() == nnum) numText->setText("共"+QString::number(nnum)+"件");
-            else numText->setText("共"+QString::number(nnum)+"件 (赠"+QString::number(nnum - product->getProductNum())+"件)");
+            numText->setText("共"+QString::number(product->getProductNum())+"件");
             numText->setStyleSheet("font-size: 16px;");
 
             QVBoxLayout *textLayout = new QVBoxLayout();
@@ -126,4 +142,5 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
         i += order->getProductNum();
         centerLayout->addSpacing(15);
     }
+    centerLayout->addStretch();
 }

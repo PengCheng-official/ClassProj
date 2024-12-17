@@ -132,6 +132,7 @@ void Allmain::initAllMain(Client *cClient)
 
     // 订单历史界面
     _historyPage = new HistoryPage(client, this);
+    connect(_historyPage, &HistoryPage::sigSendToServer, this, &Allmain::onSendToServer);
 
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
