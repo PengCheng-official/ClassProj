@@ -523,7 +523,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         break;
     }
     default:
-        qDebug() << QString("[thread_%1]|[database] ERROR:unknown signal").arg(threadName);
+        qDebug() << QString("[thread_%1]|[database] ERROR: Unknown signal").arg(threadName) << signal;
         break;
     }
 

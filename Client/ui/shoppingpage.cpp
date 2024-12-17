@@ -60,9 +60,10 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
         connect(orderPage, &OrderPage::sigRefreshPage, this, &ShoppingPage::initPage);
         connect(orderPage, &OrderPage::sigRefreshPage, this, &ShoppingPage::sigRefreshPage);
         connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrderId, orderPage, &OrderPage::createOrderList);
+        connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrder, orderPage, &OrderPage::createOrder);
         connect(orderPage, &OrderPage::closeButtonClicked, [=](){
             orderPage->window()->close();
-            delete orderPage;
+            delete orderPage;   // disconnect()
         });
     });
 }

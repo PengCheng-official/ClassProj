@@ -58,5 +58,6 @@ private slots:
 
 signals:
     void sigCreateOrderId(int oid);
+    void sigCreateOrder();
 };
 #endif // ALLMAIN_H

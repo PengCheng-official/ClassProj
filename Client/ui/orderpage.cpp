@@ -120,9 +120,6 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
     confirmBtn->setLightTextColor(Qt::white);
     confirmBtn->setStyleSheet("font-size: 15px;");
     connect(confirmBtn, &QPushButton::clicked, this, &OrderPage::onConfirmBtnClicked);
-    connect(confirmBtn, &QPushButton::clicked, [=](){
-        payDialog->exec();
-    });
 
     QHBoxLayout *confirmLayout = new QHBoxLayout();
     confirmLayout->addSpacing(30);
@@ -140,6 +137,28 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
 OrderPage::~OrderPage()
 {
     delete order;
+}
+
+void OrderPage::onConfirmBtnClicked()
+{
+    // 检查库存是否充足，并占用库存（实现秒杀活动）
+    orderLists.clear();
+    for (int i = 0; i < selectList.size(); ++i)
+    {
+        auto [product, num] = selectList[i];
+        double nprice = product->getProductPrice(); int nnum = num;
+        product->applyStrategy(nprice, nnum);
+        OrderList *orderList = new OrderList;
+        orderList->setProductId(product->getProductId());
+        orderList->setProductNum(nnum);
+        orderLists.append(orderList);
+    }
+
+    QJsonObject message;
+    ObjectToJson::addSignal(message, QString::number(CHECKORDER));
+    ObjectToJson::addOrderLists(message, orderLists);
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
 }
 
 void OrderPage::createOrder()
@@ -172,29 +191,7 @@ void OrderPage::createOrder()
     emit sigSendToServer(array1);
     emit sigRefreshPage();
     QThread::msleep(100);
-
-}
-
-void OrderPage::onConfirmBtnClicked()
-{
-    // 检查库存是否充足，并占用库存（实现秒杀活动）
-    orderLists.clear();
-    for (int i = 0; i < selectList.size(); ++i)
-    {
-        auto [product, num] = selectList[i];
-        double nprice = product->getProductPrice(); int nnum = num;
-        product->applyStrategy(nprice, nnum);
-        OrderList *orderList = new OrderList;
-        orderList->setProductId(product->getProductId());
-        orderList->setProductNum(nnum);
-        orderLists.append(orderList);
-    }
-
-    QJsonObject message;
-    ObjectToJson::addSignal(message, QString::number(CREATEORDERLIST));
-    ObjectToJson::addOrderLists(message, orderLists);
-    QByteArray array = ObjectToJson::changeJson(message);
-    emit sigSendToServer(array);
+    payDialog->exec();
 }
 
 void OrderPage::createOrderList(int oid)

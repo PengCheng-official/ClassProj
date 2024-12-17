@@ -405,8 +405,19 @@ void Allmain::dealMessage(QByteArray message)
         _historyPage->refreshPage(orders, products);
         break;
     }
+    case CHECKORDER:
+    {
+        // 返回库存是否充足
+        int ok = ObjectToJson::parseNums(message)[0];
+        if (!ok) ElaMessageBar::error(ElaMessageBarType::BottomRight, "下单失败", "商品库存不足", 2000, this);
+        else {
+            ElaMessageBar::success(ElaMessageBarType::BottomRight, "下单成功", "", 2000, this);
+            emit sigCreateOrder();
+        }
+        break;
+    }
     default:
-        qDebug() << "[Allmain] ERROR: Unknown signal";
+        qDebug() << "[Allmain] ERROR: Unknown signal" << signal;
         break;
     }
 }
