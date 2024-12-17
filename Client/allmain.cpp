@@ -248,7 +248,13 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
     if (socketState == QAbstractSocket::UnconnectedState)
     {
         // 断开连接了
-        QWidget *currentWidget = qApp->activeWindow();  // 获取当前窗口
+        QWidget *currentWidget = nullptr;
+        foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+            if (widget->isVisible()) {
+                currentWidget = widget;
+                break;  // 找到第一个可见的窗口
+            }
+        }
         // 各窗口处理办法
         if (currentWidget == logIn)
         {
@@ -258,14 +264,15 @@ void Allmain::onStateChanged(QAbstractSocket::SocketState socketState)
         {
             signIn->unconnected();
         }
-        else if (currentWidget == this)
+        else if (currentWidget != nullptr)
         {
-//            this->unconnected();
+            // 主页面异常则跳转登录界面
+            currentWidget->hide();
+            logIn->show();
+            logIn->unconnected();
         }
         else
         {
-            // 异常则跳转登录界面
-            currentWidget->hide();
             logIn->show();
             logIn->unconnected();
         }

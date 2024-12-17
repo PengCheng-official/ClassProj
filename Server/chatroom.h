@@ -24,7 +24,7 @@ class ChatRoom : public ElaWidget
     Q_OBJECT
 
 public:
-    explicit ChatRoom(Client *cClient, QWidget *parent = nullptr);
+    explicit ChatRoom(Client *cClient, bool isOnline = true, QWidget *parent = nullptr);
     ~ChatRoom();
 
     void initHistory();
@@ -47,11 +47,11 @@ private:
     QGridLayout *mainLayout;
     Client* client;
     ElaContentDialog* _closeDialog{nullptr};
+    bool IsOnline;
 
 private slots:
-    void on_returnBtn_clicked();
-
-    void on_sendBtn_clicked();
+    void onReturnBtnClicked();
+    void onSendBtnClicked();
 
 signals:
     void sigSendToClient(QByteArray array);

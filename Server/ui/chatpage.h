@@ -3,6 +3,7 @@
 
 
 #include "ElaScrollPage.h"
+#include <QSqlDatabase>
 
 class Client;
 class ElaToggleSwitch;
@@ -19,6 +20,7 @@ public:
     void setClientList(QList<Client *> &cClientList);
 
 private:
+    QSqlDatabase db;
     QList<Client *> clientList;
     ElaToggleSwitch* _toggleSwitch{nullptr};
     QWidget* centralWidget;
@@ -26,6 +28,8 @@ private:
 
 protected:
     void mouseReleaseEvent(QMouseEvent* event) override;
+
+    void connectToDB();
 
 signals:
     void sigLockBtn();

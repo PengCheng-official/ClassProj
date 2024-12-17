@@ -1,4 +1,4 @@
-﻿#ifndef ELACONTENTDIALOG_H
+#ifndef ELACONTENTDIALOG_H
 #define ELACONTENTDIALOG_H
 #include <QAbstractNativeEventFilter>
 #include <QDialog>
@@ -24,6 +24,8 @@ public:
     void setMiddleButtonText(QString text);
     void setRightButtonText(QString text);
     void isLeftButtonVisible(bool visible);
+    void isMiddleButtonVisible(bool visible);
+    void isRightButtonVisible(bool visible);
 Q_SIGNALS:
     Q_SIGNAL void leftButtonClicked();
     Q_SIGNAL void middleButtonClicked();

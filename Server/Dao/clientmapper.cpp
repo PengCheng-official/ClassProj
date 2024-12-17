@@ -28,7 +28,7 @@ QList<Client *> ClientMapper::select(const QString &name) const
 {
     QReadLocker locker(&dbLock);
 
-    qDebug() << "[database] client select...";
+    qDebug() << "[database] client select..." << name;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM client WHERE client_name = :name");
     query.bindValue(":name", name);
@@ -46,10 +46,27 @@ QList<Client *> ClientMapper::select(const int id) const
 {
     QReadLocker locker(&dbLock);
 
-    qDebug() << "[database] client select...";
+    qDebug() << "[database] client select..." << id;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM client WHERE client_id = :id");
     query.bindValue(":id", id);
+    query.exec();
+
+    QList<Client *> ret;
+    while(query.next()) {
+        ret.push_back(getClient(query));
+    }
+    query.clear();
+    return ret;
+}
+
+QList<Client *> ClientMapper::select() const
+{
+    QReadLocker locker(&dbLock);
+
+    qDebug() << "[database] client select... all";
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM client");
     query.exec();
 
     QList<Client *> ret;

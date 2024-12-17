@@ -1,7 +1,12 @@
 #include "chatpage.h"
+
 #include <QMouseEvent>
+#include <QSqlError>
+
 #include "chatroom.h"
 #include "../objects/client.h"
+#include "../dao/clientmapper.h"
+
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QVBoxLayout>
@@ -12,7 +17,6 @@
 #include "ElaToggleSwitch.h"
 #include "ElaPushButton.h"
 
-
 int ChatPage::restMsg = 0;
 ChatPage::ChatPage(QWidget *parent)
     : ElaScrollPage(parent)
@@ -22,6 +26,7 @@ ChatPage::ChatPage(QWidget *parent)
     centralWidget = new QWidget(this);
     centralWidget->setWindowTitle("联系在线卖家");
     addCentralWidget(centralWidget, true, true, 0);
+    connectToDB();
 }
 
 ChatPage::~ChatPage()
@@ -58,16 +63,65 @@ void ChatPage::setClientList(QList<Client *> &cClientList)
         centerLayout->addWidget(clientArea);
     }
 
+    QMap<Client *, int> clientMap;
     for (auto client : clientList)
     {
+        clientMap[client] = 1;
+
         ElaScrollPageArea* clientArea = new ElaScrollPageArea(this);
         QHBoxLayout* clientLayout = new QHBoxLayout(clientArea);
-        ElaText *uid = new ElaText("UID："+QString::number(client->getClientId()), this);
+        ElaText *uid = new ElaText("在线： UID："+QString::number(client->getClientId()), this);
         uid->setTextPixelSize(17);
-        uid->setFixedWidth(100);
+        uid->setFixedWidth(200);
         ElaText *name = new ElaText("名称："+client->getClientName(), this);
         name->setTextPixelSize(17);
-        name->setFixedWidth(150);
+        name->setFixedWidth(250);
+        clientLayout->addWidget(uid);
+        clientLayout->addWidget(name);
+        clientLayout->addStretch();
+
+        ElaPushButton* connectBtn = new ElaPushButton("联系他", this);
+        connect(connectBtn, &QPushButton::clicked, [=](){
+            emit sigLockBtn();
+            chatRoom = new ChatRoom(client);
+            chatRoom->show();
+            connect(this, &ChatPage::sigReceiveMessage, chatRoom, &ChatRoom::receiveMessage);
+            connect(chatRoom, &ChatRoom::sigSendToClient, [=](QByteArray array){
+                emit sigSendToClient(client, array);
+            });
+            connect(chatRoom, &ChatRoom::sigUnlocked, [=]{
+                qDebug() << "[chatPage] sigUnlocked";
+                emit sigUnlockBtn();
+            });
+        });
+        connect(this, &ChatPage::sigLockBtn, [=](){
+            qDebug() << "[chatPage] locked";
+            connectBtn->setEnabled(false);
+        });
+        connect(this, &ChatPage::sigUnlockBtn, [=](){
+            qDebug() << "[chatPage] unlocked";
+            connectBtn->setEnabled(true);
+        });
+
+        clientLayout->addWidget(connectBtn);
+        clientLayout->addSpacing(10);
+        centerLayout->addWidget(clientArea);
+    }
+
+    ClientMapper *clientMapper = new ClientMapper(db);
+    QList<Client *> clients = clientMapper->select();
+    for (auto client : clients)
+    {
+        if (clientMap[client]) continue;
+
+        ElaScrollPageArea* clientArea = new ElaScrollPageArea(this);
+        QHBoxLayout* clientLayout = new QHBoxLayout(clientArea);
+        ElaText *uid = new ElaText("离线： UID："+QString::number(client->getClientId()), this);
+        uid->setTextPixelSize(17);
+        uid->setFixedWidth(200);
+        ElaText *name = new ElaText("名称："+client->getClientName(), this);
+        name->setTextPixelSize(17);
+        name->setFixedWidth(250);
         clientLayout->addWidget(uid);
         clientLayout->addWidget(name);
         clientLayout->addStretch();
@@ -131,4 +185,19 @@ void ChatPage::mouseReleaseEvent(QMouseEvent *event)
     }
     }
     ElaScrollPage::mouseReleaseEvent(event);
+}
+
+void ChatPage::connectToDB()
+{
+    db = QSqlDatabase::addDatabase("QODBC", "ChatPage");
+    db.setHostName("localhost");
+    db.setPort(3306);
+    db.setDatabaseName("MySql");
+    db.setUserName("root");
+    db.setPassword("pengcheng_050210");
+    if(!db.open()) {
+        qDebug() << "[database] Failed to connect to db: " << db.lastError();
+        return;
+    }
+    qDebug() << "[database] Connected to MySql";
 }

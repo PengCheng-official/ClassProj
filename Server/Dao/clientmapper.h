@@ -20,6 +20,9 @@ public:
     QList<Client *> select(const int id) const;
     //通过id查找
 
+    QList<Client *> select() const;
+    //查找全部
+
     int insert(const Client *client) const;
     //插入用户
 

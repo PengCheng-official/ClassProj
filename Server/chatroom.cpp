@@ -24,10 +24,11 @@
 #include "ElaTheme.h"
 #include "ElaContentDialog.h"
 
-ChatRoom::ChatRoom(Client *cClient, QWidget *parent) :
+ChatRoom::ChatRoom(Client *cClient, bool isOnline, QWidget *parent) :
     ElaWidget(parent),
     ui(new Ui::ChatRoom),
-    client(cClient)
+    client(cClient),
+    IsOnline(isOnline)
 {
     ui->setupUi(this);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
@@ -123,14 +124,13 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
 
 }
 
-void ChatRoom::on_sendBtn_clicked()
+void ChatRoom::onSendBtnClicked()
 {
     // 处理信息并展示
     QString msg = ui->textEdit->toPlainText();
     ui->textEdit->setPlainText("");
     QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()); //时间戳
 
-//    SetConsoleOutputCP(CP_UTF8);
     qDebug() << "[chatroom] send message: " << msg;
     qDebug() << "[chatroom] send time: " << QDateTime::fromSecsSinceEpoch(time.toLongLong());
     dealMessageTime(time);
@@ -146,14 +146,16 @@ void ChatRoom::on_sendBtn_clicked()
     chatMapper->insert(chat);
 
     // 发送信息
-    QList<Chat *> chatList;
-    chatList.append(chat);
-
-    QJsonObject message;
-    ObjectToJson::addChats(message, chatList);
-    ObjectToJson::addSignal(message, QString::number(CHATMSG));    //向 Client 发送信息
-    QByteArray array = ObjectToJson::changeJson(message);
-    emit sigSendToClient(array);
+    if (IsOnline)
+    {
+        QList<Chat *> chatList;
+        chatList.append(chat);
+        QJsonObject message;
+        ObjectToJson::addChats(message, chatList);
+        ObjectToJson::addSignal(message, QString::number(CHATMSG));    //向 Client 发送信息
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(array);
+    }
 }
 
 void ChatRoom::receiveMessage(Chat* chatMsg)
@@ -196,7 +198,7 @@ void ChatRoom::connectToDB()
     qDebug() << "[database] Connected to MySql";
 }
 
-void ChatRoom::on_returnBtn_clicked()
+void ChatRoom::onReturnBtnClicked()
 {
     this->hide();
     ui->textEdit->clear();
