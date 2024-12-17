@@ -155,12 +155,12 @@ Allmain::~Allmain()
     delete ui;
 }
 
-void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t threadName)
+void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString threadName)
 {
     qDebug() << QString("[thread_%1]|[server] deal with message ...").arg(threadName);
 
     QSqlDatabase db;
-    db = QSqlDatabase::addDatabase("QODBC", QString::number(threadName));
+    db = QSqlDatabase::addDatabase("QODBC", threadName);
     db.setHostName("localhost");
     db.setPort(3306);
     db.setDatabaseName("MySql");
@@ -206,10 +206,10 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     }
     case SIGNIN:
     {
-        QList<Client*> clientList = ObjectToJson::parseClients(socketData);
+        QList<Client *> clientList = ObjectToJson::parseClients(socketData);
         client = new Client(*clientList[0]);
         ClientMapper *clientMapper = new ClientMapper(db);
-        QList<Client*> dbClient = clientMapper->select(client->getClientName());
+        QList<Client *> dbClient = clientMapper->select(client->getClientName());
 
         QJsonObject message;
         if (dbClient.size() > 0) {
@@ -222,9 +222,8 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
             QString salt = generateRandomSalt(16);
             client->setClientSalt(salt);
             client->setClientPwd(sha256Hash(rawPasswd, salt));
-            clientMapper->insert(client);
+            clientList[0]->setClientId(clientMapper->insert(client));
             ObjectToJson::addSignal(message, QString::number(SIGNIN));    //注册成功
-            clientList[0] = dbClient[0];
         }
         ObjectToJson::addClients(message, clientList);
         QByteArray array = ObjectToJson::changeJson(message);
@@ -239,7 +238,6 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         ChatMapper *chatMapper = new ChatMapper(db);
         QList<Chat *> chatList = chatMapper->select(id);
         qDebug() << QString("[thread_%1]|[server] request chat history for Client%2").arg(threadName).arg(id);
-        qDebug() << chatList.size();
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(CHATHISTORY));
@@ -411,7 +409,6 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
     {
         // 创建订单
         Order *order = ObjectToJson::parseOrders(socketData)[0];
-        qDebug() << order->getCreateTime() << order->getFinishTime();
         OrderMapper *orderMapper = new OrderMapper(db);
         QList<int> oids = {orderMapper->insert(order)};
 
@@ -438,8 +435,41 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, size_t thr
         orderMapper->update(order);
         break;
     }
+    case REQUESTORDER:
+    {
+        // 请求订单历史
+        client = ObjectToJson::parseClients(socketData)[0];
+        OrderMapper *orderMapper = new OrderMapper(db);
+        OrderListMapper *orderListMapper = new OrderListMapper(db);
+
+        QList<Order *> orders = orderMapper->select(client->getClientId());
+        QList<OrderList *> orderLists;
+        QList<Product *> products;
+        for (auto order : orders)
+        {
+            QList<OrderList *> orderListList = orderListMapper->select(order->getOrderId());
+            // product_id 可能为 0，表示商品已被下架
+            for (auto orderList : orderListList)
+            {
+                ProductMapper *productMapper = new ProductMapper(db);
+                Product *product = productMapper->select(orderList->getProductId())[0];
+                // 用product中的 price 和 num 暂存数据
+                product->setProductNum(orderList->getProductNum());
+                product->setProductPrice(orderList->getProductPrice());
+                products.append(product);
+            }
+        }
+
+        QJsonObject message;
+        ObjectToJson::addOrders(message, orders);
+        ObjectToJson::addProducts(message, products);
+        ObjectToJson::addSignal(message, QString::number(REQUESTORDER));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
     default:
-        qDebug() << QString("[thread_%1]|[database] unknown signal").arg(threadName);
+        qDebug() << QString("[thread_%1]|[database] ERROR:unknown signal").arg(threadName);
         break;
     }
 
@@ -482,15 +512,17 @@ void Allmain::onNewConnection()
             {
                 QByteArray buffer;
                 buffer = socket->readAll();
+                int cnt = 0;
                 while (buffer.contains("\r\n"))
                 {
                     int index = buffer.indexOf("\r\n");
                     QByteArray completeMsg = buffer.left(index); // 提取完整消息
                     buffer.remove(0, index + 2);
-                    dealMessage(socket, completeMsg, this->threadPool->getThreadName());
+                    QString threadName = QString::number(this->threadPool->getThreadName())+"_"+QString::number(cnt++);
+                    dealMessage(socket, completeMsg, threadName);
+                    QSqlDatabase::removeDatabase(threadName);
                 }
             }
-            QSqlDatabase::removeDatabase(QString::number(this->threadPool->getThreadName()));
         });
     });
     sockets.append(socket);

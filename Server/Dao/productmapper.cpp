@@ -49,7 +49,8 @@ QList<Product *> ProductMapper::selectRand()
     qDebug() << "[database] product select rand... ";
     QSqlQuery query(db);
     do {
-        query.prepare("SELECT DISTINCT * FROM product ORDER BY RAND() LIMIT 2;");
+        // 限制随机选择不会选择到 id=0 的商品
+        query.prepare("SELECT DISTINCT * FROM product WHERE product_id != 0 ORDER BY RAND() LIMIT 2;");
         query.exec();
 
         while(query.next()) {
@@ -61,14 +62,14 @@ QList<Product *> ProductMapper::selectRand()
     return ret;
 }
 
-QList<Product *> ProductMapper::select(const int id)
+QList<Product *> ProductMapper::select(const int pid)
 {
     QReadLocker locker(&dbLock);
 
-    qDebug() << "[database] product select... " << id;
+    qDebug() << "[database] product select... " << pid;
     QSqlQuery query(db);
     query.prepare("SELECT * FROM product WHERE product_id = :id");
-    query.bindValue(":id", id);
+    query.bindValue(":id", pid);
     query.exec();
 
     QList<Product *> ret;

@@ -43,6 +43,7 @@ private:
 signals:
     void sigSendToServer(QByteArray array);
     void sigSendMessageBar(bool success, QString Title, QString subTitle = "");
+    void sigRefreshPage();
 };
 
 #endif // ORDERPAGE_H

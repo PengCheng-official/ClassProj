@@ -74,6 +74,7 @@ void SearchPage::refreshPage(QList<Product *> productList)
         qDebug() << "[searchPage] found:" << productList.size();
         for (auto product : productList)
         {
+            if (product->getProductId() == 0) continue;
             ElaScrollPageArea* productArea = new ElaScrollPageArea(centralWidget);
             productArea->setFixedHeight(160);
             QHBoxLayout* productLayout = new QHBoxLayout(productArea);

@@ -28,7 +28,7 @@ private:
     double deltaPrice;
     int checkNum;
     QMap<ElaSpinBox *, int> spinMap;
-    QList<QPair<Product *, int> > selectList;
+    QList<QPair<Product *, int>> selectList;
 
 signals:
     void sigRefreshPage();

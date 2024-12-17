@@ -7,8 +7,7 @@ ThreadPool::ThreadPool(size_t threads)
     :   stop(false), thread_name(next_thread_name.fetch_add(1))
 {
     for(size_t i = 0;i<threads;++i)
-        workers.emplace_back(
-                    [this]
+        workers.emplace_back([this]
         {
             for(;;)
             {

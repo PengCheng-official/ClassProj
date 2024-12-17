@@ -13,6 +13,9 @@ public:
 public:
     Order *getOrder(const QSqlQuery &query);
 
+    QList<Order *> select(int cid);
+    // 返回用户cid的全部
+
     int insert(const Order *order);
     // 返回订单号
 

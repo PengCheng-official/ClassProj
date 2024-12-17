@@ -110,6 +110,7 @@ QJsonObject ObjectToJson::addOrders(QJsonObject &object, QList<Order *> orders)
     for (int i=0;i<size;i++) {
         objectList[i].insert("OrderId", orders[i]->getOrderId());
         objectList[i].insert("ClientId", orders[i]->getClientId());
+        objectList[i].insert("ProductNum", orders[i]->getProductNum());
         objectList[i].insert("TotalPrice", orders[i]->getTotalPrice());
         objectList[i].insert("OrderStatus", orders[i]->getOrderStatus());
         objectList[i].insert("CreateTime", orders[i]->getCreateTime());
@@ -137,41 +138,6 @@ QJsonObject ObjectToJson::addOrderLists(QJsonObject &object, QList<OrderList *> 
     object.insert("OrderLists", QJsonValue(array));
     return object;
 }
-
-//QJsonObject ObjectToJson::integrateOrderList(QJsonObject &object, QList<Order *> OrderList)
-//{
-////    QJsonObject object;
-//    QJsonObject* objectList;
-//    QJsonArray array;
-//    int size = OrderList.size();
-//    objectList = new QJsonObject[size];
-//        for (int i=0;i<size;i++) {
-//            objectList[i].insert("orderId",OrderList[i]->getOrderId());
-//            objectList[i].insert("orderProductName",OrderList[i]->getOrderProductName());
-//            objectList[i].insert("orderProductNum",OrderList[i]->getOrderProductNum());
-//            objectList[i].insert("orderProductStyle",OrderList[i]->getOrderProductStyle());
-//            objectList[i].insert("orderProductId",OrderList[i]->getOrderProductId());
-//            objectList[i].insert("orderCost",OrderList[i]->getOrderCost());
-//            objectList[i].insert("orderTime",OrderList[i]->getOrderTime().toString());
-//            objectList[i].insert("orderClient",OrderList[i]->getOrderClient());
-//            objectList[i].insert("orderClientId",OrderList[i]->getOrderClientId());
-//            objectList[i].insert("orderCheck",OrderList[i]->getOrderCheck());
-//            objectList[i].insert("orderHide",OrderList[i]->getOrderHide());
-//            array.append(objectList[i]);
-//        }
-////    object.insert("signal",signal);
-//    object.insert("OrderList",QJsonValue(array));
-//    return object;
-//}
-
-//QJsonObject ObjectToJson::integrateObjects(QJsonObject &object, int number, QString string)
-//{
-//    //    QJsonObject object;
-//    //    object.insert("signal",signal);
-//    object.insert("number",number);
-//    object.insert("string",string);
-//    return object;
-//}
 
 QJsonObject ObjectToJson::addStrings(QJsonObject &object, QList<QString> strings)
 {
@@ -471,6 +437,10 @@ QList<Order *> ObjectToJson::parseOrders(QByteArray byteArray)
                                 QJsonValue object = jsonObject.value("ClientId");
                                 order->setClientId(object.toVariant().toInt());
                             }
+                            if(jsonObject.contains("ProductNum")){
+                                QJsonValue object = jsonObject.value("ProductNum");
+                                order->setProductNum(object.toVariant().toInt());
+                            }
                             if(jsonObject.contains("TotalPrice")){
                                 QJsonValue object = jsonObject.value("TotalPrice");
                                 order->setTotalPrice(object.toVariant().toDouble());
@@ -548,78 +518,6 @@ QList<OrderList *> ObjectToJson::parseOrderLists(QByteArray byteArray)
     return orderLists;
 }
 
-//QList<Order *> ObjectToJson::parseOrder(QByteArray byteArray)
-//{
-//    QJsonParseError jsonError;
-//    QList<Order*> orderList;
-//    QJsonDocument doucment = QJsonDocument::fromJson(byteArray, &jsonError);
-//    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)){
-//           if (doucment.isObject()){
-//                QJsonObject object = doucment.object();
-//                if(object.contains("OrderList")){
-//                    QJsonValue value = object.value("OrderList");
-//                    if(value.isArray()){
-//                        QJsonArray array = value.toArray();
-//                        int size = array.size();
-//                        for(int i=0;i<size;i++){
-//                            if(array[i].isObject()){
-//                                QJsonObject orderObject = array[i].toObject();
-//                                Order * order = new Order;
-//                                if(orderObject.contains("orderProductName")){
-//                                    QJsonValue object = orderObject.value("orderProductName");
-//                                    order->setOrderProductName(object.toString());
-//                                }
-//                                if(orderObject.contains("orderId")){
-//                                    QJsonValue object = orderObject.value("orderId");
-//                                    order->setOrderId(object.toVariant().toInt());
-//                                }
-//                                if(orderObject.contains("orderProductId")){
-//                                    QJsonValue object = orderObject.value("orderProductId");
-//                                    order->setOrderProductId(object.toVariant().toInt());
-//                                }
-//                                if(orderObject.contains("orderProductNum")){
-//                                    QJsonValue object = orderObject.value("orderProductNum");
-//                                    order->setOrderProductNum(object.toVariant().toInt());
-//                                }
-//                                if(orderObject.contains("orderProductStyle")){
-//                                    QJsonValue object = orderObject.value("orderProductStyle");
-//                                    order->setOrderProductStyle(object.toString());
-//                                }
-//                                if(orderObject.contains("orderTime")){
-//                                    QJsonValue object = orderObject.value("orderTime");
-//                                    order->setOrderTime(QDateTime::currentDateTime());
-//                                }
-//                                if(orderObject.contains("orderCost")){
-//                                    QJsonValue object = orderObject.value("orderCost");
-//                                    order->setOrderCost(object.toString());
-//                                }
-//                                if(orderObject.contains("orderClient")){
-//                                    QJsonValue object = orderObject.value("orderClient");
-//                                    order->setOrderClient(object.toString());
-//                                }
-//                                if(orderObject.contains("orderClientId")){
-//                                    QJsonValue object = orderObject.value("orderClientId");
-//                                    order->setOrderClientId(object.toVariant().toInt());
-//                                }
-//                                if(orderObject.contains("orderCheck")){
-//                                    QJsonValue object = orderObject.value("orderCheck");
-//                                    order->setOrderCheck(object.toVariant().toInt());
-//                                }
-//                                if(orderObject.contains("orderHide")){
-//                                    QJsonValue object = orderObject.value("orderHide");
-//                                    order->setOrderHide(object.toVariant().toInt());
-//                                }
-//                                orderList.append(order);
-//                            }
-//                        }
-//                    }
-//                }
-//           }
-//    }return orderList;
-//}
-
-
-
 QList<int> ObjectToJson::parseNums(QByteArray byteArray)
 {
     QList<int> ret;
@@ -642,25 +540,6 @@ QList<int> ObjectToJson::parseNums(QByteArray byteArray)
     }
     return ret;
 }
-
-//void ObjectToJson::parseObjects(QByteArray byteArray)
-//{
-//    QJsonParseError jsonError;
-//    QJsonDocument doucment = QJsonDocument::fromJson(byteArray, &jsonError);
-//    if (!doucment.isNull() && (jsonError.error == QJsonParseError::NoError)){
-//        if (doucment.isObject()){
-//            QJsonObject object = doucment.object();
-//            if(object.contains("number")){
-//                QJsonValue value = object.value("number");
-//                number = value.toVariant().toInt();
-//            }
-//            if(object.contains("string")){
-//                QJsonValue value = object.value("string");
-//                string = value.toString();
-//            }
-//        }
-//    }
-//}
 
 QList<QString> ObjectToJson::parseStrings(QByteArray byteArray)
 {

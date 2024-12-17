@@ -55,7 +55,7 @@ protected:
     QString sha256Hash(const QString &data, const QString &salt);
     //生成SHA-256哈希加密算法
 
-    void dealMessage(QTcpSocket* socket, QByteArray &message, size_t threadName);
+    void dealMessage(QTcpSocket* socket, QByteArray &message, QString threadName);
     //服务端处理socket通讯
 
 public slots:

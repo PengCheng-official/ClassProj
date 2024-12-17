@@ -19,6 +19,7 @@
 #include "ui/searchpage.h"
 #include "ui/homepage.h"
 #include "ui/shoppingpage.h"
+#include "ui/historypage.h"
 #include "ElaContentDialog.h"
 #include "ElaMessageBar.h"
 
@@ -129,9 +130,13 @@ void Allmain::initAllMain(Client *cClient)
         onSendToServer(array);
     });
 
+    // 订单历史界面
+    _historyPage = new HistoryPage(client, this);
+
     addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
     addPageNode("我的购物车", _shoppingPage, ElaIconType::CartShopping);
+    addPageNode("我的订单历史", _historyPage, ElaIconType::RectangleHistoryCircleUser);
     addFooterNode("官方客服", nullptr, _chatKey, 0, ElaIconType::Comments);
     addFooterNode("我的信息", _personPage, _personKey, 0, ElaIconType::User);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
@@ -165,6 +170,16 @@ void Allmain::initAllMain(Client *cClient)
                 QJsonObject message;
                 ObjectToJson::addClients(message, clientList);
                 ObjectToJson::addSignal(message, QString::number(REQUESTSHOPPING));
+                QByteArray array = ObjectToJson::changeJson(message);
+                onSendToServer(array);
+            }
+            else if (nodeKey == _historyPage->property("ElaPageKey").toString())
+            {
+                qDebug() << "[Allmain] enter history Page...";
+                QList<Client *> clientList = {client};
+                QJsonObject message;
+                ObjectToJson::addClients(message, clientList);
+                ObjectToJson::addSignal(message, QString::number(REQUESTORDER));
                 QByteArray array = ObjectToJson::changeJson(message);
                 onSendToServer(array);
             }
@@ -381,5 +396,16 @@ void Allmain::dealMessage(QByteArray message)
         emit sigCreateOrderId(oid);
         break;
     }
+    case REQUESTORDER:
+    {
+        // 接收订单历史
+        QList<Order *> orders = ObjectToJson::parseOrders(message);
+        QList<Product *> products = ObjectToJson::parseProducts(message);
+        _historyPage->refreshPage(orders, products);
+        break;
+    }
+    default:
+        qDebug() << "[Allmain] ERROR: Unknown signal";
+        break;
     }
 }

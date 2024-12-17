@@ -17,7 +17,7 @@ public:
 
     QList<Product *> selectRand();
 
-    QList<Product *> select(const int id);
+    QList<Product *> select(const int pid);
 
     QList<Product *> select(const QString &name);
 

@@ -9,6 +9,7 @@ class Order
 {
 PROPERTY_CREATE_H(int, OrderId);
 PROPERTY_CREATE_H(int, ClientId);
+PROPERTY_CREATE_H(int, ProductNum);
 PROPERTY_CREATE_H(double, TotalPrice);
 PROPERTY_CREATE_H(QString, OrderStatus);
 // ENUM{'未支付', '已支付', '已完成', '已取消', '已退款'}

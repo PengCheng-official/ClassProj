@@ -40,6 +40,7 @@ SOURCES += \
     objecttojson.cpp \
     signin.cpp \
     ui/basepage.cpp \
+    ui/historypage.cpp \
     ui/homepage.cpp \
     ui/orderpage.cpp \
     ui/personpage.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     signin.h \
     statement.h \
     ui/basepage.h \
+    ui/historypage.h \
     ui/homepage.h \
     ui/orderpage.h \
     ui/personpage.h \

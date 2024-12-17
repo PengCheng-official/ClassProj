@@ -89,8 +89,7 @@ void ShoppingMapper::delet(const Shopping *shopping)
 
     qDebug() << "[database] shopping delete...";
     QSqlQuery query(db);
-    query.prepare("DELETE FROM shopping \
-                  WHERE client_id = :cid AND product_id = :pid;");
+    query.prepare("DELETE FROM shopping WHERE client_id=:cid AND product_id=:pid;");
     query.bindValue(":cid", shopping->getClientId());
     query.bindValue(":pid", shopping->getProductId());
     query.exec();

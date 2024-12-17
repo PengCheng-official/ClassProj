@@ -51,15 +51,16 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
             emit sigSendMessageBar(false, "结算失败", "至少单次下单1种商品");
             return;
         }
+        qDebug() << "[shoppingPage] enter orderPage:" << selectList.size();
         OrderPage *orderPage = new OrderPage(client, selectList);
         orderPage->moveToCenter();
         orderPage->show();
         connect(orderPage, &OrderPage::sigSendToServer, this, &ShoppingPage::sigSendToServer);
         connect(orderPage, &OrderPage::sigSendMessageBar, this, &ShoppingPage::sigSendMessageBar);
+        connect(orderPage, &OrderPage::sigRefreshPage, this, &ShoppingPage::sigRefreshPage);
         connect(qobject_cast<Allmain*>(parent), &Allmain::sigCreateOrderId, [=](int oid){
             orderPage->toCreateOrderList(oid);
         });
-        //TODO: 返回
     });
 }
 
@@ -155,7 +156,9 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
                 -- checkNum;
                 double nprice = productList[i]->getProductPrice(); int nnum = shoppingList[i]->getShoppingNum();
                 productList[i]->applyStrategy(nprice, nnum);
-                selectList.removeAll({productList[i], spinBox->value()});
+                selectList.removeIf([=](const QPair<Product *, int>& pair){
+                    return pair.first == productList[i];
+                });
                 // 促销价格
                 double delta = (productList[i]->getProductPrice() - nprice);
                 delta = qFloor(delta * 100) / 100.0;

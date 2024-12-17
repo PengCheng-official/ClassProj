@@ -17,6 +17,7 @@ class HomePage;
 class PersonPage;
 class SearchPage;
 class ShoppingPage;
+class HistoryPage;
 class Allmain : public ElaWindow
 {
     Q_OBJECT
@@ -36,6 +37,7 @@ private:
     QString _personKey{""};
     SearchPage *_searchPage;
     ShoppingPage *_shoppingPage;
+    HistoryPage *_historyPage;
 
 public:
     Allmain(QWidget *parent = nullptr);

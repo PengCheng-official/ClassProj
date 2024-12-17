@@ -20,6 +20,24 @@ OrderList *OrderListMapper::getOrderList(const QSqlQuery &query)
     return orderList;
 }
 
+QList<OrderList *> OrderListMapper::select(int oid)
+{
+    QReadLocker locker(&dbLock);
+
+    qDebug() << "[database] orderList select..." << oid;
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM `orderlist` WHERE order_id=:oid");
+    query.bindValue(":oid", oid);
+    query.exec();
+
+    QList<OrderList *> ret;
+    while (query.next()) {
+        ret.push_back(getOrderList(query));
+    }
+    query.clear();
+    return ret;
+}
+
 void OrderListMapper::insert(const OrderList *orderList)
 {
     QWriteLocker locker(&dbLock);

@@ -60,7 +60,7 @@ QList<Client *> ClientMapper::select(int id)
     return ret;
 }
 
-void ClientMapper::insert(Client *client)
+int ClientMapper::insert(Client *client)
 {
     QWriteLocker locker(&dbLock);
 
@@ -77,6 +77,10 @@ void ClientMapper::insert(Client *client)
     query.bindValue(":image", client->getClientImage());
     query.exec();
     query.clear();
+
+    int cid = query.lastInsertId().toInt();
+    query.clear();
+    return cid;
 }
 
 void ClientMapper::update(const QString &name, Client *client)

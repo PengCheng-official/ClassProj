@@ -138,11 +138,14 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
 
 OrderPage::~OrderPage()
 {
+    delete order;
 }
 
 void OrderPage::onConfirmBtnClicked()
 {
     // 下单，同时清楚购物车
+    qDebug() << selectList.size();
+    order->setProductNum(selectList.size());
     order->setTotalPrice(totPrice);
     order->setFinishTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     QList<Order *> orders = {order};
@@ -166,11 +169,13 @@ void OrderPage::onConfirmBtnClicked()
     ObjectToJson::addSignal(message1, QString::number(DELSHOPPING));
     QByteArray array1 = ObjectToJson::changeJson(message1);
     emit sigSendToServer(array1);
+    emit sigRefreshPage();
     QThread::msleep(100);
 }
 
 void OrderPage::toCreateOrderList(int oid)
 {
+    order->setOrderId(oid);
     orderLists.clear();
     for (int i = 0; i < selectList.size(); ++i)
     {
@@ -201,6 +206,7 @@ void OrderPage::onRightBtnClicked()
     emit sigSendMessageBar(true, "订单已完成");
 
     setWindowTitle("订单状态：已完成");
+    confirmBtn->setText("已完成");
     confirmBtn->setEnabled(false);
 }
 
@@ -217,5 +223,6 @@ void OrderPage::onMiddleBtnClicked()
     emit sigSendMessageBar(false, "订单已取消");
 
     setWindowTitle("订单状态：已取消");
+    confirmBtn->setText("已取消");
     confirmBtn->setEnabled(false);
 }

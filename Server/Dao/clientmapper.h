@@ -20,7 +20,7 @@ public:
     QList<Client *> select(int id);
     //通过id查找
 
-    void insert(Client *client);
+    int insert(Client *client);
     //插入用户
 
     void update(const QString &name, Client *client);
