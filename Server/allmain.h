@@ -13,6 +13,7 @@ class HomePage;
 class ChatPage;
 class SearchPage;
 class ProductPage;
+class HistoryPage;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Allmain; }
@@ -41,6 +42,7 @@ private:
     ChatPage *_chatPage{nullptr};
     SearchPage *_searchPage{nullptr};
     ProductPage *_productPage{nullptr};
+    HistoryPage *_historyPage{nullptr};
 
 protected:
     void startToListen();

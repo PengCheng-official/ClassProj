@@ -33,6 +33,7 @@
 #include "ui/homepage.h"
 #include "ui/searchpage.h"
 #include "ui/productpage.h"
+#include "ui/historypage.h"
 
 QReadWriteLock dbLock;
 Allmain::Allmain(QWidget *parent)
@@ -110,9 +111,13 @@ Allmain::Allmain(QWidget *parent)
        }
     });
 
+    // 订单历史
+    _historyPage = new HistoryPage(this);
+
 //    addPageNode("首页", _homePage, ElaIconType::House);
     addPageNode("搜索商品", _searchPage, ElaIconType::MagnifyingGlass);
     addPageNode("商品详情操作", _productPage, ElaIconType::Gift);
+    addPageNode("订单历史", _historyPage, ElaIconType::RectangleHistory);
     addPageNode("联系卖家", _chatPage, ElaIconType::Comments);
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
         switch(nodeType) {
@@ -135,6 +140,30 @@ Allmain::Allmain(QWidget *parent)
             {
                 qDebug() << "[Allmain] enter product Page << empty";
                 _productPage->refreshPage();
+            }
+            else if (nodeKey == _historyPage->property("ElaPageKey").toString())
+            {
+                OrderMapper *orderMapper = new OrderMapper(mdb);
+                OrderListMapper *orderListMapper = new OrderListMapper(mdb);
+
+                QList<Order *> orders = orderMapper->select();
+                QList<OrderList *> orderLists;
+                QList<Product *> products;
+                for (auto order : orders)
+                {
+                    QList<OrderList *> orderListList = orderListMapper->select(order->getOrderId());
+                    // product_id 可能为 0，表示商品已被下架
+                    for (auto orderList : orderListList)
+                    {
+                        ProductMapper *productMapper = new ProductMapper(mdb);
+                        Product *product = productMapper->select(orderList->getProductId())[0];
+                        // 用product中的 price 和 num 暂存数据
+                        product->setProductNum(orderList->getProductNum());
+                        product->setProductPrice(orderList->getProductPrice());
+                        products.append(product);
+                    }
+                }
+                _historyPage->refreshPage(orders, products);
             }
             break;
         }

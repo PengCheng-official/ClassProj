@@ -2,14 +2,17 @@
 #define HISTORYPAGE_H
 
 
-#include "basepage.h"
+#include "ElaScrollPage.h"
+#include <QSqlDatabase>
 
+class Product;
 class Order;
-class HistoryPage : public BasePage
+class QVBoxLayout;
+class HistoryPage : public ElaScrollPage
 {
     Q_OBJECT
 public:
-    explicit HistoryPage(Client *cClient, QWidget* parent = nullptr);
+    explicit HistoryPage(QWidget* parent = nullptr);
     ~HistoryPage();
 
     void refreshPage(QList<Order *> orders, QList<Product *> products);
@@ -17,6 +20,16 @@ public:
 
 private:
     void initPage();
+
+    void clearPage(int left);
+
+    void connectToDB();
+
+private:
+    QSqlDatabase db;
+    QWidget *centralWidget;
+    QVBoxLayout *centerLayout;
+
 };
 
 #endif // HISTORYPAGE_H

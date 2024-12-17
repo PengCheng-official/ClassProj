@@ -62,8 +62,13 @@ void ChatPage::setClientList(QList<Client *> &cClientList)
     {
         ElaScrollPageArea* clientArea = new ElaScrollPageArea(this);
         QHBoxLayout* clientLayout = new QHBoxLayout(clientArea);
-        ElaText* name = new ElaText(client->getClientName(), this);
-        name->setTextPixelSize(15);
+        ElaText *uid = new ElaText("UID："+QString::number(client->getClientId()), this);
+        uid->setTextPixelSize(17);
+        uid->setFixedWidth(100);
+        ElaText *name = new ElaText("名称："+client->getClientName(), this);
+        name->setTextPixelSize(17);
+        name->setFixedWidth(150);
+        clientLayout->addWidget(uid);
         clientLayout->addWidget(name);
         clientLayout->addStretch();
 

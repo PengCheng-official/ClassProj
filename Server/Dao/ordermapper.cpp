@@ -41,6 +41,23 @@ QList<Order *> OrderMapper::select(int cid)
     return ret;
 }
 
+QList<Order *> OrderMapper::select()
+{
+    QReadLocker locker(&dbLock);
+
+    qDebug() << "[database] order select... all";
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM `order`");
+    query.exec();
+
+    QList<Order *> ret;
+    while (query.next()) {
+        ret.push_back(getOrder(query));
+    }
+    query.clear();
+    return ret;
+}
+
 int OrderMapper::insert(const Order *order)
 {
     QWriteLocker locker(&dbLock);

@@ -27,14 +27,13 @@ public slots:
     void onSearchBtnClicked();
 
 private:
+    QSqlDatabase db;
     QWidget *centralWidget;
     QVBoxLayout *mainLayout;
     ElaLineEdit *searchEdit;
     ElaPushButton *searchBtn;
-    QSqlDatabase db;
 
 signals:
-    void sigSendToServer(QByteArray array);
     void sigTurnToProduct(Product *product);
 };
 

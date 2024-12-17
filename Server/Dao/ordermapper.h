@@ -14,7 +14,10 @@ public:
     Order *getOrder(const QSqlQuery &query);
 
     QList<Order *> select(int cid);
-    // 返回用户cid的全部
+    // 返回用户cid的全部订单
+
+    QList<Order *> select();
+    // 返回全部订单
 
     int insert(const Order *order);
     // 返回订单号

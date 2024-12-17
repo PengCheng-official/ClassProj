@@ -48,6 +48,7 @@ SOURCES += \
     objecttojson.cpp \
     ui/basepage.cpp \
     ui/chatpage.cpp \
+    ui/historypage.cpp \
     ui/homepage.cpp \
     ui/productpage.cpp \
     ui/searchpage.cpp
@@ -76,6 +77,7 @@ HEADERS += \
     statement.h \
     ui/basepage.h \
     ui/chatpage.h \
+    ui/historypage.h \
     ui/homepage.h \
     ui/productpage.h \
     ui/searchpage.h
