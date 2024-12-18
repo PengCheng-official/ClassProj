@@ -105,6 +105,9 @@ Allmain::Allmain(QWidget *parent)
        case 4:
            ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "活动设置非法", 2000, this);
            break;
+       case 5:
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "简介字数过多", 2000, this);
+           break;
        case 200:
            ElaMessageBar::success(ElaMessageBarType::BottomRight, "更改成功", "", 2000, this);
            break;

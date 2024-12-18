@@ -427,6 +427,10 @@ void ProductPage::onConFirmBtnClicked()
             }
         }
         if (aboutEdit->toPlainText() != "") {
+            if (aboutEdit->toPlainText().length() > 30) {
+                emit sigCreateFail(5);
+                return;
+            }
             nProduct->setProductAbout(aboutEdit->toPlainText());
         }
         if ((_edit1->text() != "" && !IsNum(_edit1->text()))
