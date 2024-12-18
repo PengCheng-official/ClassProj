@@ -73,10 +73,11 @@ Allmain::Allmain(QWidget *parent)
     // 搜索界面
     _searchPage = new SearchPage(this);
     connect(_searchPage, &SearchPage::sigTurnToProduct, [=](Product *product){
-//        emit navigationNodeClicked(ElaNavigationType::PageNode, _productPage->property("ElaPageKey").toString());
+//        emit ElaWindow::navigationNodeClicked(ElaNavigationType::PageNode, _productPage->property("ElaPageKey").toString());
+        navigation(_productPage->property("ElaPageKey").toString());
+        _productPage->refreshPage(product);
         _searchPage->hide();
         _productPage->show();
-        _productPage->refreshPage(product);
     });
 
     // 商品界面

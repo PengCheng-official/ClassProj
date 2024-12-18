@@ -111,8 +111,6 @@ ProductPage::ProductPage(QWidget* parent)
     _edit2 = new QLineEdit(this);
     _edit1->setFixedSize(40, 36);
     _edit2->setFixedSize(40, 36);
-    _edit1->setClearButtonEnabled(false);
-    _edit2->setClearButtonEnabled(false);
     _edit1->setAlignment(Qt::AlignCenter);
     _edit2->setAlignment(Qt::AlignCenter);
     activityLayouts[0] = new QHBoxLayout();
@@ -207,8 +205,8 @@ void ProductPage::initPage(Product *pProduct)
         numEdit->setPlaceholderText("  " + QString::number(product->getProductNum()));
         strategyBox->setCurrentIndex(product->getStrategy());
         onCurrentIndexChanged(product->getStrategy());
-        _edit1->setText(QString::number(product->getStrategy1()));
-        _edit1->setText(QString::number(product->getStrategy2()));
+        _edit1->setPlaceholderText(QString::number(product->getStrategy1()));
+        _edit2->setPlaceholderText(QString::number(product->getStrategy2()));
         aboutEdit->setPlainText(product->getProductAbout());
         confirmBtn->setText("确认修改");
         deleteBtn->show();
@@ -220,8 +218,6 @@ void ProductPage::onCurrentIndexChanged(int cur)
     // 11
     centerLayout->removeItem(centerLayout->itemAt(11));
     centerLayout->insertLayout(11, activityLayouts[cur]);
-    _edit1->setClearButtonEnabled(false);
-    _edit2->setClearButtonEnabled(false);
 
     switch (cur) {
     case 0:
@@ -490,8 +486,6 @@ void ProductPage::onDeleteBtnClicked()
 
 void ProductPage::createActivityLayout(ElaText *activityText)
 {
-    _edit1->setClearButtonEnabled(false);
-    _edit2->setClearButtonEnabled(false);
     activityLayouts[0]->addStretch();
     activityLayouts[0]->addWidget(activityText);
     activityLayouts[0]->addSpacing(11);
