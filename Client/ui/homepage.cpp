@@ -85,9 +85,9 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     add1->setLightTextColor(Qt::white);
     // 加入购物车
     connect(add1, &QPushButton::clicked, [=](){
-        Shopping *shopping = new Shopping(client->getClientId(), id1, 1, price1->text().mid(1).toDouble());
+        Shopping *shopping = new Shopping(client->getClientId(), _id1, 1, _price1);
         QList<Shopping *> shopList = {shopping};
-        qDebug() << "[homePage] add shopping:" << id1 << name1->text();
+        qDebug() << "[homePage] add shopping:" << _id1 << name1->text();
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
@@ -140,9 +140,9 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     add2->setLightTextColor(Qt::white);
     // 加入购物车
     connect(add2, &QPushButton::clicked, [=](){
-        Shopping *shopping = new Shopping(client->getClientId(), id2, 1, price2->text().mid(1).toDouble());
+        Shopping *shopping = new Shopping(client->getClientId(), _id2, 1, _price2);
         QList<Shopping *> shopList = {shopping};
-        qDebug() << "[homePage] add shopping:" << id2 << name2->text();
+        qDebug() << "[homePage] add shopping:" << _id2 << name2->text();
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(ADDSHOPPING));
@@ -193,14 +193,16 @@ HomePage::~HomePage()
 
 void HomePage::refreshPage(QList<Product *> proList)
 {
-    id1 = proList[0]->getProductId();
-    qDebug() << "[homePage] product:" << id1;
+    _id1 = proList[0]->getProductId();
+    _price1 = proList[0]->getProductPrice();
+    qDebug() << "[homePage] product:" << _id1;
     image1->setPixmap(QPixmap(proList[0]->getProductImage()));
     name1->setText(proList[0]->getProductName());
     makePriceText(price1, proList[0]);
 
-    id2 = proList[1]->getProductId();
-    qDebug() << "[homePage] product:" << id2;
+    _id2 = proList[1]->getProductId();
+    _price2 = proList[1]->getProductPrice();
+    qDebug() << "[homePage] product:" << _id2;
     image2->setPixmap(QPixmap(proList[1]->getProductImage()));
     name2->setText(proList[1]->getProductName());
     makePriceText(price2, proList[1]);

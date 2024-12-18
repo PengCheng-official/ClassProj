@@ -32,8 +32,10 @@ private:
     ElaText *price2;
     ElaPushButton *add1;
     ElaPushButton *add2;
-    int id1;
-    int id2;
+    int _id1;
+    int _id2;
+    double _price1;
+    double _price2;
     QVBoxLayout *textLayout1;
     QVBoxLayout *textLayout2;
     ElaPushButton *changeBtn;

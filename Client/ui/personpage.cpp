@@ -206,7 +206,7 @@ void PersonPage::initPage(Client *cClient)
     }
 
     if (client->getClientEmail() == "") {
-        phoneEdit->setPlaceholderText("    请输入你的邮箱");
+        emailEdit->setPlaceholderText("    请输入你的邮箱");
     } else {
         emailEdit->setPlaceholderText("    " + client->getClientEmail());
     }

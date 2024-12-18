@@ -97,8 +97,6 @@ ProductPage::ProductPage(QWidget* parent)
     strategyBox->setStyleSheet("font-size: 14px;");
     connect(strategyBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &ProductPage::onCurrentIndexChanged);
-    //    strategyBox->setCurrentIndex(product->getStrategy() - '0');
-    //    product->setStrategy(strategyBox->currentlndex())
     QHBoxLayout *strategyLayout = new QHBoxLayout();
     strategyLayout->addStretch();
     strategyLayout->addWidget(strategyText);
@@ -303,12 +301,14 @@ void ProductPage::onConFirmBtnClicked()
 {
     auto IsNum = [=](const QString &str) {
         bool ok;
-        str.toDouble(&ok);
+        double d = str.toDouble(&ok);
+        ok = d >= 0;
         return ok;
     };
     auto IsInt = [=](const QString &str) {
         bool ok;
-        str.toInt(&ok);
+        int d = str.toInt(&ok);
+        ok = d >= 0;
         return ok;
     };
     if (IsNew)

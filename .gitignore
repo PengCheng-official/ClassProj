@@ -1,0 +1,5 @@
+# Ignore QMake folder
+build-Client-Desktop_Qt_6_5_3_MinGW_64_bit-Debug/
+build-Client-Desktop_Qt_6_5_3_MinGW_64_bit-Release/
+build-Server-Desktop_Qt_6_5_3_MinGW_64_bit-Debug/
+build-Server-Desktop_Qt_6_5_3_MinGW_64_bit-Release/

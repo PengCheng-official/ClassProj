@@ -30,7 +30,7 @@ QList<Product *> ProductMapper::selectLike(const QString &name) const
 
     qDebug() << "[database] product select... " << name;
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM product WHERE product_name LIKE :name");
+    query.prepare("SELECT * FROM product WHERE product_name LIKE :name OR product_about LIKE :name");
     query.bindValue(":name", '%' + name + '%');
     query.exec();
 

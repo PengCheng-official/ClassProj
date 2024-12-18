@@ -11,7 +11,7 @@ public:
     ChatMapper(QSqlDatabase &database);
 
 public:
-    Chat *getChat(QSqlQuery &query) const;
+    Chat *getChat(QSqlQuery &query)const;
     //DAO层，数据转对象
 
     QList<Chat *> select(const int cid) const;
