@@ -10,6 +10,7 @@ class QVBoxLayout;
 class ElaLineEdit;
 class ElaComboBox;
 class ElaPushButton;
+class QLineEdit;
 class ElaPlainTextEdit;
 class ProductPage : public ElaScrollPage
 {
@@ -37,8 +38,8 @@ private:
     ElaPushButton *imageBtn;
     QString imagePath{""};
     ElaPlainTextEdit *aboutEdit;
-    ElaLineEdit *_edit1;
-    ElaLineEdit *_edit2;
+    QLineEdit *_edit1;
+    QLineEdit *_edit2;
     ElaText *_text1;
     ElaText *_text2;
     ElaText *_text3;

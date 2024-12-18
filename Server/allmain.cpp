@@ -88,13 +88,13 @@ Allmain::Allmain(QWidget *parent)
            ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "未设置名称", 2000, this);
            break;
        case 11:
-           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "价格不是浮点数", 2000, this);
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "价格设置非法", 2000, this);
            break;
        case 10:
            ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "未设置价格", 2000, this);
            break;
        case 21:
-           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "库存不是整数", 2000, this);
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "库存设置非法", 2000, this);
            break;
        case 20:
            ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "未设置库存", 2000, this);
@@ -103,7 +103,7 @@ Allmain::Allmain(QWidget *parent)
            ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "活动请输入数字", 2000, this);
            break;
        case 4:
-           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "活动输入非法", 2000, this);
+           ElaMessageBar::error(ElaMessageBarType::BottomRight, "更改失败", "活动设置非法", 2000, this);
            break;
        case 200:
            ElaMessageBar::success(ElaMessageBarType::BottomRight, "更改成功", "", 2000, this);

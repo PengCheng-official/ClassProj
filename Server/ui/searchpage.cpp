@@ -27,6 +27,7 @@ SearchPage::SearchPage(QWidget* parent)
     searchEdit->setFixedSize(500, 45);
     searchEdit->setPlaceholderText("  搜索商品名称");
     searchEdit->setStyleSheet("font-size: 16px;");
+    connect(searchEdit, &QLineEdit::returnPressed, this, &SearchPage::onSearchBtnClicked);
 
     searchBtn = new ElaPushButton("搜索", this);
     searchBtn->setFixedSize(70, 45);

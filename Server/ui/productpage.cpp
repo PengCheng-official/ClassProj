@@ -107,12 +107,14 @@ ProductPage::ProductPage(QWidget* parent)
 
     // 活动 初始化
     ElaText *activityText = new ElaText("活动:", 18, this);
-    _edit1 = new ElaLineEdit(this);
-    _edit2 = new ElaLineEdit(this);
+    _edit1 = new QLineEdit(this);
+    _edit2 = new QLineEdit(this);
     _edit1->setFixedSize(40, 36);
     _edit2->setFixedSize(40, 36);
     _edit1->setClearButtonEnabled(false);
     _edit2->setClearButtonEnabled(false);
+    _edit1->setAlignment(Qt::AlignCenter);
+    _edit2->setAlignment(Qt::AlignCenter);
     activityLayouts[0] = new QHBoxLayout();
     activityLayouts[1] = new QHBoxLayout();
     activityLayouts[2] = new QHBoxLayout();

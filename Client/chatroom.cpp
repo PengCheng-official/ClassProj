@@ -116,7 +116,7 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
 
 }
 
-void ChatRoom::on_sendBtn_clicked()
+void ChatRoom::onSendBtnClicked()
 {
     // 处理信息并展示
     QString msg = ui->textEdit->toPlainText();
@@ -172,7 +172,7 @@ void ChatRoom::resizeEvent(QResizeEvent *event)
     }
 }
 
-void ChatRoom::on_returnBtn_clicked()
+void ChatRoom::onReturnBtnClicked()
 {
     this->hide();
     ui->textEdit->clear();

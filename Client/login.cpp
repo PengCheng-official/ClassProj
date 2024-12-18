@@ -52,6 +52,7 @@ LogIn::LogIn(QWidget *parent) :
     linePassWord->setEchoMode(QLineEdit::Password);
     linePassWord->setStyleSheet("font-size: 15px;");
     linePassWord->setPlaceholderText("请输入密码");
+    connect(linePassWord, &QLineEdit::returnPressed, this, &LogIn::onLoginBtnClicked);
 
     wrongEdit2 = new ElaText(this);
     wrongEdit2->setFixedSize(270, 20);

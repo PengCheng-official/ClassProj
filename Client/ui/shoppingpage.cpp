@@ -177,8 +177,6 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 
         // 数量框响应
         connect(spinBox, &QSpinBox::valueChanged, [=](int value){
-            selectList.removeAll({productList[i], spinMap[spinBox]});
-            selectList.append({productList[i], value});
             shoppingList[i]->setShoppingNum(value);
             QList<Shopping *> shopList = {shoppingList[i]};
             QJsonObject message;
@@ -189,6 +187,10 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 
             if (checkBox->isChecked())
             {
+                selectList.removeIf([=](const QPair<Product *, int>& pair){
+                    return pair.first == productList[i];
+                });
+                selectList.append({productList[i], value});
                 // 被选中了，更新价格
                 double nprice = productList[i]->getProductPrice(); int nnum = spinMap[spinBox];
                 productList[i]->applyStrategy(nprice, nnum);
