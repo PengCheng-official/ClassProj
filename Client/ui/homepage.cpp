@@ -68,7 +68,7 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     image1->setScaledContents(true);
 
     name1 = new ElaText(productArea1);
-    name1->setFixedWidth(180);
+    name1->setFixedWidth(160);
     name1->setText(client->getClientName());
     name1->setTextStyle(ElaTextType::Title);
 

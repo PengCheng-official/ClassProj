@@ -99,10 +99,9 @@ void HomePage::refreshPage()
         if (product->getProductId() == 0) continue;
         int sales = product->getProductSales();
         QPieSlice *pieSlice = new QPieSlice(product->getProductName(), (double)(sales)/sumSales);
-        pieSlice->setLabelVisible(true);
+        if (sales) pieSlice->setLabelVisible(true);
         pieSeries->append(pieSlice);
     }
-    pieSeries->setLabelsVisible(true);
     pieSeries->setVerticalPosition(0.55);
     pieChart->addSeries(pieSeries);
     pieChart->setTitle("各商品销量占比图");

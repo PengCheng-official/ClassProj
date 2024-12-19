@@ -28,7 +28,7 @@ Allmain::Allmain(QWidget *parent)
     , ui(new Ui::Allmain)
 {
     ui->setupUi(this);
-    resize(1100, 660);
+    resize(1050, 720);
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
     setWindowIcon(QIcon(":/Resource/allmain_icon.png"));

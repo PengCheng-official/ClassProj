@@ -188,11 +188,13 @@ void ProductPage::initPage(Product *pProduct)
     {
         IsNew = true;
         product = nullptr;
+        imagePath = "";
         nameEdit->setPlaceholderText("  输入商品名称");
         priceEdit->setPlaceholderText("  输入商品价格");
         numEdit->setPlaceholderText("  输入商品库存量");
         strategyBox->setCurrentIndex(0);
         aboutEdit->setPlaceholderText("  输入商品简介");
+        aboutEdit->setPlainText("");
         confirmBtn->setText("确认新增");
         deleteBtn->hide();
     }
@@ -200,6 +202,7 @@ void ProductPage::initPage(Product *pProduct)
     {
         IsNew = false;
         product = pProduct;
+        imagePath = product->getProductImage();
         nameEdit->setPlaceholderText("  " + product->getProductName());
         priceEdit->setPlaceholderText("  " + QString::number(formatNum(product->getProductPrice())));
         numEdit->setPlaceholderText("  " + QString::number(product->getProductNum()));
@@ -347,6 +350,10 @@ void ProductPage::onConFirmBtnClicked()
             return;
         }
         if (aboutEdit->toPlainText() != "") {
+            if (aboutEdit->toPlainText().length() > 30) {
+                emit sigCreateFail(5);
+                return;
+            }
             nProduct->setProductAbout(aboutEdit->toPlainText());
         }
         if ((_edit1->text() != "" && !IsNum(_edit2->text()))
