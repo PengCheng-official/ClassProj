@@ -1,7 +1,6 @@
 #include "chatroom.h"
 #include "ui_chatroom.h"
 
-
 #include <QHostAddress>
 #include <QSqlError>
 
@@ -68,7 +67,7 @@ void ChatRoom::initHistory()
     for (auto chatMsg : chatList)
     {
         QString time = QString::number(QDateTime::fromString(chatMsg->getChatTime(), "yyyy-MM-dd hh:mm:ss").toSecsSinceEpoch());
-        QString msg = chatMsg->getChatText() + " l";
+        QString msg = chatMsg->getChatText();
         qDebug() << msg << " " << time;
 
         if (!chatMsg->getChatIsserver())
@@ -92,6 +91,7 @@ void ChatRoom::initHistory()
 
 void ChatRoom::dealMessage(QNChatMessage *messageW, QListWidgetItem *item, QString text, QString time, QNChatMessage::User_Type type)
 {
+    text += " ";
     messageW->setFixedWidth(this->width());
     QSize size = messageW->fontRect(text);
     item->setSizeHint(size);
@@ -124,20 +124,19 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
 
 }
 
-void ChatRoom::onSendBtnClicked()
+void ChatRoom::on_sendBtn_clicked()
 {
     // 处理信息并展示
     QString msg = ui->textEdit->toPlainText();
     ui->textEdit->setPlainText("");
     QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch()); //时间戳
 
-    qDebug() << "[chatroom] send message: " << msg;
-    qDebug() << "[chatroom] send time: " << QDateTime::fromSecsSinceEpoch(time.toLongLong());
+    qDebug() << "[chatroom] send message: " << msg << QDateTime::fromSecsSinceEpoch(time.toLongLong());
     dealMessageTime(time);
 
     QNChatMessage* messageW = new QNChatMessage(ui->listWidget->parentWidget());
     QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-    dealMessage(messageW, item, msg+" l", time, QNChatMessage::User_Me);
+    dealMessage(messageW, item, msg, time, QNChatMessage::User_Me);
     messageW->setTextSuccess();
 
     // 存聊天信息
@@ -145,9 +144,9 @@ void ChatRoom::onSendBtnClicked()
     ChatMapper *chatMapper = new ChatMapper(db);
     chatMapper->insert(chat);
 
-    // 发送信息
     if (IsOnline)
     {
+        // 发送信息
         QList<Chat *> chatList;
         chatList.append(chat);
         QJsonObject message;
@@ -198,7 +197,7 @@ void ChatRoom::connectToDB()
     qDebug() << "[database] Connected to MySql";
 }
 
-void ChatRoom::onReturnBtnClicked()
+void ChatRoom::on_returnBtn_clicked()
 {
     this->hide();
     ui->textEdit->clear();

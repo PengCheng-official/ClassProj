@@ -28,10 +28,10 @@ ShoppingPage::ShoppingPage(Client *cClient, QWidget* parent)
     centerLayout = new QVBoxLayout(centralWidget);
 
     totPrice = deltaPrice = 0;
-    totText = new ElaText("共计 ￥" + QString::number(totPrice), 18, this);
+    totText = new ElaText("共计 ￥" + QString::number(formatNum(totPrice)), 18, this);
     totText->setTextStyle(ElaTextType::Title);
 
-    deltaText = new ElaText("已省 ￥" + QString::number(deltaPrice), 14, this);
+    deltaText = new ElaText("已省 ￥" + QString::number(formatNum(deltaPrice)), 14, this);
     deltaText->setTextStyle(ElaTextType::Subtitle);
 
     confirmBtn = new ElaPushButton("去结算", this);
@@ -121,11 +121,11 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
         double changePrice = nprice - shoppingList[i]->getShoppingPrice();
         ElaText *num = new ElaText(productArea);
         if (changePrice > 0) {
-            num->setText("价格变动: +" + QString::number(changePrice));
+            num->setText("价格变动: +" + QString::number(formatNum(changePrice)));
             num->setStyleSheet("color: red;");
         }
         else {
-            num->setText("价格变动: " + QString::number(changePrice));
+            num->setText("价格变动: " + QString::number(formatNum(changePrice)));
             num->setStyleSheet("color: green;");
         }
         num->setTextStyle(ElaTextType::Body);
@@ -253,6 +253,6 @@ void ShoppingPage::refreshPage(QList<Product *> productList, QList<Shopping *> s
 
 void ShoppingPage::confirmChanged()
 {
-    totText->setText("共计 ￥" + QString::number(totPrice));
-    deltaText->setText("已省 ￥" + QString::number(deltaPrice));
+    totText->setText("共计 ￥" + QString::number(formatNum(totPrice)));
+    deltaText->setText("已省 ￥" + QString::number(formatNum(deltaPrice)));
 }

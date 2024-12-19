@@ -2,11 +2,10 @@
 #define HISTORYPAGE_H
 
 
-#include "ElaScrollPage.h"
+#include "basepage.h"
 #include <QSqlDatabase>
 
-class QVBoxLayout;
-class HistoryPage : public ElaScrollPage
+class HistoryPage : public BasePage
 {
     Q_OBJECT
 public:
@@ -17,15 +16,6 @@ public:
 
 private:
     void initPage();
-
-    void clearPage(int left);
-
-    void connectToDB();
-
-private:
-    QSqlDatabase db;
-    QWidget *centralWidget;
-    QVBoxLayout *centerLayout;
 
 };
 

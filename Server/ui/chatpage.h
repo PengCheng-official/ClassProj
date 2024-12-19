@@ -7,7 +7,6 @@
 
 class Client;
 class ElaToggleSwitch;
-class ChatRoom;
 class Chat;
 class ChatPage : public ElaScrollPage
 {
@@ -24,7 +23,6 @@ private:
     QList<Client *> clientList;
     ElaToggleSwitch* _toggleSwitch{nullptr};
     QWidget* centralWidget;
-    ChatRoom *chatRoom;
 
 protected:
     void mouseReleaseEvent(QMouseEvent* event) override;

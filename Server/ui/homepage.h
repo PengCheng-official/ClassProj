@@ -2,12 +2,12 @@
 #define HOMEPAGE_H
 
 
-#include "ElaScrollPage.h"
+#include "basepage.h"
 #include <QSqlDatabase>
 
 class QVBoxLayout;
 class QChart;
-class HomePage : public ElaScrollPage
+class HomePage : public BasePage
 {
     Q_OBJECT
 public:
@@ -19,14 +19,7 @@ public:
 private:
     void initPage();
 
-    void clearPage(int left);
-
-    void connectToDB();
-
 private:
-    QSqlDatabase db;
-    QWidget *centralWidget;
-    QVBoxLayout *centerLayout;
     QChart *barChart;
     QChart *pieChart;
 };

@@ -58,11 +58,12 @@ void BasePage::clearPage(int left)
 
 void BasePage::makePriceText(ElaText *price, Product *product)
 {
-    if (!product->getStrategy()) price->setText("￥" + QString::number(product->getProductPrice()));
+    if (!product->getStrategy()) price->setText("￥" + QString::number(formatNum(product->getProductPrice())));
     else
     {
         double nprice = product->getProductPrice(); int num = 1;
         product->applyStrategy(nprice, num);
+        nprice = formatNum(nprice);
         switch(product->getStrategy())
         {
         case 1:
@@ -79,4 +80,9 @@ void BasePage::makePriceText(ElaText *price, Product *product)
             break;
         }
     }
+}
+
+double BasePage::formatNum(double num)
+{
+    return qFloor(num * 100) / 100.0;
 }

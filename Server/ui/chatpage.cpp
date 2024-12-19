@@ -35,6 +35,9 @@ ChatPage::~ChatPage()
 
 void ChatPage::setClientList(QList<Client *> &cClientList)
 {
+    disconnect(this, &ChatPage::sigLockBtn, nullptr, nullptr);
+    disconnect(this, &ChatPage::sigUnlockBtn, nullptr, nullptr);
+    disconnect(this, &ChatPage::sigReceiveMessage, nullptr, nullptr);
     // 先清除上次的在线列表
     QLayout *oldLayout = centralWidget->layout();
     if (oldLayout) {
@@ -83,7 +86,7 @@ void ChatPage::setClientList(QList<Client *> &cClientList)
         ElaPushButton* connectBtn = new ElaPushButton("联系他", this);
         connect(connectBtn, &QPushButton::clicked, [=](){
             emit sigLockBtn();
-            chatRoom = new ChatRoom(client);
+            ChatRoom *chatRoom = new ChatRoom(client);
             chatRoom->show();
             connect(this, &ChatPage::sigReceiveMessage, chatRoom, &ChatRoom::receiveMessage);
             connect(chatRoom, &ChatRoom::sigSendToClient, [=](QByteArray array){
@@ -92,6 +95,7 @@ void ChatPage::setClientList(QList<Client *> &cClientList)
             connect(chatRoom, &ChatRoom::sigUnlocked, [=]{
                 qDebug() << "[chatPage] sigUnlocked";
                 emit sigUnlockBtn();
+                delete chatRoom;
             });
         });
         connect(this, &ChatPage::sigLockBtn, [=](){
@@ -129,24 +133,21 @@ void ChatPage::setClientList(QList<Client *> &cClientList)
         ElaPushButton* connectBtn = new ElaPushButton("联系他", this);
         connect(connectBtn, &QPushButton::clicked, [=](){
             emit sigLockBtn();
-            chatRoom = new ChatRoom(client);
+            ChatRoom *chatRoom = new ChatRoom(client, false);
             chatRoom->show();
-            connect(this, &ChatPage::sigReceiveMessage, chatRoom, &ChatRoom::receiveMessage);
-            connect(chatRoom, &ChatRoom::sigSendToClient, [=](QByteArray array){
-                emit sigSendToClient(client, array);
-            });
             connect(chatRoom, &ChatRoom::sigUnlocked, [=]{
                 qDebug() << "[chatPage] sigUnlocked";
                 emit sigUnlockBtn();
+                delete chatRoom;
             });
         });
         connect(this, &ChatPage::sigLockBtn, [=](){
             qDebug() << "[chatPage] locked";
-            connectBtn->setEnabled(false);
+            if (connectBtn) connectBtn->setEnabled(false);
         });
         connect(this, &ChatPage::sigUnlockBtn, [=](){
             qDebug() << "[chatPage] unlocked";
-            connectBtn->setEnabled(true);
+            if (connectBtn) connectBtn->setEnabled(true);
         });
 
         clientLayout->addWidget(connectBtn);

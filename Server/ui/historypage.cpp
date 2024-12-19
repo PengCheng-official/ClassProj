@@ -21,14 +21,14 @@
 #include "ElaTheme.h"
 
 HistoryPage::HistoryPage(QWidget* parent)
-    : ElaScrollPage(parent)
+    : BasePage(parent)
 {
     setWindowTitle("订单历史");
     centralWidget = new QWidget(this);
     centralWidget->setWindowTitle("订单历史");
     addCentralWidget(centralWidget, true, true, 0);
     centerLayout = new QVBoxLayout(centralWidget);
-    connectToDB();
+    connectToDB("HistoryPage");
 }
 
 HistoryPage::~HistoryPage()
@@ -38,50 +38,6 @@ HistoryPage::~HistoryPage()
 void HistoryPage::initPage()
 {
     clearPage(0);
-}
-
-void HistoryPage::clearPage(int left)
-{
-    qDebug() << "[HistoryPage] clearing:" << centerLayout->count();
-    // 先清除上次的在线列表，留下搜索layout和空间
-    if (centerLayout) {
-        // 删除旧的布局
-        int cnt = centerLayout->count();
-        for (int i = cnt - 1; i >= left; i--)
-        {
-            QLayoutItem *item = centerLayout->takeAt(i);
-            centerLayout->removeItem(item);  // 从布局中移除项
-
-            QWidget *widget = item->widget();
-            QSpacerItem *spacer = dynamic_cast<QSpacerItem*>(item);
-            if (widget)
-            {
-                widget->setParent(nullptr);  // 移除父级关系
-                delete widget;  // 删除控件
-                delete item;    // 从布局中删除项
-            }
-            else if (spacer)
-            {
-                delete spacer;  // 删除伸缩项
-            }
-            else delete item;
-        }
-    }
-}
-
-void HistoryPage::connectToDB()
-{
-    db = QSqlDatabase::addDatabase("QODBC", "HistoryPage");
-    db.setHostName("localhost");
-    db.setPort(3306);
-    db.setDatabaseName("MySql");
-    db.setUserName("root");
-    db.setPassword("pengcheng_050210");
-    if(!db.open()) {
-        qDebug() << "[database] Failed to connect to db: " << db.lastError();
-        return;
-    }
-    qDebug() << "[database] Connected to MySql";
 }
 
 void HistoryPage::refreshPage()
@@ -128,8 +84,9 @@ void HistoryPage::refreshPage()
         orderArea->setFixedHeight(55);
         ElaText *finishTime = new ElaText(order->getFinishTime(), 16, orderArea);
         ElaText *userId = new ElaText("UID："+QString::number(order->getClientId()), 17, orderArea);
+        finishTime->setStyleSheet("color: rgb(252, 106, 35);");
         userId->setFixedWidth(100);
-        ElaText *totPrice = new ElaText("小计 ￥"+QString::number(order->getTotalPrice())+" | 共"+QString::number(order->getProductNum())+"件", 17, orderArea);
+        ElaText *totPrice = new ElaText("小计 ￥"+QString::number(formatNum(order->getTotalPrice()))+" | 共"+QString::number(order->getProductNum())+"件", 17, orderArea);
         ElaText *orderStatus = new ElaText("状态："+order->getOrderStatus(), 17, orderArea);
 
         QHBoxLayout *orderLayout = new QHBoxLayout(orderArea);
@@ -163,7 +120,7 @@ void HistoryPage::refreshPage()
             about->setStyleSheet("color: rgb(75, 75, 75);");
 
             ElaText *price = new ElaText(productArea);
-            price->setText("小计 ￥" + QString::number(product->getProductPrice()));
+            price->setText("小计 ￥" + QString::number(formatNum(product->getProductPrice())));
             price->setTextStyle(ElaTextType::Subtitle);
             price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
 

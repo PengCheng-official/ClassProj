@@ -2,7 +2,7 @@
 #define PRODUCTPAGE_H
 
 
-#include "ElaScrollPage.h"
+#include "basepage.h"
 #include <QSqlDatabase>
 
 class Product;
@@ -12,7 +12,7 @@ class ElaComboBox;
 class ElaPushButton;
 class QLineEdit;
 class ElaPlainTextEdit;
-class ProductPage : public ElaScrollPage
+class ProductPage : public BasePage
 {
     Q_OBJECT
 public:
@@ -23,13 +23,11 @@ public:
 
 private:
     void createActivityLayout(ElaText *activityText);
-    void connectToDB();
+
     void initPage(Product *pProduct = nullptr);
 
 private:
     Product *product;
-    QWidget *centralWidget;
-    QVBoxLayout *centerLayout;
     ElaLineEdit *nameEdit;
     ElaLineEdit *priceEdit;
     ElaLineEdit *numEdit;
@@ -51,7 +49,6 @@ private:
     QList<QHBoxLayout *> activityLayouts{nullptr, nullptr, nullptr, nullptr, nullptr};
     bool IsNew;
     ElaPushButton *deleteBtn;
-    QSqlDatabase db;
 
 private slots:
     void onCurrentIndexChanged(int cur);

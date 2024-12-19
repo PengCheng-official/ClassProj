@@ -41,7 +41,7 @@ Allmain::Allmain(QWidget *parent)
     , ui(new Ui::Allmain)
 {
     ui->setupUi(this);
-    resize(1100, 660);
+    resize(1000, 720);
     setWindowButtonFlag(ElaAppBarType::ThemeChangeButtonHint, false);
     setWindowButtonFlag(ElaAppBarType::StayTopButtonHint, false);
     setWindowIcon(QIcon(":/Resource/icon.png"));
@@ -208,9 +208,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         {
             ObjectToJson::addSignal(message, QString::number(LOGIN));    //登录成功
             clientList[0] = dbClient[0];
-            clients.append(clientList[0]);
-            clientHash.insert(socket, clientList[0]);
-            socketHash.insert(clientList[0], socket);
+            emit sigLoginSuccess(socket, clientList[0]);
         }
         else
         {
@@ -271,10 +269,8 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         QList<Chat *> chatList = ObjectToJson::parseChats(socketData);
         ChatMapper *chatMapper = new ChatMapper(db);
         chatMapper->insert(chatList);
-        //TODO 发送失败
 
-        _chatPage->sigReceiveMessage(chatList[0]);
-        setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), ++ChatPage::restMsg);
+        emit sigReceiveMessage(chatList[0]);
         break;
     }
     case PERSONCHANGE:
@@ -587,6 +583,15 @@ void Allmain::startToListen()
     int port = 23333;
     server->listen(QHostAddress(IP), port);
     connect(this, &Allmain::sigSendToClient, this, &Allmain::onSendToClient);
+    connect(this, &Allmain::sigLoginSuccess, [=](QTcpSocket* socket, Client* client){
+        clients.append(client);
+        clientHash.insert(socket, client);
+        socketHash.insert(client, socket);
+    });
+    connect(this, &Allmain::sigReceiveMessage, [=](Chat *chat){
+        _chatPage->sigReceiveMessage(chat);
+        setNodeKeyPoints(_chatPage->property("ElaPageKey").toString(), ++ChatPage::restMsg);
+    });
     qDebug() << "[server] listening...";
 }
 

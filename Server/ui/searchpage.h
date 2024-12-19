@@ -2,14 +2,14 @@
 #define SEARCHPAGE_H
 
 
-#include "ElaScrollPage.h"
+#include "basepage.h"
 #include <QSqlDatabase>
 
 class Product;
 class QVBoxLayout;
 class ElaLineEdit;
 class ElaPushButton;
-class SearchPage : public ElaScrollPage
+class SearchPage : public BasePage
 {
     Q_OBJECT
 public:
@@ -18,18 +18,10 @@ public:
 
     void updatePage(QList<Product *> productList);
 
-    void clearPage();
-
-private:
-    void connectToDB();
-
 public slots:
     void onSearchBtnClicked();
 
 private:
-    QSqlDatabase db;
-    QWidget *centralWidget;
-    QVBoxLayout *mainLayout;
     ElaLineEdit *searchEdit;
     ElaPushButton *searchBtn;
 

@@ -16,14 +16,14 @@
 #include <QLegendMarker>
 
 HomePage::HomePage(QWidget* parent)
-    : ElaScrollPage(parent)
+    : BasePage(parent)
 {
     setWindowTitle("首页");
     centralWidget = new QWidget(this);
     centralWidget->setWindowTitle("首页");
     addCentralWidget(centralWidget, true, true, 0);
     centerLayout = new QVBoxLayout(centralWidget);
-    connectToDB();
+    connectToDB("HomePage");
     refreshPage();
 }
 
@@ -53,50 +53,6 @@ void HomePage::initPage()
     centerLayout->addWidget(barView);
     centerLayout->addSpacing(10);
     centerLayout->addWidget(pieView);
-}
-
-void HomePage::clearPage(int left)
-{
-    qDebug() << "[HomePage] clearing:" << centerLayout->count();
-    // 先清除上次的在线列表，留下搜索layout和空间
-    if (centerLayout) {
-        // 删除旧的布局
-        int cnt = centerLayout->count();
-        for (int i = cnt - 1; i >= left; i--)
-        {
-            QLayoutItem *item = centerLayout->takeAt(i);
-            centerLayout->removeItem(item);  // 从布局中移除项
-
-            QWidget *widget = item->widget();
-            QSpacerItem *spacer = dynamic_cast<QSpacerItem*>(item);
-            if (widget)
-            {
-                widget->setParent(nullptr);  // 移除父级关系
-                delete widget;  // 删除控件
-                delete item;    // 从布局中删除项
-            }
-            else if (spacer)
-            {
-                delete spacer;  // 删除伸缩项
-            }
-            else delete item;
-        }
-    }
-}
-
-void HomePage::connectToDB()
-{
-    db = QSqlDatabase::addDatabase("QODBC", "HomePage");
-    db.setHostName("localhost");
-    db.setPort(3306);
-    db.setDatabaseName("MySql");
-    db.setUserName("root");
-    db.setPassword("pengcheng_050210");
-    if(!db.open()) {
-        qDebug() << "[database] Failed to connect to db: " << db.lastError();
-        return;
-    }
-    qDebug() << "[database] Connected to MySql";
 }
 
 void HomePage::refreshPage()
@@ -147,6 +103,7 @@ void HomePage::refreshPage()
         pieSeries->append(pieSlice);
     }
     pieSeries->setLabelsVisible(true);
+    pieSeries->setVerticalPosition(0.55);
     pieChart->addSeries(pieSeries);
     pieChart->setTitle("各商品销量占比图");
 

@@ -73,7 +73,7 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     name1->setTextStyle(ElaTextType::Title);
 
     price1 = new ElaText(productArea1);
-    price1->setText("￥" + QString::number(client->getClientId()));
+    price1->setText("￥" + QString::number(formatNum(client->getClientId())));
     price1->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
     price1->setTextStyle(ElaTextType::Subtitle);
 
@@ -128,7 +128,7 @@ HomePage::HomePage(Client *cClient, QWidget* parent)
     name2->setFixedWidth(180);
 
     price2 = new ElaText(productArea2);
-    price2->setText("￥" + QString::number(client->getClientId()));
+    price2->setText("￥" + QString::number(formatNum(client->getClientId())));
     price2->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
     price2->setTextStyle(ElaTextType::Subtitle);
 

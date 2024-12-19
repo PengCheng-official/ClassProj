@@ -22,12 +22,12 @@
 #include "ElaTheme.h"
 
 ProductPage::ProductPage(QWidget* parent)
-    : ElaScrollPage(parent)
+    : BasePage(parent)
 {
-    connectToDB();
-    setWindowTitle("修改商品信息");
+    connectToDB("ProductPage");
+    setWindowTitle("增改商品信息");
     centralWidget = new QWidget(this);
-    centralWidget->setWindowTitle("修改商品信息");
+    centralWidget->setWindowTitle("增改商品信息");
     addCentralWidget(centralWidget, true, true, 0);
 
     //主Layout 初始化
@@ -201,7 +201,7 @@ void ProductPage::initPage(Product *pProduct)
         IsNew = false;
         product = pProduct;
         nameEdit->setPlaceholderText("  " + product->getProductName());
-        priceEdit->setPlaceholderText("  " + QString::number(product->getProductPrice()));
+        priceEdit->setPlaceholderText("  " + QString::number(formatNum(product->getProductPrice())));
         numEdit->setPlaceholderText("  " + QString::number(product->getProductNum()));
         strategyBox->setCurrentIndex(product->getStrategy());
         onCurrentIndexChanged(product->getStrategy());
@@ -563,20 +563,6 @@ void ProductPage::createActivityLayout(ElaText *activityText)
     _text7->hide();
     _text7->hide();
     _text8->hide();
-}
-
-void ProductPage::connectToDB() {
-    db = QSqlDatabase::addDatabase("QODBC", "ProductPage");
-    db.setHostName("localhost");
-    db.setPort(3306);
-    db.setDatabaseName("MySql");
-    db.setUserName("root");
-    db.setPassword("pengcheng_050210");
-    if(!db.open()) {
-        qDebug() << "[database] Failed to connect to db: " << db.lastError();
-        return;
-    }
-    qDebug() << "[database] Connected to MySql";
 }
 
 void ProductPage::refreshPage(Product *pProduct)

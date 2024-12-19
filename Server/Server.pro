@@ -47,6 +47,7 @@ SOURCES += \
     objects/search.cpp \
     objects/shopping.cpp \
     objecttojson.cpp \
+    ui/basepage.cpp \
     ui/chatpage.cpp \
     ui/historypage.cpp \
     ui/homepage.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     objects/shopping.h \
     objecttojson.h \
     statement.h \
+    ui/basepage.h \
     ui/chatpage.h \
     ui/historypage.h \
     ui/homepage.h \

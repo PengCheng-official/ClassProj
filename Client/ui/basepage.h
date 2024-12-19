@@ -19,6 +19,8 @@ protected:
 
     void makePriceText(ElaText *price, Product *product);
 
+    double formatNum(double num);
+
 protected:
     Client *client;
     QWidget *centralWidget;

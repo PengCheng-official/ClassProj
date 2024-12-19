@@ -43,9 +43,9 @@ private:
     bool unKnown;
 
 private slots:
-    void onReturnBtnClicked();
+    void on_returnBtn_clicked();
 
-    void onSendBtnClicked();
+    void on_sendBtn_clicked();
 
 signals:
     void sigSendToServer(QByteArray array);

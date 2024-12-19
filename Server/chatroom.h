@@ -50,8 +50,8 @@ private:
     bool IsOnline;
 
 private slots:
-    void onReturnBtnClicked();
-    void onSendBtnClicked();
+    void on_returnBtn_clicked();
+    void on_sendBtn_clicked();
 
 signals:
     void sigSendToClient(QByteArray array);

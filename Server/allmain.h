@@ -8,6 +8,7 @@ class QTcpSocket;
 class QTcpServer;
 class QReadWriteLock;
 class Client;
+class Chat;
 class ThreadPool;
 class HomePage;
 class ChatPage;
@@ -70,6 +71,8 @@ private slots:
 
 signals:
     void sigSendToClient(QTcpSocket* socket, const QByteArray &array);
+    void sigLoginSuccess(QTcpSocket* socket, Client* client);
+    void sigReceiveMessage(Chat *chat);
 
 };
 #endif // ALLMAIN_H

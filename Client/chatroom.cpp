@@ -53,7 +53,7 @@ void ChatRoom::initHistory(QList<Chat *> &chatList)
     for (auto chatMsg : chatList)
     {
         QString time = QString::number(QDateTime::fromString(chatMsg->getChatTime(), "yyyy-MM-dd hh:mm:ss").toSecsSinceEpoch());
-        QString msg = chatMsg->getChatText() + " l";
+        QString msg = chatMsg->getChatText();
         qDebug() << msg << " " << time;
 
         if (chatMsg->getChatIsserver())
@@ -83,6 +83,7 @@ void ChatRoom::initClient(Client *cClient)
 
 void ChatRoom::dealMessage(QNChatMessage *messageW, QListWidgetItem *item, QString text, QString time, QNChatMessage::User_Type type)
 {
+    text += " ";
     messageW->setFixedWidth(this->width());
     QSize size = messageW->fontRect(text);
     item->setSizeHint(size);
@@ -116,7 +117,7 @@ void ChatRoom::dealMessageTime(QString curMsgTime)
 
 }
 
-void ChatRoom::onSendBtnClicked()
+void ChatRoom::on_sendBtn_clicked()
 {
     // 处理信息并展示
     QString msg = ui->textEdit->toPlainText();
@@ -129,7 +130,7 @@ void ChatRoom::onSendBtnClicked()
 
     QNChatMessage* messageW = new QNChatMessage(ui->listWidget->parentWidget());
     QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-    dealMessage(messageW, item, msg+" l", time, QNChatMessage::User_Me);
+    dealMessage(messageW, item, msg, time, QNChatMessage::User_Me);
     messageW->setTextSuccess();
 
     // 将消息发送到 Server
@@ -172,10 +173,9 @@ void ChatRoom::resizeEvent(QResizeEvent *event)
     }
 }
 
-void ChatRoom::onReturnBtnClicked()
+void ChatRoom::on_returnBtn_clicked()
 {
     this->hide();
     ui->textEdit->clear();
     ui->listWidget->clear();
 }
-

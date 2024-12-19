@@ -55,7 +55,7 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
         ElaScrollPageArea* orderArea = new ElaScrollPageArea(this);
         orderArea->setFixedHeight(55);
         ElaText *finishTime = new ElaText(order->getFinishTime(), 16, orderArea);
-        ElaText *totPrice = new ElaText("小计 ￥"+QString::number(order->getTotalPrice())+" | 共"+QString::number(order->getProductNum())+"件", 17, orderArea);
+        ElaText *totPrice = new ElaText("小计 ￥"+QString::number(formatNum(order->getTotalPrice()))+" | 共"+QString::number(order->getProductNum())+"件", 17, orderArea);
         ElaText *orderStatus = new ElaText("状态："+order->getOrderStatus(), 17, orderArea);
 
         ElaPushButton *returnBtn = new ElaPushButton("退款", orderArea);
@@ -112,7 +112,7 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
             about->setStyleSheet("color: rgb(75, 75, 75);");
 
             ElaText *price = new ElaText(productArea);
-            price->setText("小计 ￥" + QString::number(product->getProductPrice()));
+            price->setText("小计 ￥" + QString::number(formatNum(product->getProductPrice())));
             price->setTextStyle(ElaTextType::Subtitle);
             price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
 

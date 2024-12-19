@@ -73,7 +73,7 @@ OrderPage::OrderPage(Client *cClient, QList<QPair<Product *, int> > sSelectList,
         ElaText *price = new ElaText(productArea);
         double nprice = product->getProductPrice(); int nnum = num;
         product->applyStrategy(nprice, nnum);
-        price->setText("小计 ￥" + QString::number(nprice * nnum));
+        price->setText("小计 ￥" + QString::number(qFloor(nprice * nnum * 100) / 100.0));
         price->setTextStyle(ElaTextType::Subtitle);
         price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
 

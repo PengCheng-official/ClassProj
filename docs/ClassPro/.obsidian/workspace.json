@@ -1,0 +1,194 @@
+{
+  "main": {
+    "id": "6a77249c061242c2",
+    "type": "split",
+    "children": [
+      {
+        "id": "3e78a8734842ecb4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4540db68be63f38d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "课设总结报告.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "课设总结报告"
+            },
+            "group": "aba07602fdb29f98"
+          }
+        ]
+      },
+      {
+        "id": "7b1f75a053cbfe23",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "23496f0a34ad35e9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "课设总结报告.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "课设总结报告"
+            },
+            "group": "aba07602fdb29f98"
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "05037d81ce0389e4",
+    "type": "split",
+    "children": [
+      {
+        "id": "22c40c18b99b1891",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f5f3995bf9e56619",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "ad70c3ac9f7f5adb",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "8fc1faedae233b56",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 220.5
+  },
+  "right": {
+    "id": "1dc9e125d20c378b",
+    "type": "split",
+    "children": [
+      {
+        "id": "13df4a10c630ca1d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c40ed7f7ae76d83b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "课设总结报告.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "课设总结报告 的反向链接列表"
+            }
+          },
+          {
+            "id": "6ddadb056c92e6a9",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "课设总结报告.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "课设总结报告 的出链列表"
+            }
+          },
+          {
+            "id": "8697f3de5b4e6d16",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "167e181a799e7f2a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "课设总结报告.md"
+              },
+              "icon": "lucide-list",
+              "title": "课设总结报告 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "23496f0a34ad35e9",
+  "lastOpenFiles": [
+    "规范指南.md",
+    "课设总结报告.md",
+    "未命名",
+    "欢迎.md"
+  ]
+}
