@@ -44,7 +44,6 @@ SOURCES += \
     objects/order.cpp \
     objects/orderlist.cpp \
     objects/product.cpp \
-    objects/search.cpp \
     objects/shopping.cpp \
     objecttojson.cpp \
     ui/basepage.cpp \
@@ -72,7 +71,6 @@ HEADERS += \
     objects/order.h \
     objects/orderlist.h \
     objects/product.h \
-    objects/search.h \
     objects/shopping.h \
     objecttojson.h \
     statement.h \

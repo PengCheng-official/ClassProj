@@ -386,7 +386,6 @@ void Allmain::dealMessage(QByteArray message)
     {
         // 添加购物车成功
         ElaMessageBar::success(ElaMessageBarType::BottomRight, "添加成功", "", 2000, this);
-        //TODO: 刷新购物车页面
         break;
     }
     case REQUESTSHOPPING:

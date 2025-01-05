@@ -303,13 +303,13 @@ void ProductPage::onConFirmBtnClicked()
     auto IsNum = [=](const QString &str) {
         bool ok;
         double d = str.toDouble(&ok);
-        ok = d >= 0;
+        ok = ok && d >= 0;
         return ok;
     };
     auto IsInt = [=](const QString &str) {
         bool ok;
         int d = str.toInt(&ok);
-        ok = d >= 0;
+        ok = ok && d >= 0;
         return ok;
     };
     if (IsNew)
@@ -326,7 +326,7 @@ void ProductPage::onConFirmBtnClicked()
             nProduct->setProductImage(imagePath);
         }
         if (priceEdit->text() != "") {
-            if (priceEdit->text().toDouble())
+            if (IsNum(priceEdit->text()))
                 nProduct->setProductPrice(priceEdit->text().toDouble());
             else {
                 emit sigCreateFail(11); //价格输入不是浮点数
@@ -338,7 +338,7 @@ void ProductPage::onConFirmBtnClicked()
             return;
         }
         if (numEdit->text() != "") {
-            if (numEdit->text().toInt())
+            if (IsInt(numEdit->text()))
                 nProduct->setProductNum(numEdit->text().toInt());
             else {
                 emit sigCreateFail(21); //库存输入不是整数

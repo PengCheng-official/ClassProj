@@ -343,6 +343,7 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         QList<QString> strList = ObjectToJson::parseStrings(socketData);
         QList<Client *> clientList = ObjectToJson::parseClients(socketData);
 
+        // 模糊搜索
         ProductMapper *productMapper = new ProductMapper(db);
         QList<Product *> productList = productMapper->selectLike(strList[0]);
 
@@ -351,8 +352,6 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         ObjectToJson::addSignal(message, QString::number(SEARCHPRODUCT));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
-
-        //TODO: 处理搜索记录
         break;
     }
     case REQUESTHOME:
@@ -482,6 +481,25 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
         Order *order = ObjectToJson::parseOrders(socketData)[0];
         OrderMapper *orderMapper = new OrderMapper(db);
         orderMapper->update(order);
+
+        if (order->getOrderStatus() == "已取消")
+        {
+            // 恢复库存
+            qDebug() << "[Allmain] reset productNum";
+            OrderListMapper *orderListMapper = new OrderListMapper(db);
+            QList<OrderList *> orderLists = orderListMapper->select(order->getOrderId());
+            ProductMapper *productMapper = new ProductMapper(db);
+            for (auto orderList : orderLists)
+            {
+                QList<Product *> products = productMapper->select(orderList->getProductId());
+                for (auto product : products)
+                {
+                    product->setProductNum(product->getProductNum() + orderList->getProductNum());
+                    product->setProductSales(product->getProductSales() - orderList->getProductNum());
+                    productMapper->update(product);
+                }
+            }
+        }
         break;
     }
     case REQUESTORDER:

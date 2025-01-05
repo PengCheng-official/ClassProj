@@ -152,8 +152,10 @@ SignIn::SignIn(QWidget *parent) :
         return layout;
     };
     mainLayout->addLayout(midHLayout2(nameIcon, NameEdit));
+    mainLayout->addSpacing(3);
     mainLayout->addLayout(midHLayout(NameError));
     mainLayout->addLayout(midHLayout2(passwordIcon, PasswordEdit));
+    mainLayout->addSpacing(3);
     mainLayout->addLayout(midHLayout(PasswordError));
     mainLayout->addLayout(midHLayout2(phoneIcon, PhoneNumEdit));
     mainLayout->addSpacing(10);

@@ -68,6 +68,9 @@ void HistoryPage::refreshPage(QList<Order *> orders, QList<Product *> products)
             returnBtn->setEnabled(false);
             returnBtn->setText("已退款");
         }
+        if (order->getOrderStatus() == "未付款" || order->getOrderStatus() == "已取消" ) {
+            returnBtn->setEnabled(false);
+        }
         connect(returnBtn, &QPushButton::clicked, [=](){
             order->setOrderStatus("已退款");
             QList<Order *> orderList = {order};

@@ -23,17 +23,6 @@
 #define CHECKORDER 20010803 //检查库存是否充足
 #define CREATEORDERLIST 20010901  //创建订单List
 #define REQUESTORDER 20011001   //请求订单历史
-//#define RESETPWD 20010103
-//#define RESETPWDF 40410103
-//#define RESETPWDE 30410103
-
-//#define updateOrder 1000002
-//#define deleteShopping 1000003
-//#define searchProduct 1000004
-//#define addOrderList 1000005
-//#define chatRoom 1000006
-//#define searchProductType 1000007
-//#define clientUpdate 1000008
 
 #include <QColor>
 const QColor redPress(232, 50, 11);

@@ -163,7 +163,7 @@ void OrderPage::onConfirmBtnClicked()
 
 void OrderPage::createOrder()
 {
-    // 下单，同时清楚购物车
+    // 下单，同时清除购物车
     qDebug() << selectList.size();
     order->setProductNum(selectList.size());
     order->setTotalPrice(totPrice);
@@ -191,11 +191,11 @@ void OrderPage::createOrder()
     emit sigSendToServer(array1);
     emit sigRefreshPage();
     QThread::msleep(100);
-    payDialog->exec();
 }
 
 void OrderPage::createOrderList(int oid)
 {
+    qDebug() << "[OrderPage] create oid:" << oid;
     order->setOrderId(oid);
     orderLists.clear();
     for (int i = 0; i < selectList.size(); ++i)
@@ -212,6 +212,7 @@ void OrderPage::createOrderList(int oid)
     ObjectToJson::addOrderLists(message, orderLists);
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToServer(array);
+    payDialog->exec();
 }
 
 void OrderPage::onRightBtnClicked()
@@ -242,6 +243,7 @@ void OrderPage::onMiddleBtnClicked()
     QByteArray array = ObjectToJson::changeJson(message);
     emit sigSendToServer(array);
     emit sigSendMessageBar(false, "订单已取消");
+    qDebug() << "[OrderPage] order status:" << orders[0]->getOrderStatus();
 
     setWindowTitle("订单状态：已取消");
     confirmBtn->setText("已取消");
