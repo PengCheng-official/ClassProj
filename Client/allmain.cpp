@@ -1,8 +1,10 @@
 #include "allmain.h"
 #include "ui_allmain.h"
 
-#include <iostream>
 #include <QWidget>
+#include <QApplication>
+#include <QProcess>
+
 #include "login.h"
 #include "signin.h"
 #include "chatroom.h"
@@ -352,6 +354,17 @@ void Allmain::dealMessage(QByteArray message)
         // 修改个人信息成功
         ElaMessageBar::success(ElaMessageBarType::BottomRight, "修改成功", "", 2000, this);
         _personPage->showMessageWindow(true);
+        break;
+    }
+    case PERSONDELET:
+    {
+        //注销账号成功，重启程序
+        QString program = QCoreApplication::applicationFilePath();
+        QStringList arguments = QCoreApplication::arguments();
+        arguments.removeFirst();
+
+        QProcess::startDetached(program, arguments);
+        QCoreApplication::quit();
         break;
     }
     case PERSONCHANGEFAIL:

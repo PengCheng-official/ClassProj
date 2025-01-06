@@ -31,6 +31,9 @@ public:
 
     void update(const int id,const Client *client) const;
     //根据id，修改用户信息
+
+    void delet(const Client *client) const;
+    //注销用户
 };
 
 #endif // CLIENTMAPPER_H

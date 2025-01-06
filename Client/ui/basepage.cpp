@@ -76,7 +76,7 @@ void BasePage::makePriceText(ElaText *price, Product *product)
             price->setText("促销 ￥"+QString::number(nprice)+" | 满"+QString::number(product->getStrategy1())+"赠"+QString::number(product->getStrategy2()));
             break;
         case 4:
-            price->setText("促销 ￥"+QString::number(nprice)+" | 共"+QString::number(product->getStrategy1())+"件");
+            price->setText("秒杀 ￥"+QString::number(nprice)+" | 共"+QString::number(product->getStrategy1())+"件");
             break;
         }
     }

@@ -340,7 +340,7 @@ QList<Product *> ObjectToJson::parseProducts(QByteArray byteArray)
                             if(jsonObject.contains("ProductStrategy")){
                                 QJsonValue object = jsonObject.value("ProductStrategy");
                                 QJsonValue object1 = jsonObject.value("ProductNum1");
-                                QJsonValue object2 = jsonObject.value("ProductNum1");
+                                QJsonValue object2 = jsonObject.value("ProductNum2");
                                 product->setStrategy(object.toVariant().toInt(), object1.toVariant().toDouble(), object2.toVariant().toDouble());
                             }
                             if(jsonObject.contains("ProductImage")){

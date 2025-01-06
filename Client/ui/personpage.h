@@ -10,6 +10,7 @@ class ElaLineEdit;
 class ElaToggleButton;
 class ElaMessageButton;
 class ElaScrollPageArea;
+class ElaContentDialog;
 class PersonPage : public BasePage
 {
     Q_OBJECT
@@ -32,14 +33,20 @@ private:
     ElaToggleButton *maleBtn;
     ElaToggleButton *femaleBtn;
     ElaToggleButton *unknownBtn;
+    ElaPushButton *deletBtn;
     ElaMessageButton *confirmBtn;
     ElaPushButton *imageBtn;
     QString imagePath{""};
     ElaLineEdit *prePasswordEdit;
     ElaLineEdit *newPasswordEdit;
+    ElaContentDialog *delDialog;
 
 private slots:
     void onConFirmBtnClicked();
+
+    void onRightBtnClicked();
+
+    void onMiddleBtnClicked();
 
 signals:
     void sigClientChanged(Client *nClient);

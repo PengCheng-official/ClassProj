@@ -10,6 +10,7 @@
 #define CHATMSG 20010301  //发送聊天信息
 #define CHATHISTORY 20010302  //请求聊天历史
 #define PERSONCHANGE 20010401 //修改个人账号，修改成功
+#define PERSONDELET 20010402 //注销个人账号
 #define PERSONCHANGEFAIL 40410401  //修改个人账号失败
 #define PERSONCHANGEERROR 40310401 //修改个人密码错误
 #define SEARCHPRODUCT 20010501 //搜索商品

@@ -97,7 +97,8 @@ void SearchPage::updatePage(QList<Product *> productList)
             about->setTextPixelSize(15);
             about->setStyleSheet("color: rgb(75, 75, 75);");
 
-            ElaText *price = new ElaText("￥" + QString::number(formatNum(product->getProductPrice())), productArea);
+            ElaText *price = new ElaText(productArea);
+            makePriceText(price, product);
             price->setStyleSheet("color: rgb(252, 106, 35); font-weight: bold;");
             price->setTextStyle(ElaTextType::Subtitle);
 
@@ -115,7 +116,6 @@ void SearchPage::updatePage(QList<Product *> productList)
             addLayout->addWidget(num);
             addLayout->addStretch();
             addLayout->addWidget(add);
-            // TODO: 修改商品
             connect(add, &QPushButton::clicked, [=](){
                emit sigTurnToProduct(product);
             });

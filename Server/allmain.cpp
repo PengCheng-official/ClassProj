@@ -112,6 +112,12 @@ Allmain::Allmain(QWidget *parent)
        case 200:
            ElaMessageBar::success(ElaMessageBarType::BottomRight, "更改成功", "", 2000, this);
            break;
+       case 201:
+           ElaMessageBar::success(ElaMessageBarType::BottomRight, "新增成功", "", 2000, this);
+           break;
+       case 202:
+           ElaMessageBar::success(ElaMessageBarType::BottomRight, "删除成功", "", 2000, this);
+           break;
        }
     });
 
@@ -333,6 +339,19 @@ void Allmain::dealMessage(QTcpSocket* socket, QByteArray &socketData, QString th
 
         QJsonObject message;
         ObjectToJson::addSignal(message, QString::number(PERSONCHANGE));
+        QByteArray array = ObjectToJson::changeJson(message);
+        emit sigSendToClient(socket, array);
+        break;
+    }
+    case PERSONDELET:
+    {
+        // 注销账号
+        QList<Client*> clientList = ObjectToJson::parseClients(socketData);
+        ClientMapper *clientMapper = new ClientMapper(db);
+        clientMapper->delet(clientList[0]);
+
+        QJsonObject message;
+        ObjectToJson::addSignal(message, QString::number(PERSONDELET));
         QByteArray array = ObjectToJson::changeJson(message);
         emit sigSendToClient(socket, array);
         break;

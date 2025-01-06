@@ -144,6 +144,12 @@ ProductPage::ProductPage(QWidget* parent)
     deleteBtn->setLightPressColor(QColor(255, 50, 11));
     deleteBtn->setLightTextColor(Qt::white);
     deleteBtn->setStyleSheet("font-size: 16px;");
+    connect(deleteBtn, &QPushButton::clicked, [=](){
+       ProductMapper *productMapper = new ProductMapper(db);
+       productMapper->delet(product->getProductId());
+       emit sigCreateFail(202); //删除成功
+       initPage();
+    });
 
     //连接确定的点击槽函数
     connect(confirmBtn, &QPushButton::clicked, this, &ProductPage::onConFirmBtnClicked);
@@ -401,7 +407,7 @@ void ProductPage::onConFirmBtnClicked()
         ProductMapper *productMapper = new ProductMapper(db);
         productMapper->insert(nProduct);
         refreshPage();
-        emit sigCreateFail(200); //成功
+        emit sigCreateFail(201); //成功
     }
     else
     {

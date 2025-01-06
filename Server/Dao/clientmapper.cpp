@@ -145,3 +145,15 @@ void ClientMapper::update(const int id, const Client *client) const
     query.clear();
 }
 
+void ClientMapper::delet(const Client *client) const
+{
+    QWriteLocker locker(&dbLock);
+
+    qDebug() << "[database] client delete... " << client->getClientId();
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM client WHERE client_id = :id;");
+    query.bindValue(":id", client->getClientId());
+    query.exec();
+    query.clear();
+}
+

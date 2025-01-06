@@ -16,6 +16,7 @@
 #include "ElaTheme.h"
 #include "ElaToggleButton.h"
 #include "ElaMessageButton.h"
+#include "ElaContentDialog.h"
 
 PersonPage::PersonPage(Client *cClient, QWidget *parent)
     : BasePage(cClient, parent)
@@ -131,6 +132,27 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
     emailEdit->setFixedSize(270, 36);
     emailEdit->setStyleSheet("font-size: 16px; color: black; ");
 
+    //确认注销
+    delDialog = new ElaContentDialog(parent);
+    delDialog->setTitleText("确定要注销吗？");
+    delDialog->setSubTitleText("将会删除聊天记录并返回登录");
+    delDialog->setRightButtonText("确定注销");
+    delDialog->setMiddleButtonText("取消返回");
+    delDialog->isLeftButtonVisible(false);
+    connect(delDialog, &ElaContentDialog::rightButtonClicked, this, &PersonPage::onRightBtnClicked);
+    connect(delDialog, &ElaContentDialog::middleButtonClicked, this, &PersonPage::onMiddleBtnClicked);
+
+    //注销按钮 初始化
+    deletBtn = new ElaPushButton("注销账号", this);
+    deletBtn->setFixedSize(100, 45);
+    deletBtn->setLightDefaultColor(redDefault);
+    deletBtn->setLightHoverColor(redHover);
+    deletBtn->setLightPressColor(redPress);
+    deletBtn->setLightTextColor(Qt::white);
+    connect(deletBtn, &QPushButton::clicked, [=](){
+        delDialog->exec();
+    });
+
     //确定按钮 初始化
     confirmBtn = new ElaMessageButton("确定修改", this);
     confirmBtn->setFixedSize(120, 50);
@@ -141,7 +163,9 @@ PersonPage::PersonPage(Client *cClient, QWidget *parent)
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addStretch();
-    btnLayout->addSpacing(240);
+    btnLayout->addSpacing(85);
+    btnLayout->addWidget(deletBtn);
+    btnLayout->addSpacing(15);
     btnLayout->addWidget(confirmBtn);
     btnLayout->addStretch();
 
@@ -282,4 +306,20 @@ void PersonPage::onConFirmBtnClicked()
     emit sigSendToServer(array);
 
     QThread::msleep(100);
+}
+
+void PersonPage::onRightBtnClicked()
+{
+    //确认注销
+    QList<Client*> clientList;
+    clientList.append(client);
+    QJsonObject message;
+    ObjectToJson::addClients(message, clientList);
+    ObjectToJson::addSignal(message, QString::number(PERSONDELET));    //注销个人账号
+    QByteArray array = ObjectToJson::changeJson(message);
+    emit sigSendToServer(array);
+}
+
+void PersonPage::onMiddleBtnClicked()
+{
 }
