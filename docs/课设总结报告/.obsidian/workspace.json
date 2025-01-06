@@ -99,7 +99,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "a212e68d40c7340b",
@@ -184,6 +185,8 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "57594b8b71aa1028",
-  "lastOpenFiles": []
+  "active": "e4b16fa9a111ef92",
+  "lastOpenFiles": [
+    "img/历史没买.jpg"
+  ]
 }

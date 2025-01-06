@@ -812,7 +812,7 @@ SELECT * FROM orderlist order by orderlist.order_id
 #### 5.1.6 主窗口 —— 订单历史页面
 
 - 订单历史流程
-
+- 若没有买商品，单独显示
   - 若订单状态是“已取消”或“未支付”，按钮不可点击。
   - 若订单状态是“已退款”，按钮为已退款。
   - 用户点击“退款”按钮
@@ -822,6 +822,10 @@ SELECT * FROM orderlist order by orderlist.order_id
 - 订单历史页面 UI
 
   ![](./img/历史.jpg)
+
+- 没有订单历史
+
+  ![](./img/历史没买.jpg)
 
 - 订单退货
 
